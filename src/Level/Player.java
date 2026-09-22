@@ -1,13 +1,17 @@
 package Level;
 
+import Engine.GraphicsHandler;
 import Engine.Key;
 import Engine.KeyLocker;
 import Engine.Keyboard;
+import Engine.Mouse;
 import GameObject.GameObject;
+import GameObject.Rectangle;
 import GameObject.SpriteSheet;
 import Utils.AirGroundState;
 import Utils.Direction;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 public abstract class Player extends GameObject {
@@ -39,13 +43,22 @@ public abstract class Player extends GameObject {
 
     // define keys
     protected KeyLocker keyLocker = new KeyLocker();
-    protected Key JUMP_KEY = Key.UP;
-    protected Key MOVE_LEFT_KEY = Key.LEFT;
-    protected Key MOVE_RIGHT_KEY = Key.RIGHT;
-    protected Key CROUCH_KEY = Key.DOWN;
+    protected Key[] JUMP_KEYS = {Key.W, Key.SPACE};
+    protected boolean jumpKeyLocked = false;
+    protected Key MOVE_LEFT_KEY = Key.A;
+    protected Key MOVE_RIGHT_KEY = Key.D;
+    protected Key CROUCH_KEY = Key.S;
 
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
+
+    // melee attack values
+    protected boolean isAttacking = false;
+    protected boolean attackButtonLocked = false;
+    protected int attackTimer = 0;
+    protected final int ATTACK_DURATION = 15;
+    protected final int ATTACK_WIDTH = 35;
+    protected Rectangle attackBox;
 
     public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName) {
         super(spriteSheet, x, y, startingAnimationName);
@@ -72,6 +85,8 @@ public abstract class Player extends GameObject {
             } while (previousPlayerState != playerState);
 
             previousAirGroundState = airGroundState;
+
+            updateAttack();
 
             // move player with respect to map collisions based on how much player needs to move this frame
             lastAmountMovedX = super.moveXHandleCollision(moveAmountX);
@@ -127,8 +142,8 @@ public abstract class Player extends GameObject {
         }
 
         // if jump key is pressed, player enters JUMPING state
-        else if (Keyboard.isKeyDown(JUMP_KEY) && !keyLocker.isKeyLocked(JUMP_KEY)) {
-            keyLocker.lockKey(JUMP_KEY);
+        else if (Keyboard.isKeyDown(JUMP_KEYS) && !jumpKeyLocked) {
+            jumpKeyLocked = true;
             playerState = PlayerState.JUMPING;
         }
 
@@ -155,8 +170,8 @@ public abstract class Player extends GameObject {
         }
 
         // if jump key is pressed, player enters JUMPING state
-        if (Keyboard.isKeyDown(JUMP_KEY) && !keyLocker.isKeyLocked(JUMP_KEY)) {
-            keyLocker.lockKey(JUMP_KEY);
+        if (Keyboard.isKeyDown(JUMP_KEYS) && !jumpKeyLocked) {
+            jumpKeyLocked = true;
             playerState = PlayerState.JUMPING;
         }
 
@@ -174,8 +189,8 @@ public abstract class Player extends GameObject {
         }
 
         // if jump key is pressed, player enters JUMPING state
-        if (Keyboard.isKeyDown(JUMP_KEY) && !keyLocker.isKeyLocked(JUMP_KEY)) {
-            keyLocker.lockKey(JUMP_KEY);
+        if (Keyboard.isKeyDown(JUMP_KEYS) && !jumpKeyLocked) {
+            jumpKeyLocked = true;
             playerState = PlayerState.JUMPING;
         }
     }
@@ -238,8 +253,58 @@ public abstract class Player extends GameObject {
     }
 
     protected void updateLockedKeys() {
-        if (Keyboard.isKeyUp(JUMP_KEY)) {
-            keyLocker.unlockKey(JUMP_KEY);
+        // unlock jump once none of the jump keys are still being held down
+        if (!Keyboard.isKeyDown(JUMP_KEYS)) {
+            jumpKeyLocked = false;
+        }
+    }
+
+    // handles starting/updating/ending the melee attack based on left mouse button input
+    protected void updateAttack() {
+        if (Mouse.isLeftButtonDown() && !attackButtonLocked && !isAttacking) {
+            attackButtonLocked = true;
+            isAttacking = true;
+            attackTimer = ATTACK_DURATION;
+        }
+
+        if (Mouse.isLeftButtonUp()) {
+            attackButtonLocked = false;
+        }
+
+        if (isAttacking) {
+            updateAttackBoxLocation();
+            checkAttackCollisions();
+            attackTimer--;
+            if (attackTimer <= 0) {
+                isAttacking = false;
+                attackBox = null;
+            }
+        }
+    }
+
+    // positions the attack hitbox right in front of the player based on which way it's facing
+    protected void updateAttackBoxLocation() {
+        Rectangle bounds = getBounds();
+        float attackX = facingDirection == Direction.RIGHT ? bounds.getX2() + 1 : bounds.getX1() - ATTACK_WIDTH;
+        float attackY = bounds.getY1();
+
+        if (attackBox == null) {
+            attackBox = new Rectangle(attackX, attackY, ATTACK_WIDTH, Math.round(bounds.getHeight()));
+        } else {
+            attackBox.setLocation(attackX, attackY);
+        }
+    }
+
+    // kills any enemy currently touching the attack hitbox
+    protected void checkAttackCollisions() {
+        if (map == null || attackBox == null) {
+            return;
+        }
+
+        for (Enemy enemy : map.getActiveEnemies()) {
+            if (enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE && attackBox.intersects(enemy)) {
+                enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
+            }
         }
     }
 
@@ -395,10 +460,25 @@ public abstract class Player extends GameObject {
         listeners.add(listener);
     }
 
-    // Uncomment this to have game draw player's bounds to make it easier to visualize
-    /*
+    @Override
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
+        if (isAttacking && attackBox != null) {
+            float cameraX = map != null ? map.getCamera().getX() : 0;
+            float cameraY = map != null ? map.getCamera().getY() : 0;
+            graphicsHandler.drawFilledRectangle(
+                    Math.round(attackBox.getX() - cameraX),
+                    Math.round(attackBox.getY() - cameraY),
+                    attackBox.getWidth(),
+                    attackBox.getHeight(),
+                    new Color(255, 0, 0, 128)
+            );
+        }
+    }
+
+    // Uncomment this to have game draw player's bounds to make it easier to visualize
+    /*
+    public void drawBoundsForDebug(GraphicsHandler graphicsHandler) {
         drawBounds(graphicsHandler, new Color(255, 0, 0, 100));
     }
     */
