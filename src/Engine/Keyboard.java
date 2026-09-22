@@ -51,6 +51,17 @@ public class Keyboard {
     	return keyDown.getOrDefault(keyMap.get(key), false);
     }
 
+    // returns if any of the given keys is currently being pressed
+    // useful for actions that should respond to more than one key binding (e.g. arrow keys and WASD both moving the menu cursor)
+    public static boolean isKeyDown(Key... keys) {
+    	for (Key key : keys) {
+    		if (keyDown.getOrDefault(keyMap.get(key), false)) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+
     // returns if a key is currently not being pressed
     public static boolean isKeyUp(Key key) {
     	return keyUp.getOrDefault(keyMap.get(key), true);
