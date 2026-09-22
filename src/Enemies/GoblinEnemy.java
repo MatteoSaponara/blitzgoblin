@@ -152,7 +152,7 @@ public class GoblinEnemy extends Enemy implements IDamagable{
     public void takeDamage(int damage) {
         health -= damage;
         if (health < 1) {
-            die()
+            die();
         }
     }
 
