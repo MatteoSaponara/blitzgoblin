@@ -47,4 +47,19 @@ public class Mouse {
 	public static boolean isLeftButtonUp() {
 		return !leftButtonDown;
 	}
+
+	public static int getMouseX()
+		{
+		return mouseX;
+		}
+
+	public static int getMouseY()
+	{
+		return mouseY;
+	}
+
+	public static double getAngleTo(double originX, double originY)
+	{
+		return Math.atan2(originY - mouseY, originX - mouseX);
+	}
 }
