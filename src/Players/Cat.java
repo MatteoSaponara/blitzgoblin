@@ -1,3 +1,5 @@
+// This is Goblin.java now.
+
 package Players;
 
 import Builders.FrameBuilder;
