@@ -6,6 +6,8 @@ import java.awt.event.MouseListener;
 public class Mouse {
 
 	private static boolean leftButtonDown = false;
+	private static int mouseX = 0;
+	private static int mouseY = 0;
 
 	private static final MouseListener mouseListener = new MouseListener() {
 		@Override
