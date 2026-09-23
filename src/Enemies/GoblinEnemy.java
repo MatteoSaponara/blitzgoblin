@@ -19,16 +19,17 @@ public class GoblinEnemy extends Enemy implements IDamagable{
     private float gravity = .5f;
     private float movementSpeed;
     private float walkSpeed = .5f;
-    private float chaseSpeed = 1.5f; // Speed of Goblin when the player is in its aggro range
+    private float chaseSpeed = 2f; // Speed of Goblin when the player is in its aggro range
     private Direction startFacingDirection;
     private Direction facingDirection;
     private AirGroundState airGroundState;
-    private float aggroRadius = 4f;
+    private float aggroRadius = 200f; // Find how many pixels a tile to properly set the aggro radius
     private boolean chasing = false;
     private int health = 1;
 
     public GoblinEnemy (Point location, Direction facingDirection) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("GoblinEnemy.png"), 24, 15), "WALK_LEFT");
+        // Change BugEnemy.png to GoblinEnemy.png when the sprite is ready
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("BugEnemy.png"), 24, 15), "WALK_LEFT");
         this.startFacingDirection = facingDirection;
         this.initialize();
     }
@@ -57,9 +58,11 @@ public class GoblinEnemy extends Enemy implements IDamagable{
             chasing = true;
             if (player.getX() > this.getX()) {
                 facingDirection = Direction.RIGHT;
+                currentAnimationName = "WALK_RIGHT";
             }
             else if (player.getX() <= this.getX()) {
                 facingDirection = Direction.LEFT;
+                currentAnimationName = "WALK_LEFT";
             }
         }
         else {

@@ -6,12 +6,14 @@ import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
 import Level.MapEntity;
+import Level.Player;
 import Utils.Direction;
 import Utils.Point;
+import Level.Enemy;
 
 import java.util.HashMap;
 
-public class Turret extends MapEntity{
+public class Turret extends Enemy{
 
     // start and end location defines the two points that it walks between
     // is only made to walk along the x axis and has no air ground state logic, so make sure both points have the same Y value
@@ -24,7 +26,7 @@ public class Turret extends MapEntity{
     protected int shootTimer;
 
     public Turret(Point startLocation, Direction facingDirection) {
-        super(startLocation.x, startLocation.y, new SpriteSheet(ImageLoader.load("Turret.png"), 14, 17), "TURRET");
+        super(startLocation.x, startLocation.y, new SpriteSheet(ImageLoader.load("DinosaurEnemy.png"), 14, 17), "TURRET");
         this.startLocation = startLocation;
         this.startFacingDirection = facingDirection;
         this.initialize();
@@ -40,7 +42,7 @@ public class Turret extends MapEntity{
     }
 
     @Override
-    public void update() {
+    public void update(Player player) {
 
         // this is for actually having the dinosaur spit out the fireball
         if (shootTimer == 0) {
@@ -71,6 +73,20 @@ public class Turret extends MapEntity{
         else {
             shootTimer--;
         }
+        super.update(player);
+    }
+
+    @Override
+    public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
+        return new HashMap<String, Frame[]>() {{
+    
+        put("TURRET", new Frame[] {
+                new FrameBuilder(spriteSheet.getSprite(0, 0), 14)
+                            .withScale(3)
+                            .withBounds(4, 2, 5, 13)
+                            .build(),
+        });
+        }};
     }
 
     public enum TurretState {
