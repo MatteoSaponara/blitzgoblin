@@ -49,9 +49,12 @@ public abstract class Player extends GameObject
     protected Key MOVE_LEFT_KEY = Key.A;
     protected Key MOVE_RIGHT_KEY = Key.D;
     protected Key CROUCH_KEY = Key.S;
+    protected Key DAMAGE_KEY = Key.X;
 
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
+    protected int health = 3;
+    protected int coins = 0;
 
     // melee attack values
     protected boolean isAttacking = false;
@@ -108,6 +111,7 @@ public abstract class Player extends GameObject
             handlePlayerAnimation();
 
             updateLockedKeys();
+            handleDebugDamage();
 
             // update player's animation
             super.update();
@@ -303,6 +307,26 @@ public abstract class Player extends GameObject
         {
             jumpKeyLocked = false;
         }
+
+        if (Keyboard.isKeyUp(DAMAGE_KEY))
+        {
+            keyLocker.unlockKey(DAMAGE_KEY);
+        }
+    }
+
+    protected void handleDebugDamage()
+    {
+        if (Keyboard.isKeyDown(DAMAGE_KEY) && !keyLocker.isKeyLocked(DAMAGE_KEY))
+        {
+            keyLocker.lockKey(DAMAGE_KEY);
+            health--;
+
+            if (health <= 0)
+            {
+                health = 0;
+                levelState = LevelState.PLAYER_DEAD;
+            }
+        }
     }
 
     // handles starting/updating/ending the melee attack based on left mouse button input
@@ -393,7 +417,7 @@ public abstract class Player extends GameObject
             this.currentAnimationName = facingDirection == Direction.RIGHT ? "CROUCH_RIGHT" : "CROUCH_LEFT";
         } else if (playerState == PlayerState.JUMPING)
         {
-            // if player is moving upwards, set player's animation to jump. if player moving downwards, set player's animation to fall
+            // if player is moving upwards, set player's animation to jump. if player moving downwards, set animation to fall
             if (lastAmountMovedY <= 0)
             {
                 this.currentAnimationName = facingDirection == Direction.RIGHT ? "JUMP_RIGHT" : "JUMP_LEFT";
@@ -442,10 +466,16 @@ public abstract class Player extends GameObject
     {
         if (!isInvincible)
         {
-            // if map entity is an enemy, kill player on touch
+            // if map entity is an enemy, remove one health
             if (mapEntity instanceof Enemy)
             {
-                levelState = LevelState.PLAYER_DEAD;
+                health--;
+
+                if (health <= 0)
+                {
+                    health = 0;
+                    levelState = LevelState.PLAYER_DEAD;
+                }
             }
         }
     }
@@ -520,6 +550,23 @@ public abstract class Player extends GameObject
             }
         }
     }
+
+    public int getHealth()
+    {
+        return health;
+    }
+
+    public void collectCoin()
+    {
+		coins++;
+	}
+
+		public int getCoins()
+	{
+		return coins;
+	}
+
+
 
     public PlayerState getPlayerState()
     {

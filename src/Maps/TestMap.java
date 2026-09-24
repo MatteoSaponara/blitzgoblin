@@ -10,6 +10,7 @@ import Level.*;
 import NPCs.Walrus;
 import Tilesets.CommonTileset;
 import Utils.Direction;
+import EnhancedMapTiles.Coin;
 
 import java.util.ArrayList;
 
@@ -52,8 +53,18 @@ public class TestMap extends Map {
         EndLevelBox endLevelBox = new EndLevelBox(getMapTile(32, 7).getLocation());
         enhancedMapTiles.add(endLevelBox);
 
+        Coin coin1 = new Coin(getMapTile(15, 5).getLocation());
+		enhancedMapTiles.add(coin1);
+
+		Coin coin2 = new Coin(getMapTile(25, 3).getLocation());
+		enhancedMapTiles.add(coin2);
+
+		Coin coin3 = new Coin(getMapTile(10, 8).getLocation());
+		enhancedMapTiles.add(coin3);
+
         return enhancedMapTiles;
     }
+
 
     @Override
     public ArrayList<NPC> loadNPCs() {

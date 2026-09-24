@@ -1,6 +1,7 @@
 package Screens;
 
 import Engine.GraphicsHandler;
+import Engine.ImageLoader;
 import Engine.Screen;
 import Game.GameState;
 import Game.ScreenCoordinator;
@@ -9,12 +10,17 @@ import Level.Player;
 import Level.PlayerListener;
 import Maps.TestMap;
 import Players.Cat;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.image.BufferedImage;
+
 
 // This class is for when the platformer game is actually being played
 public class PlayLevelScreen extends Screen implements PlayerListener {
     protected ScreenCoordinator screenCoordinator;
     protected Map map;
     protected Player player;
+    protected BufferedImage heartImage;
     protected PlayLevelScreenState playLevelScreenState;
     protected int screenTimer;
     protected LevelClearedScreen levelClearedScreen;
@@ -30,6 +36,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.map = new TestMap();
 
         // setup player
+        this.heartImage = ImageLoader.load("HeartGB2.png");
         this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y);
         this.player.setMap(map);
         this.player.addListener(this);
@@ -74,6 +81,13 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case RUNNING:
                 map.draw(graphicsHandler);
                 player.draw(graphicsHandler);
+
+                for (int i = 0; i < player.getHealth(); i++) {
+                    graphicsHandler.drawImage(heartImage, 10 + (i * 40), 10, 60, 60);
+                }
+
+                graphicsHandler.drawString("Coins: " + player.getCoins(), 140, 45, new Font("Arial", Font.PLAIN, 20), Color.WHITE);
+
                 break;
             case LEVEL_COMPLETED:
                 levelClearedScreen.draw(graphicsHandler);
@@ -83,6 +97,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 break;
         }
     }
+
+
 
     public PlayLevelScreenState getPlayLevelScreenState() {
         return playLevelScreenState;
