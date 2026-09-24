@@ -36,35 +36,35 @@ public class Coin extends EnhancedMapTile {
     {
         return new HashMap<String, Frame[]>() {{
 			put("DEFAULT", new Frame[] {
-					new FrameBuilder(spriteSheet.getSprite(0, 0), 30)
+					new FrameBuilder(spriteSheet.getSprite(0, 0), 12)
 						.withScale(3)
 						.withBounds(1, 1, 10, 10)
 						.build(),
-					new FrameBuilder(spriteSheet.getSprite(0, 1), 30)
+					new FrameBuilder(spriteSheet.getSprite(0, 1), 12)
 						.withScale(3)
 						.withBounds(1, 1, 10, 10)
 						.build(),
-					new FrameBuilder(spriteSheet.getSprite(0, 2), 30)
+					new FrameBuilder(spriteSheet.getSprite(0, 2), 12)
 						.withScale(3)
 						.withBounds(1, 1, 10, 10)
 						.build(),
-					new FrameBuilder(spriteSheet.getSprite(0, 3), 30)
+					new FrameBuilder(spriteSheet.getSprite(0, 3), 12)
 						.withScale(3)
 						.withBounds(1, 1, 10, 10)
 						.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 4), 30)
+				new FrameBuilder(spriteSheet.getSprite(0, 4), 12)
 						.withScale(3)
 						.withBounds(1, 1, 10, 10)
 					.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 5), 30)
+				new FrameBuilder(spriteSheet.getSprite(0, 5), 12)
 						.withScale(3)
 						.withBounds(1, 1, 10, 10)
 						.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 6), 30)
+				new FrameBuilder(spriteSheet.getSprite(0, 6), 12)
 						.withScale(3)
 						.withBounds(1, 1, 10, 10)
 						.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 7), 30)
+				new FrameBuilder(spriteSheet.getSprite(0, 7), 12)
 						.withScale(3)
 						.withBounds(1, 1, 10, 10)
 						.build()
