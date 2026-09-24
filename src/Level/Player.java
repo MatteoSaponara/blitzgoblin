@@ -60,7 +60,8 @@ public abstract class Player extends GameObject
     protected boolean attackButtonLocked = false;
     protected int attackTimer = 0;
     protected final int ATTACK_DURATION = 15;
-    protected final int ATTACK_WIDTH = 35;
+    protected final int ATTACK_WIDTH = 45;
+    protected final int ATTACK_OVERLAP = 6; // how far the attack box pushes into the player's sprite bounds
     protected Rectangle attackBox;
 
     // Aiming system variables
@@ -360,7 +361,14 @@ public abstract class Player extends GameObject
     protected void updateAttackBoxLocation()
     {
         Rectangle bounds = getBounds();
-        float attackX = facingDirection == Direction.RIGHT ? bounds.getX2() + 1 : bounds.getX1() - ATTACK_WIDTH;
+
+        // anchor off the full sprite frame (getX()/getWidth()) rather than the narrower hurtbox (bounds).
+        // the hurtbox isn't re-centered when the sprite is flipped for facing left, so using it here would put
+        // the attack box a different distance from the player depending on facing direction. the full sprite
+        // frame is always the same size and position on both sides, so this keeps the overlap symmetrical.
+        float attackX = facingDirection == Direction.RIGHT
+                ? getX() + getWidth() - ATTACK_OVERLAP
+                : getX() + ATTACK_OVERLAP - ATTACK_WIDTH;
         float attackY = bounds.getY1();
 
         if (attackBox == null)
@@ -392,7 +400,12 @@ public abstract class Player extends GameObject
     // anything extra the player should do based on interactions can be handled here
     protected void handlePlayerAnimation()
     {
-        if (playerState == PlayerState.STANDING)
+        // if player is currently doing a mouse-triggered melee attack, the attack animation takes priority over
+        // whatever movement animation would otherwise play (standing, walking, etc.)
+        if (isAttacking)
+        {
+            this.currentAnimationName = facingDirection == Direction.RIGHT ? "ATTACK_RIGHT" : "ATTACK_LEFT";
+        } else if (playerState == PlayerState.STANDING)
         {
             // sets animation to a STAND animation based on which way player is facing
             this.currentAnimationName = facingDirection == Direction.RIGHT ? "STAND_RIGHT" : "STAND_LEFT";
@@ -611,18 +624,7 @@ public abstract class Player extends GameObject
     public void draw(GraphicsHandler graphicsHandler)
     {
         super.draw(graphicsHandler);
-        if (isAttacking && attackBox != null)
-        {
-            float cameraX = map != null ? map.getCamera().getX() : 0;
-            float cameraY = map != null ? map.getCamera().getY() : 0;
-            graphicsHandler.drawFilledRectangle(
-                    Math.round(attackBox.getX() - cameraX),
-                    Math.round(attackBox.getY() - cameraY),
-                    attackBox.getWidth(),
-                    attackBox.getHeight(),
-                    new Color(255, 0, 0, 128)
-            );
-        }
+        // attack box is intentionally not drawn -- it's only used for collision detection against enemies
     }
 
     protected void updateAiming() {
