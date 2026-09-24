@@ -10,7 +10,6 @@ import GameObject.Rectangle;
 import GameObject.SpriteSheet;
 import Utils.AirGroundState;
 import Utils.Direction;
-
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -479,6 +478,11 @@ public abstract class Player extends GameObject
             }
         }
     }
+    public void killPlayer() {
+        if (!isInvincible) {
+            levelState = LevelState.PLAYER_DEAD;
+        }
+    }
 
     // other entities can call this to tell the player they beat a level
     public void completeLevel()
@@ -539,7 +543,7 @@ public abstract class Player extends GameObject
         {
             if (map.getCamera().containsDraw(this))
             {
-                moveY(3);
+                moveY(6); // changed to 6. too slow
             } else
             {
                 // tell all player listeners that the player has died in the level

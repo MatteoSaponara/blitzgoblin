@@ -1,12 +1,25 @@
 package Level;
 
 import GameObject.GameObject;
+import GameObject.Rectangle;
 import Utils.Direction;
 import Utils.Point;
 
 // This class has methods to check if a game object has collided with a map entity (map tile, enhanced map tile, npc, or trigger if applicable)
 // it is used by the game object class to determine if and where a collision occurred
 public class MapCollisionHandler {
+
+    //Damage tile (spike) logic
+    private static boolean ifPlayerTouchedDamageTile(GameObject gameObjectIN, MapTile tl){
+        
+        if(gameObjectIN instanceof Player
+            && (tl.getTileType() == TileType.SPIKE_UP || tl.getTileType() == TileType.SPIKE_DOWN)) {
+            Player plr = (Player) gameObjectIN;
+            plr.killPlayer();
+            return true;
+        }
+        return false;
+    }
 
     // x axis collision logic
     // determines if a collision occurred with another entity on the map, and calculates where gameobject should be placed to resolve the collision
@@ -28,6 +41,12 @@ public class MapCollisionHandler {
                     float boundsDifference = gameObject.getBounds().getX1() - gameObject.getX();
                     adjustedPositionX = (mapTile.getBounds().getX2() + 1) - boundsDifference;
                 }
+
+                //player spike collision check
+                if(ifPlayerTouchedDamageTile(gameObject, mapTile)) {
+                    return new MapCollisionCheckResult(null, null);
+                }
+
                 return new MapCollisionCheckResult(new Point(adjustedPositionX, gameObject.getY()), entityCollidedWith);
 
             }
@@ -73,6 +92,12 @@ public class MapCollisionHandler {
                     float boundsDifference = gameObject.getBounds().getY1() - gameObject.getY();
                     adjustedPositionY = (mapTile.getBounds().getY2() + 1) - boundsDifference;
                 }
+                
+                //player spike collision check
+                if(ifPlayerTouchedDamageTile(gameObject, mapTile)) {
+                    return new MapCollisionCheckResult(null, null);
+                }
+
                 return new MapCollisionCheckResult(new Point(gameObject.getX(), adjustedPositionY), entityCollidedWith);
             }
         }
@@ -116,6 +141,18 @@ public class MapCollisionHandler {
                 case SLOPE:
                     // slopes have special collision logic that is handled elsewhere -- they are technically not considered "solid" by the game
                     return false;
+                case SPIKE_UP:
+                    return gameObject.intersects(new Rectangle(
+                        Math.round(mapTile.getX()+(mapTile.getWidth()/2) - mapTile.getWidth()/4),
+                        Math.round(mapTile.getY()+(mapTile.getHeight()/2)), 
+                        mapTile.getWidth()/2,
+                        mapTile.getHeight()/2));
+                case SPIKE_DOWN:
+                    return gameObject.intersects(new Rectangle(
+                        Math.round(mapTile.getX()+(mapTile.getWidth()/2) - mapTile.getWidth()/4),
+                        Math.round(mapTile.getY()), 
+                        mapTile.getWidth()/2,
+                        mapTile.getHeight()/2));
                 default:
                     return false;
             }

@@ -5,14 +5,13 @@ import Engine.ImageLoader;
 import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
+import Interfaces.IDamagable;
 import Level.Enemy;
 import Level.MapEntity;
 import Level.Player;
 import Utils.AirGroundState;
 import Utils.Direction;
 import Utils.Point;
-import Interfaces.IDamagable;
-
 import java.util.HashMap;
 
 public class GoblinEnemy extends Enemy implements IDamagable{
@@ -29,7 +28,7 @@ public class GoblinEnemy extends Enemy implements IDamagable{
 
     public GoblinEnemy (Point location, Direction facingDirection) {
         // Change BugEnemy.png to GoblinEnemy.png when the sprite is ready
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("BugEnemy.png"), 24, 15), "WALK_LEFT");
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("enemygoblin.png"), 48, 52), "WALK_LEFT");
         this.startFacingDirection = facingDirection;
         this.initialize();
     }
@@ -122,27 +121,54 @@ public class GoblinEnemy extends Enemy implements IDamagable{
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
         return new HashMap<String, Frame[]>() {{
-            put("WALK_LEFT", new Frame[] {
+            put("WALK_RIGHT", new Frame[] {
                     new FrameBuilder(spriteSheet.getSprite(0, 0), 8)
-                            .withScale(2)
-                            .withBounds(6, 6, 12, 7)
+                            .withScale(1.5f)
+                            .withBounds(0, 0, 48, 52)
                             .build(),
                     new FrameBuilder(spriteSheet.getSprite(0, 1), 8)
-                            .withScale(2)
-                            .withBounds(6, 6, 12, 7)
+                            .withScale(1.5f)
+                            .withBounds(0, 0, 48, 52)
+                            .build(),
+                    new FrameBuilder(spriteSheet.getSprite(0, 2), 8)
+                            .withScale(1.5f)
+                            .withBounds(0, 0, 48, 52)
+                            .build(),
+                    new FrameBuilder(spriteSheet.getSprite(0, 3), 8)
+                            .withScale(1.5f)
+                            .withBounds(0, 0, 48, 52)
+                            .build(),
+                    new FrameBuilder(spriteSheet.getSprite(0, 4), 8)
+                            .withScale(1.5f)
+                            .withBounds(0, 0, 48, 52)
                             .build()
             });
 
-            put("WALK_RIGHT", new Frame[] {
+            put("WALK_LEFT", new Frame[] {
                     new FrameBuilder(spriteSheet.getSprite(0, 0), 8)
-                            .withScale(2)
+                            .withScale(1.5f)
                             .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(6, 6, 12, 7)
+                            .withBounds(0, 0, 48, 52)
                             .build(),
                     new FrameBuilder(spriteSheet.getSprite(0, 1), 8)
-                            .withScale(2)
+                            .withScale(1.5f)
                             .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(6, 6, 12, 7)
+                            .withBounds(0, 0, 48, 52)
+                            .build(),
+                    new FrameBuilder(spriteSheet.getSprite(0, 2), 8)
+                            .withScale(1.5f)
+                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
+                            .withBounds(0, 0, 48, 52)
+                            .build(),
+                    new FrameBuilder(spriteSheet.getSprite(0, 3), 8)
+                            .withScale(1.5f)
+                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
+                            .withBounds(0, 0, 48, 52)
+                            .build(),
+                    new FrameBuilder(spriteSheet.getSprite(0, 4), 8)
+                            .withScale(1.5f)
+                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
+                            .withBounds(0, 0, 48, 52)
                             .build()
             });
         }};

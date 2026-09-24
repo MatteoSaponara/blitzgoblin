@@ -3,14 +3,11 @@ package Enemies;
 import Builders.FrameBuilder;
 import Engine.ImageLoader;
 import GameObject.Frame;
-import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
-import Level.MapEntity;
+import Level.Enemy;
 import Level.Player;
 import Utils.Direction;
 import Utils.Point;
-import Level.Enemy;
-
 import java.util.HashMap;
 
 public class Turret extends Enemy{
@@ -62,7 +59,7 @@ public class Turret extends Enemy{
             int fireballY = Math.round(getY()) + 4;
 
             // create Fireball enemy
-            Fireball fireball = new Fireball(new Point(fireballX, fireballY), movementSpeed, 60);
+            Fireball fireball = new Fireball(new Point(fireballX, fireballY), movementSpeed, 180);
 
             // add fireball enemy to the map for it to spawn in the level
             map.addEnemy(fireball);
@@ -82,7 +79,7 @@ public class Turret extends Enemy{
     
         put("TURRET", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(0, 0), 14)
-                            .withScale(3)
+                            .withScale(2)
                             .withBounds(4, 2, 5, 13)
                             .build(),
         });

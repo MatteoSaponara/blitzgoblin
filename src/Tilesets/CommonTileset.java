@@ -8,7 +8,6 @@ import GameObject.ImageEffect;
 import Level.TileType;
 import Level.Tileset;
 import Utils.SlopeTileLayoutUtils;
-
 import java.util.ArrayList;
 
 // This class represents a "common" tileset of standard tiles defined in the CommonTileset.png file
@@ -261,6 +260,23 @@ public class CommonTileset extends Tileset {
                 .withTileLayout(SlopeTileLayoutUtils.createTopLeft30SlopeLayout(spriteWidth, (int) tileScale));
 
         mapTiles.add(leftStairsTopTile);
+        
+        // spikee
+        Frame spikeUpFrame = new FrameBuilder(getSubImage(5, 0))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder spikeUpTile = new MapTileBuilder(spikeUpFrame)
+                .withTileType(TileType.SPIKE_UP);
+        Frame spikeDownFrame = new FrameBuilder(getSubImage(5, 1))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder spikeDownTile = new MapTileBuilder(spikeDownFrame)
+                .withTileType(TileType.SPIKE_DOWN);
+
+        mapTiles.add(spikeUpTile);
+        mapTiles.add(spikeDownTile);
 
         return mapTiles;
     }

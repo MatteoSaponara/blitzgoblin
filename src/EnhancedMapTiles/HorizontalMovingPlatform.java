@@ -9,7 +9,6 @@ import Level.TileType;
 import Utils.AirGroundState;
 import Utils.Direction;
 import Utils.Point;
-
 import java.awt.image.BufferedImage;
 
 // This class is for a horizontal moving platform
@@ -26,6 +25,14 @@ public class HorizontalMovingPlatform extends EnhancedMapTile {
         super(startLocation.x, startLocation.y, new FrameBuilder(image).withBounds(bounds).withScale(scale).build(), tileType);
         this.startLocation = startLocation;
         this.endLocation = endLocation;
+        this.startDirection = startDirection;
+        this.initialize();
+    }
+    public HorizontalMovingPlatform(BufferedImage image, Point startLocation, Point endLocation, float movementSpeed, TileType tileType, float scale, Rectangle bounds, Direction startDirection) {
+        super(startLocation.x, startLocation.y, new FrameBuilder(image).withBounds(bounds).withScale(scale).build(), tileType);
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
+        this.movementSpeed = movementSpeed;
         this.startDirection = startDirection;
         this.initialize();
     }
