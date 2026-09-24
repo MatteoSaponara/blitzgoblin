@@ -6,28 +6,27 @@ import java.awt.image.*;
 // This class has some useful image methods that are used when loading in images to the game
 public class ImageUtils {
 	// changes desired color to be transparent (the chosen color will not be seen in game when drawn)
+	// also preserves any real transparency (alpha channel) already present in the source image,
+	// so images can use either a magic transparent color, an actual alpha channel, or both
 	public static BufferedImage transformColorToTransparency(BufferedImage image, Color transparentColor) {
 		BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = newImage.createGraphics();
-		int transparentColorIndex = transparentColor.getRGB();
+
+		// make sure the color being matched against is treated as fully opaque, since that's how a "magic" transparent color is normally specified
+		int transparentColorRGB = transparentColor.getRGB() | 0xFF000000;
 
 		// iterates through each pixel of the image
-		// if pixel is equal to the transparent color, changes that pixel to be fully transparent
+		// if pixel matches the transparent color, that pixel becomes fully transparent
+		// otherwise, the pixel (including any transparency it already has) is copied over as-is
 		for (int i = 0; i < image.getWidth(); i++) {
 			for (int j = 0; j < image.getHeight(); j++) {
-				int rgb = image.getRGB(i, j);
-				if (rgb == transparentColorIndex) {
-					g.setColor(new Color(0, true));
-					g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
+				int argb = image.getRGB(i, j);
+				if (argb == transparentColorRGB) {
+					newImage.setRGB(i, j, 0x00000000);
+				} else {
+					newImage.setRGB(i, j, argb);
 				}
-				else {
-					g.setColor(new Color(rgb, false));
-					g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
-				}
-				g.drawRect(i, j, 1, 1);
 			}
 		}
-		g.dispose();
 		return newImage;
 	}
 
