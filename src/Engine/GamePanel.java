@@ -57,6 +57,9 @@ public class GamePanel extends JPanel {
 		// will continually update the game's logic and repaint the game's graphics
 		GameLoop gameLoop = new GameLoop(this);
 		gameLoopProcess = new Thread(gameLoop.getGameLoopProcess());
+
+		this.addMouseListener(Mouse.getMouseListener());
+		this.addMouseMotionListener(Mouse.getMouseMotionListener());
 	}
 
 	// this is called later after instantiation, and will initialize screenManager
