@@ -80,8 +80,8 @@ public class GraphicsHandler {
         for (int d = 0; d < outSize; d++) {
             float u = (d + 0.5f) * 2f / Config.PIXEL_SCALE - 0.5f;
             int fl = (int) Math.floor(u);
-            int a = Math.min(Math.max(fl, 0), last) >> 1;
-            int b = Math.min(Math.max(fl + 1, 0), last) >> 1;
+            int a = Math.clamp(fl, 0, last) >> 1;
+            int b = Math.clamp(fl + 1, 0, last) >> 1;
             i0[d] = a;
             i1[d] = b;
             weight[d] = a == b ? 0 : Math.round((u - fl) * 256f);
