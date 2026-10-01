@@ -2,6 +2,7 @@ package Tilesets;
 
 import Builders.FrameBuilder;
 import Builders.MapTileBuilder;
+import Engine.Config;
 import Engine.ImageLoader;
 import GameObject.Frame;
 import GameObject.ImageEffect;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class CommonTileset extends Tileset {
 
     public CommonTileset() {
-        super(ImageLoader.load("CommonTileset.png"), 16, 16, 3);
+        super(ImageLoader.load("CommonTileset.png"), Config.TILE_ART_SIZE, Config.TILE_ART_SIZE, Config.TILE_SCALE);
     }
 
     @Override
@@ -224,7 +225,7 @@ public class CommonTileset extends Tileset {
 
         MapTileBuilder leftSlopeTile = new MapTileBuilder(leftSlopeFrame)
                 .withTileType(TileType.SLOPE)
-                .withTileLayout(SlopeTileLayoutUtils.createLeft45SlopeLayout(spriteWidth, (int) tileScale));
+                .withTileLayout(SlopeTileLayoutUtils.createLeft45SlopeLayout(getScaledSpriteWidth(), 1));
 
         mapTiles.add(leftSlopeTile);
 
@@ -235,7 +236,7 @@ public class CommonTileset extends Tileset {
 
         MapTileBuilder rightSlopeTile = new MapTileBuilder(rightSlopeFrame)
                 .withTileType(TileType.SLOPE)
-                .withTileLayout(SlopeTileLayoutUtils.createRight45SlopeLayout(spriteWidth, (int) tileScale));
+                .withTileLayout(SlopeTileLayoutUtils.createRight45SlopeLayout(getScaledSpriteWidth(), 1));
 
         mapTiles.add(rightSlopeTile);
 
@@ -246,7 +247,7 @@ public class CommonTileset extends Tileset {
 
         MapTileBuilder leftStairsBottomTile = new MapTileBuilder(leftStairsBottomFrame)
                 .withTileType(TileType.SLOPE)
-                .withTileLayout(SlopeTileLayoutUtils.createBottomLeft30SlopeLayout(spriteWidth, (int) tileScale));
+                .withTileLayout(SlopeTileLayoutUtils.createBottomLeft30SlopeLayout(getScaledSpriteWidth(), 1));
 
         mapTiles.add(leftStairsBottomTile);
 
@@ -257,7 +258,7 @@ public class CommonTileset extends Tileset {
 
         MapTileBuilder leftStairsTopTile = new MapTileBuilder(leftStairsTopFrame)
                 .withTileType(TileType.SLOPE)
-                .withTileLayout(SlopeTileLayoutUtils.createTopLeft30SlopeLayout(spriteWidth, (int) tileScale));
+                .withTileLayout(SlopeTileLayoutUtils.createTopLeft30SlopeLayout(getScaledSpriteWidth(), 1));
 
         mapTiles.add(leftStairsTopTile);
         

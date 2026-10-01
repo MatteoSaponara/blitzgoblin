@@ -34,6 +34,9 @@ public class GameObject extends AnimatedSprite {
     // the map instance this game object "belongs" to.
     protected Map map;
 
+    // true for map tiles: stretch between grid positions of the edges so neighbours never gap or overlap
+    protected boolean sharedEdgeDraw = false;
+
 
     public GameObject(SpriteSheet spriteSheet, float x, float y, String startingAnimation) {
         super(spriteSheet, x, y, startingAnimation);
@@ -318,7 +321,7 @@ public class GameObject extends AnimatedSprite {
 
     @Override
     public void draw(GraphicsHandler graphicsHandler) {
-        if (map != null) {
+        if (map != null && !graphicsHandler.isPixelGridEnabled()) {
             graphicsHandler.drawImage(
                 currentFrame.getImage(),
                 Math.round(getCalibratedXLocation()),
@@ -326,6 +329,29 @@ public class GameObject extends AnimatedSprite {
                 currentFrame.getWidth(),
                 currentFrame.getHeight(),
                 currentFrame.getImageEffect());
+        } else if (map != null) {
+            // position relative to the exact camera, then snapped to the pixel grid
+            float relX = Math.round(x) - map.getCamera().getX();
+            float relY = Math.round(y) - map.getCamera().getY();
+            int worldW = currentFrame.getWidth();
+            int worldH = currentFrame.getHeight();
+
+            int px1, py1, px2, py2;
+            if (sharedEdgeDraw) {
+                px1 = GraphicsHandler.toPixelGrid(relX);
+                py1 = GraphicsHandler.toPixelGrid(relY);
+                px2 = GraphicsHandler.toPixelGrid(relX + worldW);
+                py2 = GraphicsHandler.toPixelGrid(relY + worldH);
+            } else {
+                int pw = Math.max(GraphicsHandler.toPixelGrid(worldW), 1);
+                int ph = Math.max(GraphicsHandler.toPixelGrid(worldH), 1);
+                px1 = GraphicsHandler.toPixelGrid(relX);
+                // anchored by the bottom edge so sprites line up with tile tops
+                py2 = GraphicsHandler.toPixelGrid(relY + worldH);
+                py1 = py2 - ph;
+                px2 = px1 + pw;
+            }
+            graphicsHandler.drawPixelImage(currentFrame.getImage(), px1, py1, px2, py2, currentFrame.getImageEffect());
         } else {
             super.draw(graphicsHandler);
         }

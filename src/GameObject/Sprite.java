@@ -85,7 +85,14 @@ public class Sprite extends Rectangle {
 	
 	@Override
 	public void draw(GraphicsHandler graphicsHandler) {
-		graphicsHandler.drawImage(image, Math.round(getX()), Math.round(getY()), getWidth(), getHeight(), imageEffect);
+		if (!graphicsHandler.isPixelGridEnabled()) {
+			graphicsHandler.drawImage(image, Math.round(getX()), Math.round(getY()), getWidth(), getHeight(), imageEffect);
+			return;
+		}
+		int px = GraphicsHandler.toPixelGrid(Math.round(getX()));
+		int py = GraphicsHandler.toPixelGrid(Math.round(getY()));
+		graphicsHandler.drawPixelImage(image, px, py,
+				px + GraphicsHandler.toPixelGrid(getWidth()), py + GraphicsHandler.toPixelGrid(getHeight()), imageEffect);
 	}
 
 	public void drawBounds(GraphicsHandler graphicsHandler, Color color) {

@@ -20,6 +20,9 @@ public class TilePicker extends JPanel {
 
     private Tileset tileset;
     private GraphicsHandler graphicsHandler = new GraphicsHandler();
+    {
+        graphicsHandler.setPixelGridEnabled(false);
+    }
     private HashMap<Integer, MapTile> mapTiles = new HashMap<>();
     private int selectedTileIndex = 0;
     private SelectedTileIndexHolder selectedTileIndexHolder;

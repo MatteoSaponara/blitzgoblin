@@ -14,6 +14,10 @@ public class MapTile extends MapEntity {
 
     private int tileIndex;
 
+    {
+        sharedEdgeDraw = true;
+    }
+
     public MapTile(float x, float y, HashMap<String, Frame[]> animations, TileType tileType, int tileIndex) {
         super(x, y, animations, "DEFAULT");
         this.tileType = tileType;

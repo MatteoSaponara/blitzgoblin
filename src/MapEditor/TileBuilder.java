@@ -15,6 +15,9 @@ public class TileBuilder extends JPanel {
     private MapTile hoveredMapTile;
     private SelectedTileIndexHolder controlPanelHolder;
     private GraphicsHandler graphicsHandler = new GraphicsHandler();
+    {
+        graphicsHandler.setPixelGridEnabled(false);
+    }
     private JLabel hoveredTileIndexLabel;
     private boolean showNPCs;
     private boolean showEnhancedMapTiles;

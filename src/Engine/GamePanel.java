@@ -131,6 +131,8 @@ public class GamePanel extends JPanel {
 		if (showFPS) {
 			fpsDisplayLabel.draw(graphicsHandler);
 		}
+
+		graphicsHandler.flushPixelLayer();
 	}
 
 	@Override
