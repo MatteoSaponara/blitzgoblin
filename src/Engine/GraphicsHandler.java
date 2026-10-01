@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 
 /*
@@ -17,7 +18,10 @@ public class GraphicsHandler {
 
     private BufferedImage pixelBuffer;
     private Graphics2D pixelGraphics;
-    private BufferedImage upscaledBuffer;
+    private BufferedImage outBuffer;
+    private int[] pixelData;
+    private int[] outData;
+    private int[] xI0, xI1, xW, yI0, yI1, yW;
     private boolean pixelLayerDirty = false;
     private boolean pixelGridEnabled = true;
 
@@ -46,17 +50,50 @@ public class GraphicsHandler {
     }
 
     private void ensurePixelBuffer() {
-        int width = (int) Math.ceil(ScreenManager.getScreenWidth() / Config.PIXEL_SCALE) + 1;
-        int height = (int) Math.ceil(ScreenManager.getScreenHeight() / Config.PIXEL_SCALE) + 1;
-        if (pixelBuffer == null || pixelBuffer.getWidth() != width || pixelBuffer.getHeight() != height) {
+        int outW = ScreenManager.getScreenWidth();
+        int outH = ScreenManager.getScreenHeight();
+        int width = (int) Math.ceil(outW / Config.PIXEL_SCALE) + 1;
+        int height = (int) Math.ceil(outH / Config.PIXEL_SCALE) + 1;
+        if (pixelBuffer == null || pixelBuffer.getWidth() != width || pixelBuffer.getHeight() != height
+                || outBuffer.getWidth() != outW || outBuffer.getHeight() != outH) {
             if (pixelGraphics != null) {
                 pixelGraphics.dispose();
             }
             pixelBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
             pixelGraphics = pixelBuffer.createGraphics();
             pixelGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-            upscaledBuffer = new BufferedImage(width * 2, height * 2, BufferedImage.TYPE_INT_ARGB_PRE);
+            pixelData = ((DataBufferInt) pixelBuffer.getRaster().getDataBuffer()).getData();
+            outBuffer = new BufferedImage(outW, outH, BufferedImage.TYPE_INT_ARGB_PRE);
+            outData = ((DataBufferInt) outBuffer.getRaster().getDataBuffer()).getData();
+
+            xI0 = new int[outW]; xI1 = new int[outW]; xW = new int[outW];
+            yI0 = new int[outH]; yI1 = new int[outH]; yW = new int[outH];
+            buildSampleTable(outW, width, xI0, xI1, xW);
+            buildSampleTable(outH, height, yI0, yI1, yW);
         }
+    }
+
+    // for each output pixel: the two art pixels to blend and the blend weight (0-256).
+    // equals a 2x nearest neighbour enlargement followed by bilinear sampling, so only pixels on art pixel borders blend.
+    private static void buildSampleTable(int outSize, int artSize, int[] i0, int[] i1, int[] weight) {
+        int last = artSize * 2 - 1;
+        for (int d = 0; d < outSize; d++) {
+            float u = (d + 0.5f) * 2f / Config.PIXEL_SCALE - 0.5f;
+            int fl = (int) Math.floor(u);
+            int a = Math.min(Math.max(fl, 0), last) >> 1;
+            int b = Math.min(Math.max(fl + 1, 0), last) >> 1;
+            i0[d] = a;
+            i1[d] = b;
+            weight[d] = a == b ? 0 : Math.round((u - fl) * 256f);
+        }
+    }
+
+    private static int lerp(int p, int q, int w) {
+        if (w == 0 || p == q) return p;
+        int iw = 256 - w;
+        int rb = (((p & 0xFF00FF) * iw + (q & 0xFF00FF) * w) >>> 8) & 0xFF00FF;
+        int ag = (((p >>> 8) & 0xFF00FF) * iw + ((q >>> 8) & 0xFF00FF) * w) & 0xFF00FF00;
+        return rb | ag;
     }
 
     // draws to the pixel grid; destination is (x1, y1) to (x2, y2) in grid pixels
@@ -91,25 +128,29 @@ public class GraphicsHandler {
         }
         pixelLayerDirty = false;
 
-        // 2x nearest neighbour
-        Graphics2D up = upscaledBuffer.createGraphics();
-        up.setComposite(AlphaComposite.Src);
-        up.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        up.drawImage(pixelBuffer, 0, 0, upscaledBuffer.getWidth(), upscaledBuffer.getHeight(), null);
-        up.dispose();
-
-        // smooth resize to final size
-        Object oldInterpolation = g.getRenderingHint(RenderingHints.KEY_INTERPOLATION);
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        float finalScale = Config.PIXEL_SCALE / 2f;
-        g.drawImage(upscaledBuffer, AffineTransform.getScaleInstance(finalScale, finalScale), null);
-        if (oldInterpolation != null) {
-            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, oldInterpolation);
+        int outW = outBuffer.getWidth();
+        int outH = outBuffer.getHeight();
+        int srcW = pixelBuffer.getWidth();
+        for (int y = 0; y < outH; y++) {
+            int row0 = yI0[y] * srcW;
+            int row1 = yI1[y] * srcW;
+            int wy = yW[y];
+            int outRow = y * outW;
+            for (int x = 0; x < outW; x++) {
+                int x0 = xI0[x];
+                int wx = xW[x];
+                int top = lerp(pixelData[row0 + x0], pixelData[row0 + xI1[x]], wx);
+                if (wy == 0) {
+                    outData[outRow + x] = top;
+                } else {
+                    int bottom = lerp(pixelData[row1 + x0], pixelData[row1 + xI1[x]], wx);
+                    outData[outRow + x] = lerp(top, bottom, wy);
+                }
+            }
         }
+        g.drawImage(outBuffer, 0, 0, null);
 
-        pixelGraphics.setComposite(AlphaComposite.Clear);
-        pixelGraphics.fillRect(0, 0, pixelBuffer.getWidth(), pixelBuffer.getHeight());
-        pixelGraphics.setComposite(AlphaComposite.SrcOver);
+        java.util.Arrays.fill(pixelData, 0);
     }
 
     public void drawImage(BufferedImage image, int x, int y) {
