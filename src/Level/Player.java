@@ -69,6 +69,11 @@ public abstract class Player extends GameObject
     protected double mousePosX = 0;
     protected double mousePosY = 0;
 
+    // Ammo Unlocks
+    protected boolean hasSingleAmmo = false;
+    protected boolean hasTwelveAmmo = false;
+    protected boolean hasCannonAmmo = false;
+
     public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName)
     {
         super(spriteSheet, x, y, startingAnimationName);
@@ -643,6 +648,19 @@ public abstract class Player extends GameObject
 
         // Calculate angle from player to mouse cursor
         aimAngle = Mouse.getAngleTo(playerScreenX, playerScreenY);
+    }
+
+    // Ammo unlock methods
+    public void unlockSingleAmmo() {
+        hasSingleAmmo = true;
+    }
+
+    public void unlockTwelveAmmo() {
+        hasTwelveAmmo = true;
+    }
+
+    public void unlockCannonAmmo() {
+        hasCannonAmmo = true;
     }
 
     // Uncomment this to have game draw player's bounds to make it easier to visualize
