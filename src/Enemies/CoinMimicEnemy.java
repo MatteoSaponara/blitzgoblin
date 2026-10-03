@@ -19,8 +19,12 @@ import java.util.HashMap;
 public class CoinMimicEnemy extends Enemy implements IDamagable {
     private float flySpeed = .5f; //Speed of the CoinMimic when the player is in its aggro range
     private float aggroRadius = 70; // 35 x 35 pixels is the size of a tile, so 70 pixels is about 2 tiles away from the player
-    private boolean chasing = false;
     private int health = 1;
+    
+    // timer is used to determine how long coin mimic freezes in place to transform into an enemy before chasing the player
+    protected int transformTimer;
+
+    protected CoinMimicState coinMimicState;
 
     public CoinMimicEnemy(Point location, Direction facingDirection) {
         super(location.x, location.y, new SpriteSheet(ImageLoader.load("enemycoinmimic.png"), 48, 52), "WALK_LEFT");
@@ -30,7 +34,9 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
     @Override
     public void initialize() {
         super.initialize();
+        coinMimicState = CoinMimicState.IDLE;
         currentAnimationName = "IDLE";
+        transformTimer = 60; // 60 frames = 1 second
     }
 
     @Override
@@ -38,12 +44,21 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
         float moveAmountX = 0;
         float moveAmountY = 0;
 
-        if (inRange(player)) {
-            chasing = true;
+        if (transformTimer == 0 && coinMimicState == CoinMimicState.TRANSFORM) {
+            coinMimicState = CoinMimicState.CHASE;
+            currentAnimationName = "CHASE";
+        }
+
+        if (inRange(player) && coinMimicState == CoinMimicState.IDLE) {
+            coinMimicState = CoinMimicState.TRANSFORM;
             currentAnimationName = "TRANSFORM";
         }
 
-        if (chasing) {
+        if (coinMimicState == CoinMimicState.TRANSFORM) {
+            transformTimer--;
+        }
+
+        if (coinMimicState == CoinMimicState.CHASE) {
             if (player.getX() > this.getX()) {
                 moveAmountX += flySpeed;
             } else if (player.getX() < this.getX()) {
@@ -138,5 +153,9 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
     @Override 
     public void touchedPlayer(Player player) {
         player.killPlayer();
+    }
+
+    public enum CoinMimicState {
+        IDLE, TRANSFORM, CHASE
     }
 }
