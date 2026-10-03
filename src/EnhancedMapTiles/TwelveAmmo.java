@@ -12,17 +12,18 @@ import Utils.Point;
 
 import java.util.HashMap;
 
-public class SingleAmmo extends Ammo {
+public class TwelveAmmo extends Ammo {
 
-    public SingleAmmo(Point location) {
-        super(location, "SingleAmmo.png");
+    public TwelveAmmo(Point location) {
+        super(location, "TwelveAmmo.png");
     }
     
     @Override
     public void update(Player player)
     {
-        player.unlockSingleAmmo();
+        player.unlockTwelveAmmo();
 
         super.update(player);
     }
+    
 }
