@@ -30,6 +30,9 @@ public class GamePanel extends JPanel {
 	private int currentFPS;
 	private boolean doPaint;
 
+	// update and paint run on different threads; this keeps a frame from being drawn halfway through an update
+	private final Object stateLock = new Object();
+
 	// The JPanel and various important class instances are setup here
 	public GamePanel() {
 		super();
@@ -90,8 +93,10 @@ public class GamePanel extends JPanel {
 		updatePauseState();
 		updateShowFPSState();
 
-		if (!isGamePaused) {
-			screenManager.update();
+		synchronized (stateLock) {
+			if (!isGamePaused) {
+				screenManager.update();
+			}
 		}
 	}
 
@@ -141,8 +146,11 @@ public class GamePanel extends JPanel {
 		if (doPaint) {
 			// every repaint call will schedule this method to be called
 			// when called, it will setup the graphics handler and then call this class's draw method
-			graphicsHandler.setGraphics((Graphics2D) g);
-			draw();
+			synchronized (stateLock) {
+				graphicsHandler.setGraphics((Graphics2D) g);
+				draw();
+			}
+			Toolkit.getDefaultToolkit().sync();
 		}
 	}
 }
