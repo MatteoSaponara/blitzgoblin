@@ -300,10 +300,20 @@ public abstract class Player extends GameObject
             // allows you to move left and right while in the air
             if (Keyboard.isKeyDown(MOVE_LEFT_KEY))
             {
-                moveAmountX -= walkSpeed;
-            } else if (Keyboard.isKeyDown(MOVE_RIGHT_KEY))
+                velocityX -= acceleration;
+                if (velocityX < -walkSpeed)
+                {
+                    velocityX = -walkSpeed;
+                }
+            }
+
+            else if (Keyboard.isKeyDown(MOVE_RIGHT_KEY))
             {
-                moveAmountX += walkSpeed;
+                velocityX += acceleration;
+                if (velocityX > walkSpeed)
+                {
+                    velocityX = walkSpeed;
+                }
             }
 
             // if player is falling, increases momentum as player falls so it falls faster over time
