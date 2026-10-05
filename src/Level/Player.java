@@ -77,6 +77,11 @@ public abstract class Player extends GameObject
     protected boolean hasTwelveAmmo = false;
     protected boolean hasCannonAmmo = false;
 
+    // Recoil Forces By Ammo
+    protected float singleAmmoRecoil = 0.3f;
+    protected float twelveAmmoRecoil = 7.0f;
+    protected float cannonAmmoRecoil = 16.0f;
+
     public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName)
     {
         super(spriteSheet, x, y, startingAnimationName);
@@ -700,6 +705,30 @@ public abstract class Player extends GameObject
 
     public void unlockCannonAmmo() {
         hasCannonAmmo = true;
+    }
+
+    public void applyRecoil(float recoilForce)
+    {
+        // Angle Calculation
+        double recoilAngle = aimAngle + Math.PI;
+
+        // Polar Vector Calculations
+        float recoilX = (float) Math.cos(recoilAngle) * recoilForce;
+        float recoilY = (float) Math.sin(recoilAngle) * recoilForce;
+
+        this.velocityX += recoilX;
+
+        if (recoilY < 0)
+        {
+            this.airGroundState = AirGroundState.AIR;
+            this.playerState = PlayerState.JUMPING;
+            this.jumpForce = Math.abs(recoilY);
+        }
+
+        else
+        {
+            this.moveAmountY += recoilY;
+        }
     }
 
     // Uncomment this to have game draw player's bounds to make it easier to visualize
