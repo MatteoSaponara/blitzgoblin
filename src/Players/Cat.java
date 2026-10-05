@@ -39,6 +39,14 @@ public class Cat extends Player {
         walkSpeed = 2.3f; //Max Speed Cap
         acceleration = 0.4f; //Rate of acceleration per frame
         drag = 0.82f; //Acceleration decrease calculation factor.
+
+        /*
+        // Recoil Tuning Parameters
+        singleAmmoRecoil = 3.5f;
+        twelveAmmoRecoil = 8.0f;
+        cannonAmmoRecoil = 18.0f;
+
+        */
     }
 
     public void update() {

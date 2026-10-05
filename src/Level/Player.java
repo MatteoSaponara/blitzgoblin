@@ -731,6 +731,22 @@ public abstract class Player extends GameObject
         }
     }
 
+    /*
+    public void shootWeapon()
+    {
+        switch(ammoTypeSelected)
+        {
+            case 1:
+                applyRecoil(singleAmmoRecoil);
+                break;
+            case 2:
+                applyRecoil(twelveAmmoRecoil);
+                break;
+            case 3:
+                applyRecoil(cannonAmmoRecoil);
+        }
+    }
+
     // Uncomment this to have game draw player's bounds to make it easier to visualize
     /*
     public void drawBoundsForDebug(GraphicsHandler graphicsHandler) {
