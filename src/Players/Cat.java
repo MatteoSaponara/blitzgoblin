@@ -33,8 +33,12 @@ public class Cat extends Player {
         terminalVelocityY = 6f;
         jumpHeight = 14.5f;
         jumpDegrade = .5f;
-        walkSpeed = 2.3f;
         momentumYIncrease = .5f;
+
+        // velocity and Momentum Implementation for Goblin Character
+        walkSpeed = 2.3f; //Max Speed Cap
+        acceleration = 0.4f; //Rate of acceleration per frame
+        drag = 0.82f; //Acceleration decrease calculation factor.
     }
 
     public void update() {

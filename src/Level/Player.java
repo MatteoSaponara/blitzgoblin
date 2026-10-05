@@ -483,6 +483,10 @@ public abstract class Player extends GameObject
     @Override
     public void onEndCollisionCheckX(boolean hasCollided, Direction direction, MapEntity entityCollidedWith)
     {
+        if(hasCollided)
+        {
+            velocityX = 0;
+        }
     }
 
     @Override
