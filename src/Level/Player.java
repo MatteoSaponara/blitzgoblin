@@ -23,12 +23,15 @@ public abstract class Player extends GameObject
     protected float jumpDegrade = 0;
     protected float terminalVelocityY = 0;
     protected float momentumYIncrease = 0;
+    protected float acceleration = 0;
+    protected float drag = 0;
 
     // values used to handle player movement
     protected float jumpForce = 0;
     protected float momentumY = 0;
     protected float moveAmountX, moveAmountY;
     protected float lastAmountMovedX, lastAmountMovedY;
+    protected float velocityX = 0;
 
     // values used to keep track of player's current state
     protected PlayerState playerState;
@@ -97,6 +100,18 @@ public abstract class Player extends GameObject
 
             // Updates mouse aim angle and curser position coordinates.
             updateAiming();
+
+            //Adds horizontal velocity to this frame's movement amount
+            moveAmountX += velocityX;
+
+            // Applies drag to horizontal velocity
+            velocityX *= drag;
+
+            //Prevents infinite sub-pixel slides when velocity nears zero
+            if (Math.abs(velocityX) < 0.01f)
+            {
+                velocityX = 0;
+            }
 
             // update player's state and current actions, which includes things like determining how much it should move each frame and if its walking or jumping
             do
@@ -190,16 +205,26 @@ public abstract class Player extends GameObject
         // if walk left key is pressed, move player to the left
         if (Keyboard.isKeyDown(MOVE_LEFT_KEY))
         {
-            moveAmountX -= walkSpeed;
+            velocityX -= acceleration;
+            if (velocityX < -walkSpeed)
+            {
+                velocityX = -walkSpeed;
+            }
             facingDirection = Direction.LEFT;
         }
 
         // if walk right key is pressed, move player to the right
         else if (Keyboard.isKeyDown(MOVE_RIGHT_KEY))
         {
-            moveAmountX += walkSpeed;
+            velocityX += acceleration;
+            if (velocityX > walkSpeed)
+            {
+                velocityX = walkSpeed;
+            }
             facingDirection = Direction.RIGHT;
-        } else if (Keyboard.isKeyUp(MOVE_LEFT_KEY) && Keyboard.isKeyUp(MOVE_RIGHT_KEY))
+        }
+
+        if (Keyboard.isKeyUp(MOVE_LEFT_KEY) && Keyboard.isKeyUp(MOVE_RIGHT_KEY) && Math.abs(velocityX) < 0.01f)
         {
             playerState = PlayerState.STANDING;
         }
