@@ -204,6 +204,12 @@ public abstract class Player extends GameObject
         }
     }
 
+    // velocity is moved by before drag shrinks it, so the cap is raised by 1/drag to make walkSpeed the real top speed
+    protected float getMaxVelocityX()
+    {
+        return drag > 0 ? walkSpeed / drag : walkSpeed;
+    }
+
     // player WALKING state logic
     protected void playerWalking()
     {
@@ -211,9 +217,9 @@ public abstract class Player extends GameObject
         if (Keyboard.isKeyDown(MOVE_LEFT_KEY))
         {
             velocityX -= acceleration;
-            if (velocityX < -walkSpeed)
+            if (velocityX < -getMaxVelocityX())
             {
-                velocityX = -walkSpeed;
+                velocityX = -getMaxVelocityX();
             }
             facingDirection = Direction.LEFT;
         }
@@ -222,9 +228,9 @@ public abstract class Player extends GameObject
         else if (Keyboard.isKeyDown(MOVE_RIGHT_KEY))
         {
             velocityX += acceleration;
-            if (velocityX > walkSpeed)
+            if (velocityX > getMaxVelocityX())
             {
-                velocityX = walkSpeed;
+                velocityX = getMaxVelocityX();
             }
             facingDirection = Direction.RIGHT;
         }
@@ -306,18 +312,18 @@ public abstract class Player extends GameObject
             if (Keyboard.isKeyDown(MOVE_LEFT_KEY))
             {
                 velocityX -= acceleration;
-                if (velocityX < -walkSpeed)
+                if (velocityX < -getMaxVelocityX())
                 {
-                    velocityX = -walkSpeed;
+                    velocityX = -getMaxVelocityX();
                 }
             }
 
             else if (Keyboard.isKeyDown(MOVE_RIGHT_KEY))
             {
                 velocityX += acceleration;
-                if (velocityX > walkSpeed)
+                if (velocityX > getMaxVelocityX())
                 {
-                    velocityX = walkSpeed;
+                    velocityX = getMaxVelocityX();
                 }
             }
 
