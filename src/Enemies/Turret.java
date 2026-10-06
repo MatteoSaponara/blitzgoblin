@@ -72,7 +72,7 @@ public class Turret extends Enemy{
             }
 
             // define where fireball will spawn on the map (y location) relative to dinosaur enemy's location
-            int fireballY = Math.round(getY()) + 4;
+            int fireballY = Math.round(getY()) + 18;
 
             // create Fireball enemy
             Fireball fireball = new Fireball(new Point(fireballX, fireballY), movementSpeed, 60);

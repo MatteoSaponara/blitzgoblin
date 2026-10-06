@@ -350,9 +350,9 @@ public abstract class Player extends GameObject
 
 			if (facingDirection == Direction.RIGHT)
 			{
-			spawnX = getX() + getWidth() + 50;
+			spawnX = getX() + getWidth() + 70;
 			} else {
-			spawnX = getX() - 50;
+			spawnX = getX() - 70;
 		}
 
 		GunPOne gunPOne = new GunPOne(
