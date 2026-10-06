@@ -27,7 +27,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
     protected CoinMimicState coinMimicState;
 
     public CoinMimicEnemy(Point location, Direction facingDirection) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("enemycoinmimic.png"), 48, 52), "WALK_LEFT");
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("enemycoinmimic.png"), 48, 52), "IDLE");
         this.initialize();
     }
 
@@ -88,34 +88,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
 						.withScale(3)
 						.withBounds(1, 1, 10, 10)
 						.build(),
-					new FrameBuilder(spriteSheet.getSprite(0, 1), 12)
-						.withScale(3)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-					new FrameBuilder(spriteSheet.getSprite(0, 2), 12)
-						.withScale(3)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-					new FrameBuilder(spriteSheet.getSprite(0, 3), 12)
-						.withScale(3)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 4), 12)
-						.withScale(3)
-						.withBounds(1, 1, 10, 10)
-					.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 5), 12)
-						.withScale(3)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 6), 12)
-						.withScale(3)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 7), 12)
-						.withScale(3)
-						.withBounds(1, 1, 10, 10)
-						.build()
+					
 				});
             put("TRANSFORM", new Frame[] { 
 

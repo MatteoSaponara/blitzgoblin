@@ -25,7 +25,7 @@ public class GargoyleEnemy extends Enemy implements IDamagable {
     private int health = 3;
 
     public GargoyleEnemy(Point location, Direction facingDirection) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("enemygargoyle.png"), 48, 52), "WALK_LEFT");
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("enemygargoyle.png"), 48, 52), "FLY_LEFT");
         this.startFacingDirection = facingDirection;
         this.initialize();
     }
@@ -50,11 +50,11 @@ public class GargoyleEnemy extends Enemy implements IDamagable {
             chasing = true;
             if (player.getX() > this.getX()) {
                 facingDirection = Direction.RIGHT;
-                currentAnimationName = "WALK_RIGHT";
+                currentAnimationName = "FLY_RIGHT";
             }
             else if (player.getX() <= this.getX()) {
                 facingDirection = Direction.LEFT;
-                currentAnimationName = "WALK_LEFT";
+                currentAnimationName = "FLY_LEFT";
             }
         }
 
