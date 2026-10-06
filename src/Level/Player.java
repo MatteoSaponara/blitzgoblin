@@ -12,6 +12,8 @@ import Utils.AirGroundState;
 import Utils.Direction;
 import java.awt.Color;
 import java.util.ArrayList;
+import Enemies.GunPOne;
+import Utils.Point;
 
 public abstract class Player extends GameObject
 {
@@ -337,6 +339,29 @@ public abstract class Player extends GameObject
             attackButtonLocked = true;
             isAttacking = true;
             attackTimer = ATTACK_DURATION;
+            
+           float cameraX = map.getCamera().getX();
+			float cameraY = map.getCamera().getY();
+
+			float mouseX = Mouse.getMouseX() + cameraX;
+			float mouseY = Mouse.getMouseY() + cameraY;
+	
+			float spawnX;
+
+			if (facingDirection == Direction.RIGHT)
+			{
+			spawnX = getX() + getWidth() + 50;
+			} else {
+			spawnX = getX() - 50;
+		}
+
+		GunPOne gunPOne = new GunPOne(
+		new Point(spawnX, getY()),
+		mouseX,
+		mouseY
+		);
+
+map.addEnemy(gunPOne);
         }
 
         if (Mouse.isLeftButtonUp())
