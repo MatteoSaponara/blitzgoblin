@@ -7,6 +7,7 @@ import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.stream.IntStream;
 
 
 /*
@@ -16,14 +17,20 @@ import java.awt.image.DataBufferInt;
 public class GraphicsHandler {
     private Graphics2D g;
 
+    // device pixels per logical pixel (above 1 on scaled/HiDPI displays)
+    private double deviceScaleX = 1, deviceScaleY = 1;
+
     private BufferedImage pixelBuffer;
     private Graphics2D pixelGraphics;
-    private BufferedImage outBuffer;
     private int[] pixelData;
-    private int[] outData;
-    private int[] xI0, xI1, xW, yI0, yI1, yW;
     private boolean pixelLayerDirty = false;
     private boolean pixelGridEnabled = true;
+
+    // output at device resolution, built from the pixel grid
+    private BufferedImage outBuffer;
+    private int[] outData;
+    private int[] hData; // grid rows resampled horizontally
+    private int[] xI0, xI1, xW, yI0, yI1, yW;
 
     // when disabled (map editor), sprites are drawn straight to the window at world size
     public boolean isPixelGridEnabled() {
@@ -47,13 +54,18 @@ public class GraphicsHandler {
     public void setGraphics(Graphics2D g) {
         this.g = g;
         this.pixelLayerDirty = false;
+        AffineTransform t = g.getTransform();
+        deviceScaleX = Math.max(1, Math.hypot(t.getScaleX(), t.getShearY()));
+        deviceScaleY = Math.max(1, Math.hypot(t.getScaleY(), t.getShearX()));
     }
 
     private void ensurePixelBuffer() {
-        int outW = ScreenManager.getScreenWidth();
-        int outH = ScreenManager.getScreenHeight();
-        int width = (int) Math.ceil(outW / Config.PIXEL_SCALE) + 1;
-        int height = (int) Math.ceil(outH / Config.PIXEL_SCALE) + 1;
+        int outW = (int) Math.round(ScreenManager.getScreenWidth() * deviceScaleX);
+        int outH = (int) Math.round(ScreenManager.getScreenHeight() * deviceScaleY);
+        float scaleX = (float) (Config.PIXEL_SCALE * deviceScaleX);
+        float scaleY = (float) (Config.PIXEL_SCALE * deviceScaleY);
+        int width = (int) Math.ceil(outW / scaleX) + 1;
+        int height = (int) Math.ceil(outH / scaleY) + 1;
         if (pixelBuffer == null || pixelBuffer.getWidth() != width || pixelBuffer.getHeight() != height
                 || outBuffer.getWidth() != outW || outBuffer.getHeight() != outH) {
             if (pixelGraphics != null) {
@@ -65,27 +77,44 @@ public class GraphicsHandler {
             pixelData = ((DataBufferInt) pixelBuffer.getRaster().getDataBuffer()).getData();
             outBuffer = new BufferedImage(outW, outH, BufferedImage.TYPE_INT_ARGB_PRE);
             outData = ((DataBufferInt) outBuffer.getRaster().getDataBuffer()).getData();
+            hData = new int[outW * height];
 
             xI0 = new int[outW]; xI1 = new int[outW]; xW = new int[outW];
             yI0 = new int[outH]; yI1 = new int[outH]; yW = new int[outH];
-            buildSampleTable(outW, width, xI0, xI1, xW);
-            buildSampleTable(outH, height, yI0, yI1, yW);
+            buildSampleTable(outW, width, scaleX, xI0, xI1, xW);
+            buildSampleTable(outH, height, scaleY, yI0, yI1, yW);
         }
     }
 
-    // for each output pixel: the two art pixels to blend and the blend weight (0-256).
-    // equals a 2x nearest neighbour enlargement followed by bilinear sampling, so only pixels on art pixel borders blend.
-    private static void buildSampleTable(int outSize, int artSize, int[] i0, int[] i1, int[] weight) {
-        int last = artSize * 2 - 1;
+    // for each output pixel: the art pixel it lands in, the neighbouring art pixel to blend with, and the blend
+    // weight (0-128). only output pixels touching the border between two art pixels blend, by their overlap, so
+    // every art pixel keeps the same size and crisp edges at any window scale.
+    private static void buildSampleTable(int outSize, int artSize, float scale, int[] i0, int[] i1, int[] weight) {
         for (int d = 0; d < outSize; d++) {
-            float u = (d + 0.5f) * 2f / Config.PIXEL_SCALE - 0.5f;
-            int fl = (int) Math.floor(u);
-            int a = Math.min(Math.max(fl, 0), last) >> 1;
-            int b = Math.min(Math.max(fl + 1, 0), last) >> 1;
+            float p = (d + 0.5f) / scale;
+            int a = Math.min((int) p, artSize - 1);
+            float t = (p - a) * scale;          // output pixels from the art pixel's start edge
+            float tEnd = (a + 1 - p) * scale;   // output pixels to the art pixel's end edge
+            int neighbour = a;
+            float w = 0;
+            if (t < 0.5f && a > 0) {
+                neighbour = a - 1;
+                w = 0.5f - t;
+            } else if (tEnd < 0.5f && a < artSize - 1) {
+                neighbour = a + 1;
+                w = 0.5f - tEnd;
+            }
             i0[d] = a;
-            i1[d] = b;
-            weight[d] = a == b ? 0 : Math.round((u - fl) * 256f);
+            i1[d] = neighbour;
+            weight[d] = Math.round(w * 256f);
         }
+    }
+
+    private static final boolean MULTI_CORE = Runtime.getRuntime().availableProcessors() > 1;
+
+    private static IntStream rows(int count) {
+        IntStream rows = IntStream.range(0, count);
+        return MULTI_CORE ? rows.parallel() : rows;
     }
 
     private static int lerp(int p, int q, int w) {
@@ -121,7 +150,7 @@ public class GraphicsHandler {
         }
     }
 
-    // draws the pixel grid to the window and clears it
+    // draws the pixel grid to the window at device resolution and clears it
     public void flushPixelLayer() {
         if (!pixelLayerDirty || g == null) {
             return;
@@ -131,24 +160,40 @@ public class GraphicsHandler {
         int outW = outBuffer.getWidth();
         int outH = outBuffer.getHeight();
         int srcW = pixelBuffer.getWidth();
-        for (int y = 0; y < outH; y++) {
-            int row0 = yI0[y] * srcW;
-            int row1 = yI1[y] * srcW;
-            int wy = yW[y];
-            int outRow = y * outW;
+        int srcH = pixelBuffer.getHeight();
+
+        // pass 1: resample each grid row horizontally (once per row, however many output rows use it)
+        rows(srcH).forEach(sy -> {
+            int src = sy * srcW;
+            int dst = sy * outW;
             for (int x = 0; x < outW; x++) {
-                int x0 = xI0[x];
-                int wx = xW[x];
-                int top = lerp(pixelData[row0 + x0], pixelData[row0 + xI1[x]], wx);
-                if (wy == 0) {
-                    outData[outRow + x] = top;
-                } else {
-                    int bottom = lerp(pixelData[row1 + x0], pixelData[row1 + xI1[x]], wx);
-                    outData[outRow + x] = lerp(top, bottom, wy);
+                int w = xW[x];
+                int p = pixelData[src + xI0[x]];
+                hData[dst + x] = w == 0 ? p : lerp(p, pixelData[src + xI1[x]], w);
+            }
+        });
+
+        // pass 2: blend vertically only on rows that touch an art pixel border, plain copies elsewhere
+        rows(outH).forEach(y -> {
+            int wy = yW[y];
+            int row0 = yI0[y] * outW;
+            int out = y * outW;
+            if (wy == 0) {
+                System.arraycopy(hData, row0, outData, out, outW);
+            } else {
+                int row1 = yI1[y] * outW;
+                for (int x = 0; x < outW; x++) {
+                    outData[out + x] = lerp(hData[row0 + x], hData[row1 + x], wy);
                 }
             }
-        }
-        g.drawImage(outBuffer, 0, 0, null);
+        });
+
+        // draw 1:1 in device pixels so the window system never rescales it
+        Graphics2D device = (Graphics2D) g.create();
+        AffineTransform t = g.getTransform();
+        device.setTransform(new AffineTransform(1, 0, 0, 1, t.getTranslateX(), t.getTranslateY()));
+        device.drawImage(outBuffer, 0, 0, null);
+        device.dispose();
 
         java.util.Arrays.fill(pixelData, 0);
     }

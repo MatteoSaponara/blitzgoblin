@@ -25,12 +25,15 @@ public abstract class Player extends GameObject
     protected float jumpDegrade = 0;
     protected float terminalVelocityY = 0;
     protected float momentumYIncrease = 0;
+    protected float acceleration = 0;
+    protected float drag = 0;
 
     // values used to handle player movement
     protected float jumpForce = 0;
     protected float momentumY = 0;
     protected float moveAmountX, moveAmountY;
     protected float lastAmountMovedX, lastAmountMovedY;
+    protected float velocityX = 0;
 
     // values used to keep track of player's current state
     protected PlayerState playerState;
@@ -71,6 +74,16 @@ public abstract class Player extends GameObject
     protected double mousePosX = 0;
     protected double mousePosY = 0;
 
+    // Ammo Unlocks
+    protected boolean hasSingleAmmo = false;
+    protected boolean hasTwelveAmmo = false;
+    protected boolean hasCannonAmmo = false;
+
+    // Recoil Forces By Ammo
+    protected float singleAmmoRecoil = 0.3f;
+    protected float twelveAmmoRecoil = 7.0f;
+    protected float cannonAmmoRecoil = 16.0f;
+
     public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName)
     {
         super(spriteSheet, x, y, startingAnimationName);
@@ -94,6 +107,18 @@ public abstract class Player extends GameObject
 
             // Updates mouse aim angle and curser position coordinates.
             updateAiming();
+
+            //Adds horizontal velocity to this frame's movement amount
+            moveAmountX += velocityX;
+
+            // Applies drag to horizontal velocity
+            velocityX *= drag;
+
+            //Prevents infinite sub-pixel slides when velocity nears zero
+            if (Math.abs(velocityX) < 0.01f)
+            {
+                velocityX = 0;
+            }
 
             // update player's state and current actions, which includes things like determining how much it should move each frame and if its walking or jumping
             do
@@ -181,22 +206,38 @@ public abstract class Player extends GameObject
         }
     }
 
+    // velocity is moved by before drag shrinks it, so the cap is raised by 1/drag to make walkSpeed the real top speed
+    protected float getMaxVelocityX()
+    {
+        return drag > 0 ? walkSpeed / drag : walkSpeed;
+    }
+
     // player WALKING state logic
     protected void playerWalking()
     {
         // if walk left key is pressed, move player to the left
         if (Keyboard.isKeyDown(MOVE_LEFT_KEY))
         {
-            moveAmountX -= walkSpeed;
+            velocityX -= acceleration;
+            if (velocityX < -getMaxVelocityX())
+            {
+                velocityX = -getMaxVelocityX();
+            }
             facingDirection = Direction.LEFT;
         }
 
         // if walk right key is pressed, move player to the right
         else if (Keyboard.isKeyDown(MOVE_RIGHT_KEY))
         {
-            moveAmountX += walkSpeed;
+            velocityX += acceleration;
+            if (velocityX > getMaxVelocityX())
+            {
+                velocityX = getMaxVelocityX();
+            }
             facingDirection = Direction.RIGHT;
-        } else if (Keyboard.isKeyUp(MOVE_LEFT_KEY) && Keyboard.isKeyUp(MOVE_RIGHT_KEY))
+        }
+
+        if (Keyboard.isKeyUp(MOVE_LEFT_KEY) && Keyboard.isKeyUp(MOVE_RIGHT_KEY) && Math.abs(velocityX) < 0.01f)
         {
             playerState = PlayerState.STANDING;
         }
@@ -272,10 +313,20 @@ public abstract class Player extends GameObject
             // allows you to move left and right while in the air
             if (Keyboard.isKeyDown(MOVE_LEFT_KEY))
             {
-                moveAmountX -= walkSpeed;
-            } else if (Keyboard.isKeyDown(MOVE_RIGHT_KEY))
+                velocityX -= acceleration;
+                if (velocityX < -getMaxVelocityX())
+                {
+                    velocityX = -getMaxVelocityX();
+                }
+            }
+
+            else if (Keyboard.isKeyDown(MOVE_RIGHT_KEY))
             {
-                moveAmountX += walkSpeed;
+                velocityX += acceleration;
+                if (velocityX > getMaxVelocityX())
+                {
+                    velocityX = getMaxVelocityX();
+                }
             }
 
             // if player is falling, increases momentum as player falls so it falls faster over time
@@ -468,6 +519,10 @@ map.addEnemy(gunPOne);
     @Override
     public void onEndCollisionCheckX(boolean hasCollided, Direction direction, MapEntity entityCollidedWith)
     {
+        if(hasCollided)
+        {
+            velocityX = 0;
+        }
     }
 
     @Override
@@ -668,6 +723,59 @@ map.addEnemy(gunPOne);
 
         // Calculate angle from player to mouse cursor
         aimAngle = Mouse.getAngleTo(playerScreenX, playerScreenY);
+    }
+
+    // Ammo unlock methods
+    public void unlockSingleAmmo() {
+        hasSingleAmmo = true;
+    }
+
+    public void unlockTwelveAmmo() {
+        hasTwelveAmmo = true;
+    }
+
+    public void unlockCannonAmmo() {
+        hasCannonAmmo = true;
+    }
+
+    public void applyRecoil(float recoilForce)
+    {
+        // Angle Calculation
+        double recoilAngle = aimAngle + Math.PI;
+
+        // Polar Vector Calculations
+        float recoilX = (float) Math.cos(recoilAngle) * recoilForce;
+        float recoilY = (float) Math.sin(recoilAngle) * recoilForce;
+
+        this.velocityX += recoilX;
+
+        if (recoilY < 0)
+        {
+            this.airGroundState = AirGroundState.AIR;
+            this.playerState = PlayerState.JUMPING;
+            this.jumpForce = Math.abs(recoilY);
+        }
+
+        else
+        {
+            this.moveAmountY += recoilY;
+        }
+    }
+
+    /*
+    public void shootWeapon()
+    {
+        switch(ammoTypeSelected)
+        {
+            case 1:
+                applyRecoil(singleAmmoRecoil);
+                break;
+            case 2:
+                applyRecoil(twelveAmmoRecoil);
+                break;
+            case 3:
+                applyRecoil(cannonAmmoRecoil);
+        }
     }
 
     // Uncomment this to have game draw player's bounds to make it easier to visualize

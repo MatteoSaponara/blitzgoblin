@@ -16,7 +16,7 @@ public class Coin extends EnhancedMapTile {
 
     public Coin(Point location)
     {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("Coin.png"), 12, 12), TileType.PASSABLE);
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("Coin.png"), 26, 26), TileType.PASSABLE);
     }
 
     @Override
@@ -37,35 +37,35 @@ public class Coin extends EnhancedMapTile {
         return new HashMap<String, Frame[]>() {{
 			put("DEFAULT", new Frame[] {
 					new FrameBuilder(spriteSheet.getSprite(0, 0), 12)
-						.withScale(3)
+						.withScale(1.4f)
 						.withBounds(1, 1, 10, 10)
 						.build(),
 					new FrameBuilder(spriteSheet.getSprite(0, 1), 12)
-						.withScale(3)
+						.withScale(1.4f)
 						.withBounds(1, 1, 10, 10)
 						.build(),
 					new FrameBuilder(spriteSheet.getSprite(0, 2), 12)
-						.withScale(3)
+						.withScale(1.4f)
 						.withBounds(1, 1, 10, 10)
 						.build(),
 					new FrameBuilder(spriteSheet.getSprite(0, 3), 12)
-						.withScale(3)
+						.withScale(1.4f)
 						.withBounds(1, 1, 10, 10)
 						.build(),
 				new FrameBuilder(spriteSheet.getSprite(0, 4), 12)
-						.withScale(3)
+						.withScale(1.4f)
 						.withBounds(1, 1, 10, 10)
 					.build(),
 				new FrameBuilder(spriteSheet.getSprite(0, 5), 12)
-						.withScale(3)
+						.withScale(1.4f)
 						.withBounds(1, 1, 10, 10)
 						.build(),
 				new FrameBuilder(spriteSheet.getSprite(0, 6), 12)
-						.withScale(3)
+						.withScale(1.4f)
 						.withBounds(1, 1, 10, 10)
 						.build(),
 				new FrameBuilder(spriteSheet.getSprite(0, 7), 12)
-						.withScale(3)
+						.withScale(1.4f)
 						.withBounds(1, 1, 10, 10)
 						.build()
 				});

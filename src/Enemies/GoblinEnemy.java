@@ -8,6 +8,7 @@ import GameObject.SpriteSheet;
 import Interfaces.IDamagable;
 import Level.Enemy;
 import Level.MapEntity;
+import Level.MapEntityStatus;
 import Level.Player;
 import Utils.AirGroundState;
 import Utils.Direction;
@@ -22,9 +23,9 @@ public class GoblinEnemy extends Enemy implements IDamagable{
     private Direction startFacingDirection;
     private Direction facingDirection;
     private AirGroundState airGroundState;
-    private float aggroRadius = 200f; // Find how many pixels a tile to properly set the aggro radius
+    private float aggroRadius = 175f; // 35x35 pixels is the size of a tile, so 175 pixels is about 5 tiles away from the player
     private boolean chasing = false;
-    private int health = 1;
+    private int health = 3;
 
     public GoblinEnemy (Point location, Direction facingDirection) {
         // Change BugEnemy.png to GoblinEnemy.png when the sprite is ready
@@ -186,7 +187,7 @@ public class GoblinEnemy extends Enemy implements IDamagable{
     }
 
     public void die() {
-        
+        this.mapEntityStatus = MapEntityStatus.REMOVED;
     }
 
     private boolean inRange(Player player) {
