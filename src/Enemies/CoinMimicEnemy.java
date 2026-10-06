@@ -36,7 +36,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
         super.initialize();
         coinMimicState = CoinMimicState.IDLE;
         currentAnimationName = "IDLE";
-        transformTimer = 60; // 60 frames = 1 second
+        transformTimer = 60; // 60 frames = 1 second. Change this to match transform animation length.
     }
 
     @Override
