@@ -17,8 +17,8 @@ import Utils.Point;
 import java.util.HashMap;
 
 public class CoinMimicEnemy extends Enemy implements IDamagable {
-    private float flySpeed = .5f; //Speed of the CoinMimic when the player is in its aggro range
-    private float aggroRadius = 70; // 35 x 35 pixels is the size of a tile, so 70 pixels is about 2 tiles away from the player
+    private float flySpeed = 5f; //Speed of the CoinMimic when the player is in its aggro range
+    private float aggroRadius = 200; // 35 x 35 pixels is the size of a tile, so 70 pixels is about 2 tiles away from the player
     private int health = 1;
     
     // timer is used to determine how long coin mimic freezes in place to transform into an enemy before chasing the player
@@ -27,7 +27,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
     protected CoinMimicState coinMimicState;
 
     public CoinMimicEnemy(Point location, Direction facingDirection) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("enemycoinmimic.png"), 48, 52), "IDLE");
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("Coin.png"), 12, 12), "IDLE");
         this.initialize();
     }
 
@@ -88,13 +88,46 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
 						.withScale(3)
 						.withBounds(1, 1, 10, 10)
 						.build(),
-					
+					new FrameBuilder(spriteSheet.getSprite(0, 1), 12)
+						.withScale(3)
+						.withBounds(1, 1, 10, 10)
+						.build(),
+					new FrameBuilder(spriteSheet.getSprite(0, 2), 12)
+						.withScale(3)
+						.withBounds(1, 1, 10, 10)
+						.build(),
+					new FrameBuilder(spriteSheet.getSprite(0, 3), 12)
+						.withScale(3)
+						.withBounds(1, 1, 10, 10)
+						.build(),
+				new FrameBuilder(spriteSheet.getSprite(0, 4), 12)
+						.withScale(3)
+						.withBounds(1, 1, 10, 10)
+					.build(),
+				new FrameBuilder(spriteSheet.getSprite(0, 5), 12)
+						.withScale(3)
+						.withBounds(1, 1, 10, 10)
+						.build(),
+				new FrameBuilder(spriteSheet.getSprite(0, 6), 12)
+						.withScale(3)
+						.withBounds(1, 1, 10, 10)
+						.build(),
+				new FrameBuilder(spriteSheet.getSprite(0, 7), 12)
+						.withScale(3)
+						.withBounds(1, 1, 10, 10)
+						.build()
 				});
             put("TRANSFORM", new Frame[] { 
-
+                    new FrameBuilder(spriteSheet.getSprite(0, 0), 12)
+						.withScale(3)
+						.withBounds(1, 1, 10, 10)
+						.build(),
                 });
             put("CHASE", new Frame[] { 
-
+                    new FrameBuilder(spriteSheet.getSprite(0, 2), 12)
+						.withScale(3)
+						.withBounds(1, 1, 10, 10)
+						.build(),
                 });
         }};
     }

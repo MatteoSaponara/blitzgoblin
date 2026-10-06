@@ -21,7 +21,10 @@ public class SingleAmmo extends Ammo {
     @Override
     public void update(Player player)
     {
-        player.unlockSingleAmmo();
+        if (intersects(player))
+        {
+            player.unlockSingleAmmo();
+        }
 
         super.update(player);
     }
