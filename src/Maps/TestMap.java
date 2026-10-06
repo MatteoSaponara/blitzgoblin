@@ -4,16 +4,24 @@ import Enemies.BugEnemy;
 import Enemies.GoblinEnemy;
 import Enemies.HeroEnemy;
 import Enemies.Turret;
+import Enemies.CoinMimicEnemy;
+import Enemies.GargoyleEnemy;
 import Engine.ImageLoader;
 import EnhancedMapTiles.Coin;
 import EnhancedMapTiles.EndLevelBox;
 import EnhancedMapTiles.HorizontalMovingPlatform;
+// Ammo pickup imports
+import EnhancedMapTiles.SingleAmmo;
+import EnhancedMapTiles.TwelveAmmo;
+import EnhancedMapTiles.CannonAmmo;
 import GameObject.Rectangle;
 import Level.*;
 import NPCs.Walrus;
 import Tilesets.CommonTileset;
 import Utils.Direction;
 import java.util.ArrayList;
+
+
 
 // Represents a test map to be used in a level
 public class TestMap extends Map {
@@ -44,6 +52,9 @@ public class TestMap extends Map {
 
         HeroEnemy heroEnemy = new HeroEnemy(getMapTile(63, 19).getLocation(), Direction.LEFT);
         enemies.add(heroEnemy);
+
+        CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(20, 24).getLocation(), Direction.LEFT);
+        enemies.add(coinMimicEnemy);
 
         return enemies;
     }

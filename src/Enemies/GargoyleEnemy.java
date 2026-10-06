@@ -82,54 +82,11 @@ public class GargoyleEnemy extends Enemy implements IDamagable {
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
         return new HashMap<String, Frame[]>() {{
             put("FLY_RIGHT", new Frame[] {
-                    new FrameBuilder(spriteSheet.getSprite(0, 0), 8)
-                            .withScale(1.5f)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 1), 8)
-                            .withScale(1.5f)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 2), 8)
-                            .withScale(1.5f)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 3), 8)
-                            .withScale(1.5f)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 4), 8)
-                            .withScale(1.5f)
-                            .withBounds(0, 0, 48, 52)
-                            .build()
+                    
             });
 
             put("FLY_LEFT", new Frame[] {
-                    new FrameBuilder(spriteSheet.getSprite(0, 0), 8)
-                            .withScale(1.5f)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 1), 8)
-                            .withScale(1.5f)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 2), 8)
-                            .withScale(1.5f)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 3), 8)
-                            .withScale(1.5f)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 4), 8)
-                            .withScale(1.5f)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(0, 0, 48, 52)
-                            .build()
+                    
             });
         }};
     }
