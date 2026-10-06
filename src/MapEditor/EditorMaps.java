@@ -13,7 +13,7 @@ public class EditorMaps {
         return new ArrayList<String>() {{
             add("TestMap");
             add("TitleScreen");
-            add("MatteosTestMap");
+           // add("MatteosTestMap");
             add("TestMapBackup");
         }};
     }
@@ -24,8 +24,8 @@ public class EditorMaps {
                 return new TestMap();
             case "TitleScreen":
                 return new TitleScreenMap();
-            case "MatteosTestMap":
-                return new MatteosTestMap();
+           // case "MatteosTestMap":
+             //   return new MatteosTestMap();
             case "TestMapBackup":
                 return new TestMapBackup();
             default:
