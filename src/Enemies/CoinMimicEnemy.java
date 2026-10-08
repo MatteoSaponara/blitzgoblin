@@ -9,6 +9,8 @@ import Interfaces.IDamagable;
 import Level.Enemy;
 import Level.MapEntity;
 import Level.MapEntityStatus;
+import Level.MapTile;
+import Level.TileType;
 import Level.Player;
 import Utils.AirGroundState;
 import Utils.Direction;
@@ -63,25 +65,32 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
         }
 
         if (coinMimicState == CoinMimicState.CHASE) {
-            if (player.getX() > this.getX()) {
-                moveAmountX += flySpeed;
-            } else if (player.getX() < this.getX()) {
-                moveAmountX -= flySpeed;
-            }
-            if (player.getY() > this.getY()) {
-                moveAmountY += flySpeed;
-            } else if (player.getY() < this.getY()) {
-                moveAmountY -= flySpeed;
-            }
+            // move toward the player's center, never further than the remaining distance so it stops on them instead of jittering
+            float distanceX = (player.getX1() + player.getX2()) / 2f - (getX1() + getX2()) / 2f;
+            float distanceY = (player.getY1() + player.getY2()) / 2f - (getY1() + getY2()) / 2f;
+            moveAmountX = Math.signum(distanceX) * Math.min(flySpeed, Math.abs(distanceX));
+            moveAmountY = Math.signum(distanceY) * Math.min(flySpeed, Math.abs(distanceY));
         }
 
-        // move bug
-        moveYHandleCollision(moveAmountY);
-        moveXHandleCollision(moveAmountX);
+        // a coin placed in or on the ground rises out of it as it transforms, instead of being shoved to a tile edge
+        if (coinMimicState != CoinMimicState.IDLE) {
+            riseOutOfSolidTiles();
+        }
+
+        // only run collision handling when actually moving; otherwise the changing hitbox
+        // shape can overlap a tile and push the coin out of place while it transforms
+        if (moveAmountY != 0) {
+            moveYHandleCollision(moveAmountY);
+        }
+        if (moveAmountX != 0) {
+            moveXHandleCollision(moveAmountX);
+        }
 
         super.update(player);
     }
 
+
+    private static final float SPRITE_SCALE = 1.4f;
 
     // spritesheet layout (38x43 frames): 0-7 disguised coin spinning, 8-11 transformation, 12-13 revealed chase
     private static final int IDLE_START = 0, IDLE_FRAMES = 8, IDLE_DELAY = 12;
@@ -95,7 +104,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
 
     private static Frame buildFrame(SpriteSheet spriteSheet, int frameIndex, int delay, int[] bounds) {
         return new FrameBuilder(spriteSheet.getSprite(0, frameIndex), delay)
-                .withScale(1.4f)
+                .withScale(SPRITE_SCALE)
                 .withBounds(bounds[0], bounds[1], bounds[2], bounds[3])
                 .build();
     }
@@ -136,6 +145,40 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
 
     public void die() {
         this.mapEntityStatus = MapEntityStatus.REMOVED;
+    }
+
+    // lifts the mimic 2px per update while the revealed form's hitbox would overlap a solid tile, so it has
+    // already risen clear of the ground by the time it starts chasing (instead of being snapped to a tile edge)
+    private void riseOutOfSolidTiles() {
+        for (int i = 0; i < 2 && overlapsSolidTile(); i++) {
+            moveY(-1);
+        }
+    }
+
+    private boolean overlapsSolidTile() {
+        if (map == null) {
+            return false;
+        }
+        int[] revealed = CHASE_BOUNDS[0];
+        float scale = SPRITE_SCALE;
+        GameObject.Rectangle box = new GameObject.Rectangle(
+                getX() + revealed[0] * scale, getY() + revealed[1] * scale,
+                Math.round(revealed[2] * scale), Math.round(revealed[3] * scale));
+
+        int tileWidth = map.getTileset().getScaledSpriteWidth();
+        int tileHeight = map.getTileset().getScaledSpriteHeight();
+        Point first = map.getTileIndexByPosition(box.getX1(), box.getY1());
+        int columns = (int) Math.ceil(box.getWidth() / (float) tileWidth) + 1;
+        int rows = (int) Math.ceil(box.getHeight() / (float) tileHeight) + 1;
+        for (int row = 0; row <= rows; row++) {
+            for (int column = 0; column <= columns; column++) {
+                MapTile tile = map.getMapTile(Math.round(first.x) + column, Math.round(first.y) + row);
+                if (tile != null && tile.getTileType() == TileType.NOT_PASSABLE && box.intersects(tile)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean inRange(Player player) {

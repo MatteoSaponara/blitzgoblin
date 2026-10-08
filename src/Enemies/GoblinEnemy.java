@@ -25,6 +25,7 @@ public class GoblinEnemy extends Enemy implements IDamagable{
     private AirGroundState airGroundState;
     private float aggroRadius = 175f; // 35x35 pixels is the size of a tile, so 175 pixels is about 5 tiles away from the player
     private boolean chasing = false;
+    private boolean moving = true;
     private int health = 3;
 
     public GoblinEnemy (Point location, Direction facingDirection) {
@@ -54,29 +55,25 @@ public class GoblinEnemy extends Enemy implements IDamagable{
         // add gravity (if in air, this will cause bug to fall)
         moveAmountY += gravity;
 
-        if (inRange(player)) {
-            chasing = true;
-            if (player.getX() > this.getX()) {
-                facingDirection = Direction.RIGHT;
-                currentAnimationName = "WALK_RIGHT";
+        chasing = inRange(player);
+        float distanceX = (player.getX1() + player.getX2()) / 2f - (getX1() + getX2()) / 2f;
+
+        // chasing: face the player, and stop once lined up with them (avoids flipping back and forth over their position)
+        if (chasing) {
+            movementSpeed = chaseSpeed;
+            if (Math.abs(distanceX) > movementSpeed) {
+                facingDirection = distanceX > 0 ? Direction.RIGHT : Direction.LEFT;
+                moving = true;
+            } else {
+                moving = false;
             }
-            else if (player.getX() <= this.getX()) {
-                facingDirection = Direction.LEFT;
-                currentAnimationName = "WALK_LEFT";
-            }
-        }
-        else {
-            chasing = false;
+        } else {
+            movementSpeed = walkSpeed;
+            moving = true;
         }
 
         // if on ground, walk forward based on facing direction
-        if (airGroundState == AirGroundState.GROUND) {
-            if (chasing) {
-                movementSpeed = chaseSpeed;
-            }
-            else {
-                movementSpeed = walkSpeed;
-            }
+        if (airGroundState == AirGroundState.GROUND && moving) {
             if (facingDirection == Direction.RIGHT) {
                 moveAmountX += movementSpeed;
             } else {
@@ -88,6 +85,10 @@ public class GoblinEnemy extends Enemy implements IDamagable{
         moveYHandleCollision(moveAmountY);
         moveXHandleCollision(moveAmountX);
 
+        // idle animation when standing still (or in the air), walk animation when moving
+        boolean walking = moving && airGroundState == AirGroundState.GROUND;
+        currentAnimationName = (walking ? "WALK_" : "IDLE_") + (facingDirection == Direction.RIGHT ? "RIGHT" : "LEFT");
+
         super.update(player);
     }
 
@@ -96,13 +97,7 @@ public class GoblinEnemy extends Enemy implements IDamagable{
         // if bug has collided into something while walking forward,
         // it turns around (changes facing direction)
         if (hasCollided) {
-            if (direction == Direction.RIGHT) {
-                facingDirection = Direction.LEFT;
-                currentAnimationName = "WALK_LEFT";
-            } else {
-                facingDirection = Direction.RIGHT;
-                currentAnimationName = "WALK_RIGHT";
-            }
+            facingDirection = direction == Direction.RIGHT ? Direction.LEFT : Direction.RIGHT;
         }
     }
 
@@ -119,59 +114,29 @@ public class GoblinEnemy extends Enemy implements IDamagable{
         }
     }
 
+    // spritesheet layout (48x52 frames): 0-1 idle, 2-5 walk (art faces right; left is the flipped version)
+    private static final int IDLE_START = 0, IDLE_FRAMES = 2, IDLE_DELAY = 24;
+    private static final int WALK_START = 2, WALK_FRAMES = 4, WALK_DELAY = 8;
+
+    private static Frame[] buildFrames(SpriteSheet spriteSheet, int start, int count, int delay, ImageEffect effect) {
+        Frame[] frames = new Frame[count];
+        for (int i = 0; i < count; i++) {
+            frames[i] = new FrameBuilder(spriteSheet.getSprite(0, start + i), delay)
+                    .withScale(1.4f)
+                    .withImageEffect(effect)
+                    .withBounds(0, 0, 48, 52)
+                    .build();
+        }
+        return frames;
+    }
+
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
         return new HashMap<String, Frame[]>() {{
-            put("WALK_RIGHT", new Frame[] {
-                    new FrameBuilder(spriteSheet.getSprite(0, 0), 8)
-                            .withScale(1.5f)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 1), 8)
-                            .withScale(1.5f)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 2), 8)
-                            .withScale(1.5f)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 3), 8)
-                            .withScale(1.5f)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 4), 8)
-                            .withScale(1.5f)
-                            .withBounds(0, 0, 48, 52)
-                            .build()
-            });
-
-            put("WALK_LEFT", new Frame[] {
-                    new FrameBuilder(spriteSheet.getSprite(0, 0), 8)
-                            .withScale(1.5f)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 1), 8)
-                            .withScale(1.5f)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 2), 8)
-                            .withScale(1.5f)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 3), 8)
-                            .withScale(1.5f)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(0, 0, 48, 52)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 4), 8)
-                            .withScale(1.5f)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(0, 0, 48, 52)
-                            .build()
-            });
+            put("IDLE_RIGHT", buildFrames(spriteSheet, IDLE_START, IDLE_FRAMES, IDLE_DELAY, ImageEffect.NONE));
+            put("IDLE_LEFT", buildFrames(spriteSheet, IDLE_START, IDLE_FRAMES, IDLE_DELAY, ImageEffect.FLIP_HORIZONTAL));
+            put("WALK_RIGHT", buildFrames(spriteSheet, WALK_START, WALK_FRAMES, WALK_DELAY, ImageEffect.NONE));
+            put("WALK_LEFT", buildFrames(spriteSheet, WALK_START, WALK_FRAMES, WALK_DELAY, ImageEffect.FLIP_HORIZONTAL));
         }};
     }
 
