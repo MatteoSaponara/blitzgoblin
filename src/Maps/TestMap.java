@@ -53,7 +53,7 @@ public class TestMap extends Map {
         HeroEnemy heroEnemy = new HeroEnemy(getMapTile(63, 19).getLocation(), Direction.LEFT);
         enemies.add(heroEnemy);
 
-        CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(20, 24).getLocation(), Direction.LEFT);
+        CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(20, 23).getLocation(), Direction.LEFT);
         enemies.add(coinMimicEnemy);
 
         GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(13, 20).getLocation(), Direction.LEFT);
@@ -131,6 +131,14 @@ public class TestMap extends Map {
         enhancedMapTiles.add(hmp5);
         EndLevelBox endLevelBox = new EndLevelBox(getMapTile(67, 18).getLocation());
         enhancedMapTiles.add(endLevelBox);
+
+        //ammo boxes
+        SingleAmmo singleAmmo = new SingleAmmo(getMapTile(10, 27).getLocation());
+        enhancedMapTiles.add(singleAmmo);
+        TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(14, 24).getLocation());
+        enhancedMapTiles.add(twelveAmmo);
+        CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(18, 24).getLocation());
+        enhancedMapTiles.add(cannonAmmo);
 
         Coin coin1 = new Coin(getMapTile(9, 22).getLocation());
 		enhancedMapTiles.add(coin1);

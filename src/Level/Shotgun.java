@@ -37,6 +37,12 @@ public class Shotgun extends GameObject {
     private final double RADIAN_IN_DEGREES = 57.2958;
     private final float SPRITE_SCALE = 1.4f;
 
+    // shooting animation: plays frame 0 up to the last frame once per shot, then rests on the last frame
+    private static final int SHOT_FRAME_TICKS = 8; // updates each frame is shown for during a shot
+    private static final int FRAME_COUNT = 3;
+    private boolean shotAnimating = false;
+    private int shotFrameTicks = 0;
+
     private final String[] animationNames = {"test"}; //fill with whatever animations ya'll wanna add in
 
     //copy of animation frames used to prevent modifications to currentFrame's image permanently
@@ -51,6 +57,7 @@ public class Shotgun extends GameObject {
         //the further from the center the less accurate the gun tracks the mouse
         super(new SpriteSheet(ImageLoader.load("gunnn3n.png"), 65, 65), x, y, "test"); //just a test anim
         ///////////////////////////////////////////
+        currentFrameIndex = FRAME_COUNT - 1; // rests on the last frame until a shot is fired
         weaponOwner = weaponOwnerIN;
         map = weaponOwnerIN.getMap();
         gunPivotPosition = weaponOwnerIN.getLocation(); 
@@ -87,7 +94,33 @@ public class Shotgun extends GameObject {
         }
         //System.err.println("previousAimAngle(in degrees): "+(previousAimAngle*57.2958f));
         super.update();
+        advanceShotAnimation();
         updateCurrentFrame();
+    }
+
+    // call when a shot is fired; restarts the animation from its first frame
+    public void playShootAnimation() {
+        shotAnimating = true;
+        currentFrameIndex = 0;
+        shotFrameTicks = SHOT_FRAME_TICKS;
+    }
+
+    private void advanceShotAnimation() {
+        int lastFrameIndex = FRAME_COUNT - 1;
+        if (!shotAnimating) {
+            currentFrameIndex = lastFrameIndex;
+            return;
+        }
+        shotFrameTicks--;
+        if (shotFrameTicks <= 0) {
+            currentFrameIndex++;
+            if (currentFrameIndex >= lastFrameIndex) {
+                currentFrameIndex = lastFrameIndex;
+                shotAnimating = false;
+            } else {
+                shotFrameTicks = SHOT_FRAME_TICKS;
+            }
+        }
     }
 
     public void draw(GraphicsHandler graphicsHandler) {
@@ -390,15 +423,15 @@ public class Shotgun extends GameObject {
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
         return new HashMap<String, Frame[]>() {{
             put("test", new Frame[] {
-                    new FrameBuilder(spriteSheet.getSprite(0, 0), 30)
+                    new FrameBuilder(spriteSheet.getSprite(0, 0), 0)
                             .withScale(SPRITE_SCALE)
                             .withBounds(0, 0, 55, 55)
                             .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 1), 30)
+                    new FrameBuilder(spriteSheet.getSprite(0, 1), 0)
                             .withScale(SPRITE_SCALE)
                             .withBounds(0, 0, 55, 55)
                             .build(),
-                    new FrameBuilder(spriteSheet.getSprite(0, 2), 30)
+                    new FrameBuilder(spriteSheet.getSprite(0, 2), 0)
                             .withScale(SPRITE_SCALE)
                             .withBounds(0, 0, 55, 55)
                             .build(),               

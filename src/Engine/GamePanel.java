@@ -50,7 +50,7 @@ public class GamePanel extends JPanel {
 		screenManager = new ScreenManager();
 
 		pauseLabel = new SpriteFont("PAUSE", 365, 280, "Arial", 24, Color.white);
-		pauseLabel.setOutlineColor(Color.BLACK);
+		pauseLabel.setOutlineColor(Color.black);
 		pauseLabel.setOutlineThickness(2.0f);
 
 		fpsDisplayLabel = new SpriteFont("FPS", 4, 3, "Arial", 12, Color.black);
@@ -69,7 +69,7 @@ public class GamePanel extends JPanel {
 	// this is called later after instantiation, and will initialize screenManager
 	// this had to be done outside of the constructor because it needed to know the JPanel's width and height, which aren't available in the constructor
 	public void setupGame() {
-		setBackground(Color.BLACK);
+		setBackground(Colors.CORNFLOWER_BLUE);
 		screenManager.initialize(new Rectangle(getX(), getY(), getWidth(), getHeight()));
 	}
 
@@ -183,7 +183,8 @@ public class GamePanel extends JPanel {
 				int drawX = (panelWidth - drawWidth) / 2;
 				int drawY = (panelHeight - drawHeight) / 2;
 				
-				Mouse.setGameTransform(scale, drawX, drawY);
+				
+
 
 				Graphics2D screenGraphics = (Graphics2D) g.create();
 
