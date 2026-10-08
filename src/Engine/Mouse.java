@@ -9,6 +9,11 @@ public class Mouse
     private static boolean leftButtonDown = false;
     private static volatile int mouseX = 0;
     private static volatile int mouseY = 0;
+    
+    private static double gameScale = 1.0;
+    private static int gameOffsetX = 0;
+    private static int gameOffsetY = 0;
+    
 
     private static final MouseListener mouseListener = new MouseListener()
     {
@@ -98,9 +103,28 @@ public class Mouse
         return mouseY;
     }
 
+    public static void setGameTransform(double scale, int offsetX, int offsetY)
+    {
+        gameScale = scale;
+        gameOffsetX = offsetX;
+        gameOffsetY = offsetY;
+    }
+
+    public static float getGameMouseX()
+    {
+        return (float) ((mouseX - gameOffsetX) / gameScale);
+    }
+
+    public static float getGameMouseY()
+    {
+        return (float) ((mouseY - gameOffsetY) / gameScale);
+    }
+    
+    
+
 	public static double getAngleTo(double originX, double originY)
 	{
-		return Math.atan2(originY - mouseY, originX - mouseX);
+		return Math.atan2(originY - getGameMouseY(), originX - getGameMouseX());
 	}
 
 }

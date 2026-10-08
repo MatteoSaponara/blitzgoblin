@@ -764,8 +764,8 @@ public abstract class Player extends GameObject
         // Convert mouse screen position to world coordinates using Camera
         float cameraX = map.getCamera().getX();
         float cameraY = map.getCamera().getY();
-        mousePosX = Mouse.getMouseX() + cameraX;
-        mousePosY = Mouse.getMouseY() + cameraY;
+        mousePosX = Mouse.getGameMouseX() + cameraX;
+        mousePosY = Mouse.getGameMouseY() + cameraY;
 
         // Get player center in screen coordinates
         Rectangle bounds = getBounds();
