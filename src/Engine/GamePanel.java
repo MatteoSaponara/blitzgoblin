@@ -141,38 +141,74 @@ public class GamePanel extends JPanel {
 
 		graphicsHandler.flushPixelLayer();
 	}
-		
+
 	@Override
 	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-
-		if (doPaint) {
-			// every repaint call will schedule this method to be called
-			// when called, it will setup the graphics handler and then call this class's draw method
+		super.paintComponent(g);	
+	
+		if (doPaint) {	
 			synchronized (stateLock) {
 				int gameWidth = Config.GAME_WINDOW_WIDTH;
 				int gameHeight = Config.GAME_WINDOW_HEIGHT;
 
-				if (gameImage == null) {
-					gameImage = new BufferedImage(gameWidth, gameHeight, BufferedImage.TYPE_INT_ARGB);
+				if (gameImage == null ||
+						gameImage.getWidth() != gameWidth ||
+						gameImage.getHeight() != gameHeight) {
+					gameImage = new BufferedImage(
+							gameWidth,
+							gameHeight,
+							BufferedImage.TYPE_INT_ARGB
+					);
 				}
 
 				Graphics2D gameGraphics = gameImage.createGraphics();
+
+				gameGraphics.setColor(Color.BLACK);
+				gameGraphics.fillRect(0, 0, gameWidth, gameHeight);
 
 				graphicsHandler.setGraphics(gameGraphics);
 				draw();
 
 				gameGraphics.dispose();
 
+				int panelWidth = getWidth();
+				int panelHeight = getHeight();
+
+				double scaleX = (double) panelWidth / gameWidth;
+				double scaleY = (double) panelHeight / gameHeight;
+				double scale = Math.min(scaleX, scaleY);
+
+				int drawWidth = (int) (gameWidth * scale);
+				int drawHeight = (int) (gameHeight * scale);
+
+				int drawX = (panelWidth - drawWidth) / 2;
+				int drawY = (panelHeight - drawHeight) / 2;
+
 				Graphics2D screenGraphics = (Graphics2D) g.create();
 
-				screenGraphics.drawImage(gameImage, 0, 0, getWidth(), getHeight(), null);
+				screenGraphics.setColor(Color.BLACK);
+				screenGraphics.fillRect(0, 0, panelWidth, panelHeight);
+
+				screenGraphics.setRenderingHint(
+						RenderingHints.KEY_INTERPOLATION,
+						RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
+				);	
+
+				screenGraphics.drawImage(
+						gameImage,
+						drawX,
+						drawY,
+						drawWidth,
+						drawHeight,
+						null
+				);
 
 				screenGraphics.dispose();
 			}
-	
+
 			Toolkit.getDefaultToolkit().sync();
 		}
 	}
-	
+
+
 }
