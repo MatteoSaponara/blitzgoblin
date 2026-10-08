@@ -454,6 +454,7 @@ public abstract class Player extends GameObject
         );
         map.addEnemy(gunPOne);
         shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
+        getShotgun().playShootAnimation();
 
         // Applies recoil to the character
         applyRecoil(singleAmmoRecoil);
