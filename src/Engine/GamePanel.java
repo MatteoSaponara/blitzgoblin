@@ -6,6 +6,7 @@ import Utils.Colors;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /*
  * This is where the game loop process and render back buffer is setup
@@ -17,6 +18,7 @@ public class GamePanel extends JPanel {
 
 	// used to draw graphics to the panel
 	private GraphicsHandler graphicsHandler;
+	private BufferedImage gameImage;
 
 	private boolean isGamePaused = false;
 	private SpriteFont pauseLabel;
@@ -139,18 +141,38 @@ public class GamePanel extends JPanel {
 
 		graphicsHandler.flushPixelLayer();
 	}
-
+		
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+
 		if (doPaint) {
 			// every repaint call will schedule this method to be called
 			// when called, it will setup the graphics handler and then call this class's draw method
 			synchronized (stateLock) {
-				graphicsHandler.setGraphics((Graphics2D) g);
+				int gameWidth = Config.GAME_WINDOW_WIDTH;
+				int gameHeight = Config.GAME_WINDOW_HEIGHT;
+
+				if (gameImage == null) {
+					gameImage = new BufferedImage(gameWidth, gameHeight, BufferedImage.TYPE_INT_ARGB);
+				}
+
+				Graphics2D gameGraphics = gameImage.createGraphics();
+
+				graphicsHandler.setGraphics(gameGraphics);
 				draw();
+
+				gameGraphics.dispose();
+
+				Graphics2D screenGraphics = (Graphics2D) g.create();
+
+				screenGraphics.drawImage(gameImage, 0, 0, getWidth(), getHeight(), null);
+
+				screenGraphics.dispose();
 			}
+	
 			Toolkit.getDefaultToolkit().sync();
 		}
 	}
+	
 }

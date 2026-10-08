@@ -28,7 +28,7 @@ public class GunPOne extends Enemy {
                 new SpriteSheet(ImageLoader.load("Bullet1.png"), 7, 7),"DEFAULT");
 
         movementSpeed = 3f;
-        maxDistance = 300f;
+        maxDistance = 3000f;
         distanceTraveled = 0;
 
         float dx = targetX - spawnPoint.x;

@@ -54,9 +54,12 @@ public abstract class Player extends GameObject
     protected Key MOVE_RIGHT_KEY = Key.D;
     protected Key CROUCH_KEY = Key.S;
     protected Key DAMAGE_KEY = Key.X;
+    protected final Key INVINCIBILITY_KEY = Key.I;
 
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
+    protected final int INVINCIBILITY_DURATION = 120;
+	protected int invincibilityTimer = 0;
     protected int health = 3;
     protected int coins = 0;
 
@@ -103,6 +106,12 @@ public abstract class Player extends GameObject
         // if player is currently playing through level (has not won or lost)
         if (levelState == LevelState.RUNNING)
         {
+			
+			if (invincibilityTimer > 0)
+			{
+				invincibilityTimer--;
+			}
+			
             applyGravity();
 
             // Updates mouse aim angle and curser position coordinates.
@@ -139,6 +148,7 @@ public abstract class Player extends GameObject
 
             updateLockedKeys();
             handleDebugDamage();
+            handleInvincibility();
 
             // update player's animation
             super.update();
@@ -365,6 +375,13 @@ public abstract class Player extends GameObject
         {
             keyLocker.unlockKey(DAMAGE_KEY);
         }
+        
+        if (Keyboard.isKeyUp(INVINCIBILITY_KEY))
+		{
+			
+		keyLocker.unlockKey(INVINCIBILITY_KEY);
+		}
+        
     }
 
     protected void handleDebugDamage()
@@ -379,8 +396,18 @@ public abstract class Player extends GameObject
                 health = 0;
                 levelState = LevelState.PLAYER_DEAD;
             }
+         
         }
     }
+
+	protected void handleInvincibility()
+	{
+		if (Keyboard.isKeyDown(INVINCIBILITY_KEY) && !keyLocker.isKeyLocked(INVINCIBILITY_KEY))
+		{
+			keyLocker.lockKey(INVINCIBILITY_KEY);
+			isInvincible = !isInvincible;
+		}
+	}
 
     // handles starting/updating/ending the melee attack based on left mouse button input
     protected void updateAttack()
@@ -556,12 +583,13 @@ map.addEnemy(gunPOne);
     // other entities can call this method to hurt the player
     public void hurtPlayer(MapEntity mapEntity)
     {
-        if (!isInvincible)
+        if (!isInvincible && invincibilityTimer <= 0)
         {
             // if map entity is an enemy, remove one health
             if (mapEntity instanceof Enemy)
             {
                 health--;
+                invincibilityTimer = INVINCIBILITY_DURATION;
 
                 if (health <= 0)
                 {
