@@ -27,7 +27,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
     protected CoinMimicState coinMimicState;
 
     public CoinMimicEnemy(Point location, Direction facingDirection) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("Coin.png"), 26, 26), "IDLE");
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("fakecoin.png"), 38, 43), "IDLE");
         this.initialize();
     }
 
@@ -36,7 +36,11 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
         super.initialize();
         coinMimicState = CoinMimicState.IDLE;
         currentAnimationName = "IDLE";
-        transformTimer = 60; // 60 frames = 1 second. Change this to match transform animation length.
+        // the transform lasts exactly as long as the TRANSFORM animation (sum of its frame delays)
+        transformTimer = 0;
+        for (Frame frame : animations.get("TRANSFORM")) {
+            transformTimer += frame.getDelay();
+        }
     }
 
     @Override
@@ -79,56 +83,43 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
     }
 
 
+    // spritesheet layout (38x43 frames): 0-7 disguised coin spinning, 8-11 transformation, 12-13 revealed chase
+    private static final int IDLE_START = 0, IDLE_FRAMES = 8, IDLE_DELAY = 12;
+    private static final int TRANSFORM_START = 8, TRANSFORM_FRAMES = 4, TRANSFORM_DELAY = 15;
+    private static final int CHASE_START = 12, CHASE_FRAMES = 2, CHASE_DELAY = 10;
+
+    // hitboxes (x, y, width, height in sprite pixels) fitted to the art of each frame
+    private static final int[] IDLE_BOUNDS = {6, 4, 26, 26};
+    private static final int[][] TRANSFORM_BOUNDS = {{6, 4, 26, 26}, {5, 5, 28, 25}, {5, 3, 28, 29}, {2, 3, 34, 38}};
+    private static final int[][] CHASE_BOUNDS = {{0, 1, 38, 41}, {1, 0, 36, 43}};
+
+    private static Frame buildFrame(SpriteSheet spriteSheet, int frameIndex, int delay, int[] bounds) {
+        return new FrameBuilder(spriteSheet.getSprite(0, frameIndex), delay)
+                .withScale(1.4f)
+                .withBounds(bounds[0], bounds[1], bounds[2], bounds[3])
+                .build();
+    }
+
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet)
     {
+        Frame[] idle = new Frame[IDLE_FRAMES];
+        for (int i = 0; i < IDLE_FRAMES; i++) {
+            idle[i] = buildFrame(spriteSheet, IDLE_START + i, IDLE_DELAY, IDLE_BOUNDS);
+        }
+        Frame[] transform = new Frame[TRANSFORM_FRAMES];
+        for (int i = 0; i < TRANSFORM_FRAMES; i++) {
+            transform[i] = buildFrame(spriteSheet, TRANSFORM_START + i, TRANSFORM_DELAY, TRANSFORM_BOUNDS[i]);
+        }
+        Frame[] chase = new Frame[CHASE_FRAMES];
+        for (int i = 0; i < CHASE_FRAMES; i++) {
+            chase[i] = buildFrame(spriteSheet, CHASE_START + i, CHASE_DELAY, CHASE_BOUNDS[i]);
+        }
+
         return new HashMap<String, Frame[]>() {{
-			put("IDLE", new Frame[] {
-					new FrameBuilder(spriteSheet.getSprite(0, 0), 12)
-						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-					new FrameBuilder(spriteSheet.getSprite(0, 1), 12)
-						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-					new FrameBuilder(spriteSheet.getSprite(0, 2), 12)
-						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-					new FrameBuilder(spriteSheet.getSprite(0, 3), 12)
-						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 4), 12)
-						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
-					.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 5), 12)
-						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 6), 12)
-						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-				new FrameBuilder(spriteSheet.getSprite(0, 7), 12)
-						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
-						.build()
-				});
-            put("TRANSFORM", new Frame[] { 
-                    new FrameBuilder(spriteSheet.getSprite(0, 0), 12)
-						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-                });
-            put("CHASE", new Frame[] { 
-                    new FrameBuilder(spriteSheet.getSprite(0, 2), 12)
-						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
-						.build(),
-                });
+            put("IDLE", idle);
+            put("TRANSFORM", transform);
+            put("CHASE", chase);
         }};
     }
 
