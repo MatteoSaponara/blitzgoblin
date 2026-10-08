@@ -33,6 +33,8 @@ public abstract class Player extends GameObject
     protected float moveAmountX, moveAmountY;
     protected float lastAmountMovedX, lastAmountMovedY;
     protected float velocityX = 0;
+    protected float recoilX;
+    protected float recoilY;
 
     // values used to keep track of player's current state
     protected PlayerState playerState;
@@ -452,6 +454,9 @@ public abstract class Player extends GameObject
         );
         map.addEnemy(gunPOne);
         shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
+
+        // Applies recoil to the character
+        applyRecoil(singleAmmoRecoil);
         }    
         }
 
@@ -586,6 +591,8 @@ public abstract class Player extends GameObject
             {
                 momentumY = 0;
                 airGroundState = AirGroundState.GROUND;
+                recoilY = 0;
+                jumpForce = 0;
             } else
             {
                 playerState = PlayerState.JUMPING;
@@ -599,6 +606,8 @@ public abstract class Player extends GameObject
             if (hasCollided)
             {
                 jumpForce = 0;
+                recoilY = 0;
+                momentumY = 0;
             }
         }
     }
@@ -799,40 +808,27 @@ public abstract class Player extends GameObject
     public void applyRecoil(float recoilForce)
     {
         // Angle Calculation
-        double recoilAngle = aimAngle + Math.PI;
+        double recoilAngle = -aimAngle;
 
         // Polar Vector Calculations
-        float recoilX = (float) Math.cos(recoilAngle) * recoilForce;
-        float recoilY = (float) Math.sin(recoilAngle) * recoilForce;
+        recoilX = (float) Math.cos(recoilAngle) * recoilForce;
+        recoilY = (float) -Math.sin(recoilAngle) * recoilForce;
 
         this.velocityX += recoilX;
 
         if (recoilY < 0)
         {
-            this.airGroundState = AirGroundState.AIR;
-            this.playerState = PlayerState.JUMPING;
-            this.jumpForce = Math.abs(recoilY);
+            this.jumpForce += Math.abs(recoilY);
         }
-
         else
         {
-            this.moveAmountY += recoilY;
+            this.momentumY += recoilY;
         }
-    }
 
-    /*
-    public void shootWeapon()
-    {
-        switch(ammoTypeSelected)
+        if(recoilY < 0 && airGroundState == AirGroundState.GROUND)
         {
-            case 1:
-                applyRecoil(singleAmmoRecoil);
-                break;
-            case 2:
-                applyRecoil(twelveAmmoRecoil);
-                break;
-            case 3:
-                applyRecoil(cannonAmmoRecoil);
+            this.airGroundState = AirGroundState.AIR;
+            this.playerState = PlayerState.JUMPING;
         }
     }
 

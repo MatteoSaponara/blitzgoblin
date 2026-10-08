@@ -41,13 +41,13 @@ public class Cat extends Player {
         drag = 0.82f; //Acceleration decrease calculation factor.
         acceleration = walkSpeed * (1 - drag) / drag; //Rate of acceleration per frame, derived so walkSpeed is actually reached
 
-        /*
-        // Recoil Tuning Parameters
+
+        //Recoil Tuning Parameters
         singleAmmoRecoil = 3.5f;
         twelveAmmoRecoil = 8.0f;
         cannonAmmoRecoil = 18.0f;
 
-        */
+
 
     }
 
