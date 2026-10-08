@@ -67,6 +67,7 @@ public class Mouse
     {
     }
 
+
     public static MouseListener getMouseListener()
     {
         return mouseListener;
@@ -97,8 +98,10 @@ public class Mouse
         return mouseY;
     }
 
-    public static double getAngleTo(double originX, double originY)
-    {
-        return Math.atan2(originY - mouseY, originX - mouseX);
-    }
+	public static double getAngleTo(double originX, double originY)
+	{
+		return Math.atan2(originY - mouseY, originX - mouseX);
+	}
+
 }
+

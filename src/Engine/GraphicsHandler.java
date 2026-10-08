@@ -1,7 +1,6 @@
 package Engine;
 
 import GameObject.ImageEffect;
-
 import java.awt.*;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
@@ -18,7 +17,7 @@ public class GraphicsHandler {
     private Graphics2D g;
 
     // device pixels per logical pixel (above 1 on scaled/HiDPI displays)
-    private double deviceScaleX = 1, deviceScaleY = 1;
+    private static double deviceScaleX = 1, deviceScaleY = 1;
 
     private BufferedImage pixelBuffer;
     private Graphics2D pixelGraphics;
@@ -226,6 +225,8 @@ public class GraphicsHandler {
         }
     }
 
+    
+
     public void drawRectangle(int x, int y, int width, int height, Color color) {
         flushPixelLayer();
         Color oldColor = g.getColor();
@@ -275,6 +276,10 @@ public class GraphicsHandler {
 
         g.setFont(oldFont);
         g.setColor(oldColor);
+    }
+
+    public static double[] getDeviceScale (){
+        return new double[]{deviceScaleX, deviceScaleY};
     }
 
     // https://stackoverflow.com/a/35222059 and https://stackoverflow.com/a/31831120

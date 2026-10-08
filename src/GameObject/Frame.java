@@ -31,6 +31,7 @@ public class Frame extends Sprite {
 	public int getDelay() {
 		return delay;
 	}
+	
 
 	public Frame copy() {
 		return new Frame(image, imageEffect, scale, getBoundsDimensions(), delay);

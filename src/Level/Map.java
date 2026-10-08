@@ -334,6 +334,7 @@ public abstract class Map {
         }
         camera.update(player);
     }
+    
 
     // based on the player's current X position (which in a level can potentially be updated each frame),
     // adjust the player's and camera's positions accordingly in order to properly create the map "scrolling" effect

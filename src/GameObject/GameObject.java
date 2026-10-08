@@ -5,7 +5,6 @@ import Level.*;
 import Utils.Direction;
 import Utils.ImageUtils;
 import Utils.MathUtils;
-
 import java.awt.*;
 import java.util.HashMap;
 
@@ -318,6 +317,9 @@ public class GameObject extends AnimatedSprite {
     public void setMap(Map map) {
         this.map = map;
     }
+    public Map getMap() {
+        return this.map;
+    }
 
     @Override
     public void draw(GraphicsHandler graphicsHandler) {
@@ -356,6 +358,7 @@ public class GameObject extends AnimatedSprite {
             super.draw(graphicsHandler);
         }
     }
+    
 
     @Override
     public void drawBounds(GraphicsHandler graphicsHandler, Color color) {

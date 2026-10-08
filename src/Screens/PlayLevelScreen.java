@@ -21,6 +21,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected Map map;
     protected Player player;
     protected BufferedImage heartImage;
+    protected BufferedImage testImage;
     protected PlayLevelScreenState playLevelScreenState;
     protected int screenTimer;
     protected LevelClearedScreen levelClearedScreen;
@@ -54,6 +55,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case RUNNING:
                 player.update();
                 map.update(player);
+                if(player.hasShotgun())
+                    player.getShotgun().update();
                 break;
             // if level has been completed, bring up the level cleared screen
             case LEVEL_COMPLETED:
@@ -81,6 +84,13 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case RUNNING:
                 map.draw(graphicsHandler);
                 player.draw(graphicsHandler);
+                if(player.hasShotgun()) { 
+                    player.getShotgun().draw(graphicsHandler);
+                    if(player.playerCanShootShotgun())
+                        graphicsHandler.drawImage(ImageLoader.load("gunui.png"), 27, 80, 55, 25);
+                    else
+                        graphicsHandler.drawImage(ImageLoader.load("gunuireload.png"), 27, 80, 55, 25);
+                }
 
                 for (int i = 0; i < player.getHealth(); i++) {
                     graphicsHandler.drawImage(heartImage, 10 + (i * 40), 10, 60, 60);

@@ -1,5 +1,6 @@
 package Level;
 
+import Enemies.GunPOne;
 import Engine.GraphicsHandler;
 import Engine.Key;
 import Engine.KeyLocker;
@@ -10,10 +11,8 @@ import GameObject.Rectangle;
 import GameObject.SpriteSheet;
 import Utils.AirGroundState;
 import Utils.Direction;
-import java.awt.Color;
-import java.util.ArrayList;
-import Enemies.GunPOne;
 import Utils.Point;
+import java.util.ArrayList;
 
 public abstract class Player extends GameObject
 {
@@ -67,10 +66,17 @@ public abstract class Player extends GameObject
     protected boolean isAttacking = false;
     protected boolean attackButtonLocked = false;
     protected int attackTimer = 0;
+
+    protected int shotgunAttackTimer = 0;
+    protected final int SHOTGUN_ATTACK_COOLDOWN = 25;
     protected final int ATTACK_DURATION = 15;
     protected final int ATTACK_WIDTH = 45;
     protected final int ATTACK_OVERLAP = 6; // how far the attack box pushes into the player's sprite bounds
     protected Rectangle attackBox;
+
+    // shotgun values
+    private boolean hasShotgun = true;
+    private Shotgun playerShotgun;
 
     // Aiming system variables
     protected double aimAngle = 0;
@@ -96,6 +102,8 @@ public abstract class Player extends GameObject
         playerState = PlayerState.STANDING;
         previousPlayerState = playerState;
         levelState = LevelState.RUNNING;
+        if(true)
+            playerShotgun = new Shotgun(x,y, this);
     }
 
     public void update()
@@ -114,8 +122,7 @@ public abstract class Player extends GameObject
 			
             applyGravity();
 
-            // Updates mouse aim angle and curser position coordinates.
-            updateAiming();
+            
 
             //Adds horizontal velocity to this frame's movement amount
             moveAmountX += velocityX;
@@ -143,6 +150,9 @@ public abstract class Player extends GameObject
             // move player with respect to map collisions based on how much player needs to move this frame
             lastAmountMovedX = super.moveXHandleCollision(moveAmountX);
             lastAmountMovedY = super.moveYHandleCollision(moveAmountY);
+
+            // Updates mouse aim angle and curser position coordinates.
+            updateAiming();
 
             handlePlayerAnimation();
 
@@ -432,15 +442,19 @@ public abstract class Player extends GameObject
 			} else {
 			spawnX = getX() - 70;
 		}
-
+        if(playerCanShootShotgun()) {
+            
 		GunPOne gunPOne = new GunPOne(
-		new Point(spawnX, getY()),
-		mouseX,
-		mouseY
-		);
-
-map.addEnemy(gunPOne);
+            new Point(getShotgun().getCurrentGunBarrelEndPixelPosition()[0],
+            getShotgun().getCurrentGunBarrelEndPixelPosition()[1]),
+            mouseX,
+            mouseY
+        );
+        map.addEnemy(gunPOne);
+        shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
+        }    
         }
+
 
         if (Mouse.isLeftButtonUp())
         {
@@ -458,6 +472,13 @@ map.addEnemy(gunPOne);
                 attackBox = null;
             }
         }
+        if(!playerCanShootShotgun()) {
+            shotgunAttackTimer--;
+        }
+    }
+
+    public boolean playerCanShootShotgun() {
+        return (hasShotgun && shotgunAttackTimer <= 0);
     }
 
     // positions the attack hitbox right in front of the player based on which way it's facing
@@ -493,7 +514,9 @@ map.addEnemy(gunPOne);
 
         for (Enemy enemy : map.getActiveEnemies())
         {
-            if (enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE && attackBox.intersects(enemy))
+            if (enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE 
+            && !(enemy instanceof GunPOne)
+            && attackBox.intersects(enemy))
             {
                 enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
             }
@@ -751,6 +774,13 @@ map.addEnemy(gunPOne);
 
         // Calculate angle from player to mouse cursor
         aimAngle = Mouse.getAngleTo(playerScreenX, playerScreenY);
+    }
+
+    public boolean hasShotgun(){
+        return hasShotgun;
+    }
+    public Shotgun getShotgun(){
+        return playerShotgun;
     }
 
     // Ammo unlock methods

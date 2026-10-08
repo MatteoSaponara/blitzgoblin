@@ -24,7 +24,7 @@ public class GunPOne extends Enemy {
     private float moveY;
 
     public GunPOne(Point spawnPoint, float targetX, float targetY) {
-        super(spawnPoint.x, spawnPoint.y,
+        super(spawnPoint.x-(3*4), spawnPoint.y-(3*4),
                 new SpriteSheet(ImageLoader.load("Bullet1.png"), 7, 7),"DEFAULT");
 
         movementSpeed = 3f;

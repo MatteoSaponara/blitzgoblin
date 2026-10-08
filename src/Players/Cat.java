@@ -9,6 +9,7 @@ import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
 import Level.Player;
+import Level.Shotgun;
 
 import java.util.HashMap;
 
@@ -47,6 +48,7 @@ public class Cat extends Player {
         cannonAmmoRecoil = 18.0f;
 
         */
+
     }
 
     public void update() {
@@ -64,7 +66,7 @@ public class Cat extends Player {
             // frames 1-2 (columns 0-1): simple two-frame idle animation
             put("STAND_RIGHT", new Frame[] {
                     new FrameBuilder(spriteSheet.getSprite(0, 0), 30)
-                            .withScale(SPRITE_SCALE)
+                            .withScale(SPRITE_SCALE) 
                             .withBounds(BOUNDS_X, BOUNDS_Y, BOUNDS_WIDTH, BOUNDS_HEIGHT)
                             .build(),
                     new FrameBuilder(spriteSheet.getSprite(0, 1), 30)
