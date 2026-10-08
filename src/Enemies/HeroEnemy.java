@@ -24,7 +24,7 @@ public class HeroEnemy extends Enemy {
     private AirGroundState airGroundState;
 
     public HeroEnemy(Point location, Direction facingDirection) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("HeroPlaceholder.png"), 14, 17), "WALK_LEFT");
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("hero.png"), 84, 80), "WALK_LEFT");
         this.startFacingDirection = facingDirection;
         this.initialize();
     }
@@ -98,16 +98,16 @@ public class HeroEnemy extends Enemy {
         return new HashMap<String, Frame[]>() {{
             put("WALK_LEFT", new Frame[] {
                     new FrameBuilder(spriteSheet.getSprite(0, 0), 8)
-                            .withScale(4)
-                            .withBounds(0, 0, 14, 17)
+                            .withScale(1.4f)
+                            .withBounds(0, 0, 84, 80)
                             .build()
             });
 
             put("WALK_RIGHT", new Frame[] {
                     new FrameBuilder(spriteSheet.getSprite(0, 0), 8)
-                            .withScale(4)
+                            .withScale(1.4f)
                             .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(0, 0, 14, 17)
+                            .withBounds(0, 0, 84, 80)
                             .build()
             });
         }};
