@@ -433,8 +433,8 @@ public abstract class Player extends GameObject
            float cameraX = map.getCamera().getX();
 			float cameraY = map.getCamera().getY();
 
-			float mouseX = Mouse.getMouseX() + cameraX;
-			float mouseY = Mouse.getMouseY() + cameraY;
+			float mouseX = Mouse.getGameMouseX()  + cameraX;
+			float mouseY = Mouse.getGameMouseY() + cameraY;
 	
 			float spawnX;
 

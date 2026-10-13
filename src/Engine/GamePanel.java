@@ -183,6 +183,7 @@ public class GamePanel extends JPanel {
 				int drawX = (panelWidth - drawWidth) / 2;
 				int drawY = (panelHeight - drawHeight) / 2;
 				
+				Mouse.setGameTransform(scale, drawX, drawY);
 				
 
 
