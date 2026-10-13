@@ -430,8 +430,8 @@ public abstract class Player extends GameObject
             isAttacking = true;
             attackTimer = ATTACK_DURATION;
             
-           float cameraX = map.getCamera().getX();
-			float cameraY = map.getCamera().getY();
+            float cameraX = map.getCamera().getX();
+		    float cameraY = map.getCamera().getY();
 
 			float mouseX = Mouse.getGameMouseX()  + cameraX;
 			float mouseY = Mouse.getGameMouseY() + cameraY;
