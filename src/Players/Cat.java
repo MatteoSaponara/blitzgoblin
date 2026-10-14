@@ -31,14 +31,14 @@ public class Cat extends Player {
         // updated spritesheet is a single row of 12 frames, each 73x54 with 1px of padding between them
         super(new SpriteSheet(ImageLoader.load("Goblin.png"), 73, 54), x, y, "STAND_RIGHT");
         gravity = .5f;
-        terminalVelocityY = 7f;
-        jumpHeight = 14.5f;
+        terminalVelocityY = 7.5f;
+        jumpHeight = 12.5f;
         jumpDegrade = .5f;
         momentumYIncrease = .5f;
 
         // velocity and Momentum Implementation for Goblin Character
-        walkSpeed = 2.33f; //Top speed (units per frame); raise this to walk faster
-        drag = 0.82f; //Acceleration decrease calculation factor.
+        walkSpeed = 2.5f; //Top speed (units per frame); raise this to walk faster
+        drag = 0.75f; //Acceleration decrease calculation factor.
         acceleration = walkSpeed * (1 - drag) / drag; //Rate of acceleration per frame, derived so walkSpeed is actually reached
 
 
