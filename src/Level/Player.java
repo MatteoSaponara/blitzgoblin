@@ -155,6 +155,9 @@ public abstract class Player extends GameObject
                 velocityX = 0;
             }
 
+            // facing direction follows which side of the player the mouse is on, not the movement direction
+            updateFacingFromMouse();
+
             // update player's state and current actions, which includes things like determining how much it should move each frame and if its walking or jumping
             do
             {
@@ -262,7 +265,6 @@ public abstract class Player extends GameObject
             {
                 velocityX = -getMaxVelocityX();
             }
-            facingDirection = Direction.LEFT;
         }
 
         // if walk right key is pressed, move player to the right
@@ -273,7 +275,6 @@ public abstract class Player extends GameObject
             {
                 velocityX = getMaxVelocityX();
             }
-            facingDirection = Direction.RIGHT;
         }
 
         if (Keyboard.isKeyUp(MOVE_LEFT_KEY) && Keyboard.isKeyUp(MOVE_RIGHT_KEY) && Math.abs(velocityX) < 0.01f)
@@ -798,6 +799,20 @@ public abstract class Player extends GameObject
     {
         super.draw(graphicsHandler);
         // attack box is intentionally not drawn -- it's only used for collision detection against enemies
+    }
+
+    protected void updateFacingFromMouse() {
+        if (map == null) return;
+
+        Rectangle bounds = getBounds();
+        float playerScreenX = bounds.getX1() + (bounds.getWidth() / 2f) - map.getCamera().getX();
+        float mouseScreenX = Mouse.getGameMouseX();
+
+        if (mouseScreenX < playerScreenX) {
+            facingDirection = Direction.LEFT;
+        } else if (mouseScreenX > playerScreenX) {
+            facingDirection = Direction.RIGHT;
+        }
     }
 
     protected void updateAiming() {
