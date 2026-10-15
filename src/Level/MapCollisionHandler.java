@@ -134,6 +134,10 @@ public class MapCollisionHandler {
                 case NOT_PASSABLE:
                     return gameObject.intersects(mapTile);
                 case JUMP_THROUGH_PLATFORM:
+                    // a crouching player drops through jump-through platforms
+                    if (gameObject instanceof Player && ((Player) gameObject).isDroppingThroughPlatforms()) {
+                        return false;
+                    }
                     return direction == Direction.DOWN && gameObject.intersects(mapTile) &&
                             Math.round(gameObject.getBounds().getY2()) == Math.round(mapTile.getBounds().getY1());
                 case WATER:

@@ -29,6 +29,14 @@ public abstract class Player extends GameObject
 
     // values used to handle player movement
     protected float jumpForce = 0;
+
+    // variable jump height: releasing the jump key while rising caps the upward force at this value (0 = disabled)
+    protected float jumpCutForce = 0;
+    protected boolean jumpControlled = false; // true while a rise was started by the jump key (recoil boosts don't count)
+
+    // holding the crouch key lets the player fall through jump-through platforms (plus a few ticks after release)
+    private static final int PLATFORM_DROP_TICKS = 5;
+    private int platformDropTimer = 0;
     protected float momentumY = 0;
     protected float moveAmountX, moveAmountY;
     protected float lastAmountMovedX, lastAmountMovedY;
@@ -122,6 +130,15 @@ public abstract class Player extends GameObject
 				invincibilityTimer--;
 			}
 			
+            if (Keyboard.isKeyDown(CROUCH_KEY))
+            {
+                platformDropTimer = PLATFORM_DROP_TICKS;
+            }
+            else if (platformDropTimer > 0)
+            {
+                platformDropTimer--;
+            }
+
             applyGravity();
 
             
@@ -137,6 +154,9 @@ public abstract class Player extends GameObject
             {
                 velocityX = 0;
             }
+
+            // facing direction follows which side of the player the mouse is on, not the movement direction
+            updateFacingFromMouse();
 
             // update player's state and current actions, which includes things like determining how much it should move each frame and if its walking or jumping
             do
@@ -245,7 +265,6 @@ public abstract class Player extends GameObject
             {
                 velocityX = -getMaxVelocityX();
             }
-            facingDirection = Direction.LEFT;
         }
 
         // if walk right key is pressed, move player to the right
@@ -256,7 +275,6 @@ public abstract class Player extends GameObject
             {
                 velocityX = getMaxVelocityX();
             }
-            facingDirection = Direction.RIGHT;
         }
 
         if (Keyboard.isKeyUp(MOVE_LEFT_KEY) && Keyboard.isKeyUp(MOVE_RIGHT_KEY) && Math.abs(velocityX) < 0.01f)
@@ -307,6 +325,7 @@ public abstract class Player extends GameObject
 
             // player is set to be in air and then player is sent into the air
             airGroundState = AirGroundState.AIR;
+            jumpControlled = true;
             jumpForce = jumpHeight;
             if (jumpForce > 0)
             {
@@ -322,6 +341,12 @@ public abstract class Player extends GameObject
         // if player is in air (currently in a jump) and has more jumpForce, continue sending player upwards
         else if (airGroundState == AirGroundState.AIR)
         {
+            // jump key released while still rising: cut the upward force so a short press gives a short hop
+            if (jumpControlled && jumpCutForce > 0 && !Keyboard.isKeyDown(JUMP_KEYS) && jumpForce > jumpCutForce)
+            {
+                jumpForce = jumpCutForce;
+            }
+
             if (jumpForce > 0)
             {
                 moveAmountY -= jumpForce;
@@ -594,6 +619,7 @@ public abstract class Player extends GameObject
                 airGroundState = AirGroundState.GROUND;
                 recoilY = 0;
                 jumpForce = 0;
+                jumpControlled = false;
             } else
             {
                 playerState = PlayerState.JUMPING;
@@ -607,10 +633,17 @@ public abstract class Player extends GameObject
             if (hasCollided)
             {
                 jumpForce = 0;
+                jumpControlled = false;
                 recoilY = 0;
                 momentumY = 0;
             }
         }
+    }
+
+    // used by tile collision: while true, jump-through platforms don't stop the player from falling
+    public boolean isDroppingThroughPlatforms()
+    {
+        return platformDropTimer > 0;
     }
 
     // other entities can call this method to hurt the player
@@ -768,6 +801,20 @@ public abstract class Player extends GameObject
         // attack box is intentionally not drawn -- it's only used for collision detection against enemies
     }
 
+    protected void updateFacingFromMouse() {
+        if (map == null) return;
+
+        Rectangle bounds = getBounds();
+        float playerScreenX = bounds.getX1() + (bounds.getWidth() / 2f) - map.getCamera().getX();
+        float mouseScreenX = Mouse.getGameMouseX();
+
+        if (mouseScreenX < playerScreenX) {
+            facingDirection = Direction.LEFT;
+        } else if (mouseScreenX > playerScreenX) {
+            facingDirection = Direction.RIGHT;
+        }
+    }
+
     protected void updateAiming() {
         if (map == null) return;
 
@@ -820,6 +867,7 @@ public abstract class Player extends GameObject
         if (recoilY < 0)
         {
             this.jumpForce += Math.abs(recoilY);
+            this.jumpControlled = false; // a recoil boost isn't affected by the jump key
         }
         else
         {
