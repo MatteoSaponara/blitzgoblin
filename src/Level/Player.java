@@ -85,7 +85,7 @@ public abstract class Player extends GameObject
     protected Rectangle attackBox;
 
     // shotgun values
-    private boolean hasShotgun = true;
+    private boolean hasShotgun = true; // Set to false 
     private Shotgun playerShotgun;
 
     // Aiming system variables
@@ -102,6 +102,9 @@ public abstract class Player extends GameObject
     protected float singleAmmoRecoil = 0.3f;
     protected float twelveAmmoRecoil = 7.0f;
     protected float cannonAmmoRecoil = 16.0f;
+
+    // Ammo Mode
+    String ammoMode = "single"; // Default ammo mode is single
 
     public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName)
     {
@@ -468,22 +471,31 @@ public abstract class Player extends GameObject
 			spawnX = getX() + getWidth() + 70;
 			} else {
 			spawnX = getX() - 70;
-		}
-        if(playerCanShootShotgun()) {
-            
-		GunPOne gunPOne = new GunPOne(
-            new Point(getShotgun().getCurrentGunBarrelEndPixelPosition()[0],
-            getShotgun().getCurrentGunBarrelEndPixelPosition()[1]),
-            mouseX,
-            mouseY
-        );
-        map.addEnemy(gunPOne);
-        shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
-        getShotgun().playShootAnimation();
+		    }
+            if(playerCanShootShotgun()) {
+                switch (ammoMode) {
+                    case "single":
+                        GunPOne gunPOne = new GunPOne(
+                            new Point(getShotgun().getCurrentGunBarrelEndPixelPosition()[0],
+                                    getShotgun().getCurrentGunBarrelEndPixelPosition()[1]),
+                            mouseX,
+                            mouseY
+                    );
+                        map.addEnemy(gunPOne);
 
-        // Applies recoil to the character
-        applyRecoil(singleAmmoRecoil);
-        }    
+                        // Applies recoil to the character
+                        applyRecoil(singleAmmoRecoil);
+                        break;
+                    case "twelve":
+                        // Implement logic for twelve ammo mode
+                        break;
+                    case "cannon":
+                        // Implement logic for cannon ammo mode
+                        break;
+                }
+            shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
+            getShotgun().playShootAnimation();
+            }    
         }
 
 
@@ -495,7 +507,9 @@ public abstract class Player extends GameObject
         if (isAttacking)
         {
             updateAttackBoxLocation();
-            checkAttackCollisions();
+            if  (!hasShotgun) {
+                checkAttackCollisions(); // Does melee attack when the player doesn't have the shotgun
+            }
             attackTimer--;
             if (attackTimer <= 0)
             {
@@ -505,6 +519,16 @@ public abstract class Player extends GameObject
         }
         if(!playerCanShootShotgun()) {
             shotgunAttackTimer--;
+        }
+    }
+
+    protected void ChangeAmmoMode() {
+        if (Keyboard.isKeyDown(Key.ONE)) {
+            ammoMode = "single";
+        } else if (Keyboard.isKeyDown(Key.TWO)) {
+            ammoMode = "twelve";
+        } else if (Keyboard.isKeyDown(Key.THREE)) {
+            ammoMode = "cannon";
         }
     }
 
@@ -535,7 +559,7 @@ public abstract class Player extends GameObject
         }
     }
 
-    // kills any enemy currently touching the attack hitbox
+    // MELEE ATTACK kills any enemy currently touching the attack hitbox
     protected void checkAttackCollisions()
     {
         if (map == null || attackBox == null)
