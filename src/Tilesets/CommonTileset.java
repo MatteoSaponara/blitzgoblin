@@ -276,8 +276,23 @@ public class CommonTileset extends Tileset {
         MapTileBuilder spikeDownTile = new MapTileBuilder(spikeDownFrame)
                 .withTileType(TileType.SPIKE_DOWN);
 
+                Frame spikeUpFrame2 = new FrameBuilder(getSubImage(5, 2))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder spikeUpTile2 = new MapTileBuilder(spikeUpFrame2)
+                .withTileType(TileType.SPIKE_UP);
+        Frame spikeDownFrame2 = new FrameBuilder(getSubImage(5, 3))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder spikeDownTile2 = new MapTileBuilder(spikeDownFrame2)
+                .withTileType(TileType.SPIKE_DOWN);
+
         mapTiles.add(spikeUpTile);
         mapTiles.add(spikeDownTile);
+        mapTiles.add(spikeUpTile2);
+        mapTiles.add(spikeDownTile2);
 
         return mapTiles;
     }
