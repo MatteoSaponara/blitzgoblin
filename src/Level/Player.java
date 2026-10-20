@@ -2,11 +2,8 @@ package Level;
 
 import Interfaces.IDamagable;
 import Enemies.GunPOne;
-<<<<<<< HEAD
 import Enemies.GunPCannonBall;
-=======
 import Enemies.GunPTwelveShot;
->>>>>>> 4eab5d5d7af2d7849109ed1a6c3cf7a8d3bc5a7e
 import Engine.GraphicsHandler;
 import Engine.Key;
 import Engine.KeyLocker;
@@ -114,7 +111,7 @@ public abstract class Player extends GameObject
     // Ammo Mode
     String ammoMode = "twelve"; // Default ammo mode is single
 
-    public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName)
+    public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName, boolean hasShotgun)
     {
         super(spriteSheet, x, y, startingAnimationName);
         facingDirection = Direction.RIGHT;
@@ -123,7 +120,7 @@ public abstract class Player extends GameObject
         playerState = PlayerState.STANDING;
         previousPlayerState = playerState;
         levelState = LevelState.RUNNING;
-        if(true)
+        if(hasShotgun)
             playerShotgun = new Shotgun(x,y, this);
     }
 
@@ -497,15 +494,12 @@ public abstract class Player extends GameObject
                         break;
                     case "twelve":
                         // Implement logic for twelve ammo mode
-<<<<<<< HEAD
                         System.out.println("Firing twelve ammo");
-=======
                         for (Enemy bullet : getShotgun().shootTwelveShot()) {
                             map.addEnemy(bullet);
                         }
                         // Applies recoil to the character
                         applyRecoil(twelveAmmoRecoil);
->>>>>>> 4eab5d5d7af2d7849109ed1a6c3cf7a8d3bc5a7e
                         break;
                     case "cannon":
                         GunPCannonBall gunPCannonBall = new GunPCannonBall(
@@ -557,7 +551,7 @@ public abstract class Player extends GameObject
     }
 
     public boolean playerCanShootShotgun() {
-        return (hasShotgun && shotgunAttackTimer <= 0);
+        return (hasShotgun && getShotgun() != null && shotgunAttackTimer <= 0);
     }
 
     // positions the attack hitbox right in front of the player based on which way it's facing
