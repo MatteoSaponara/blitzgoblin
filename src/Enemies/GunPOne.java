@@ -5,7 +5,7 @@ import Engine.ImageLoader;
 import Engine.Mouse;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
-//import Interfaces.IDamagable;
+import Interfaces.IDamagable;
 import Level.Enemy;
 import Level.MapEntity;
 import Level.MapEntityStatus;
@@ -58,16 +58,17 @@ public class GunPOne extends Enemy {
         for (Enemy enemy : map.getActiveEnemies()) {
             if (enemy != this &&
                     enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE && this.intersects(enemy)) {
-				/*
+				
                 if (enemy instanceof IDamagable) {
-                    ((IDamagable) enemy).takeDamage(1);
+                    ((IDamagable) enemy).takeDamage(3);
                     this.mapEntityStatus = MapEntityStatus.REMOVED;
                     return;
                 }
-                */
                 
+                /*
                 this.mapEntityStatus = MapEntityStatus.REMOVED;
 				enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
+				*/
 				return;
                 
             }
