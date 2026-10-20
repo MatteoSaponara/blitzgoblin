@@ -25,9 +25,9 @@ public class GunPOne extends Enemy {
 
     public GunPOne(Point spawnPoint, float targetX, float targetY) {
         super(spawnPoint.x-(3*4), spawnPoint.y-(3*4),
-                new SpriteSheet(ImageLoader.load("Bullet1.png"), 7, 7),"DEFAULT");
+                new SpriteSheet(ImageLoader.load("Bullet1.png"), 16, 16),"DEFAULT");
 
-        movementSpeed = 6f;
+        movementSpeed = 8f;
         maxDistance = 3000f;
         distanceTraveled = 0;
 
@@ -101,7 +101,7 @@ public class GunPOne extends Enemy {
         return new HashMap<String, Frame[]>() {{
             put("DEFAULT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(0, 0))
-                    .withScale(3)
+                    .withScale(1.4f)
                     .withBounds(1, 1, 5, 5)
                     .build()
             });
