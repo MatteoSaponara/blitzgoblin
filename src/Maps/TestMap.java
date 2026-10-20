@@ -17,6 +17,7 @@ import EnhancedMapTiles.CannonAmmo;
 import GameObject.Rectangle;
 import Level.*;
 import NPCs.Walrus;
+import NPCs.CrouchSign;
 import Tilesets.CommonTileset;
 import Utils.Direction;
 import java.util.ArrayList;
@@ -179,6 +180,9 @@ public class TestMap extends Map {
 
         Walrus walrus = new Walrus(getMapTile(23, 14).getLocation().subtractY(13));
         npcs.add(walrus);
+        CrouchSign crouchsign = new CrouchSign(getMapTile(17, 14).getLocation().subtractY(13));
+
+        npcs.add(crouchsign);
 
         return npcs;
     }

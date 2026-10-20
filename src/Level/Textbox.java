@@ -9,17 +9,17 @@ public class Textbox {
     protected int x;
     protected int y;
     protected SpriteFont spriteFont;
-    protected Color fillColor = Color.white;
-    protected Color borderColor = Color.black;
+    protected Color fillColor = Color.black;
+    protected Color borderColor = Color.white;
     protected int borderThickness = 1;
     protected int vPadding = 10; // spacing above and below text
     protected int hPadding = 10; // spacing to right and left of text
     protected int gap = 0; // horizontal space between lines of text -- only matters with multiline text
 
     public Textbox(String text) {
-        Font font = new Font("Arial", Font.PLAIN, 12);
+        Font font = new Font("Copperplate Gothic Light", Font.PLAIN, 10);
         Point textLocation = new Point(x + hPadding + borderThickness, y + vPadding + borderThickness);
-        spriteFont = new SpriteFont(text, textLocation.x, textLocation.y,  font, Color.black);
+        spriteFont = new SpriteFont(text, textLocation.x, textLocation.y,  font, Color.white);
     }
 
     public void setX(int x) {

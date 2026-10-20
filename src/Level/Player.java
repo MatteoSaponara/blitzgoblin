@@ -1,5 +1,6 @@
 package Level;
 
+import Interfaces.IDamagable;
 import Enemies.GunPOne;
 import Engine.GraphicsHandler;
 import Engine.Key;
@@ -57,7 +58,9 @@ public abstract class Player extends GameObject
 
     // define keys
     protected KeyLocker keyLocker = new KeyLocker();
-    protected Key[] JUMP_KEYS = {Key.W, Key.SPACE};
+    // I was having trouble using the space key to interact as it also triggers jump so I am removing it if you don't like this change just replace the new line with old line below
+    //protected Key[] JUMP_KEYS = {Key.W, Key.SPACE};
+    protected Key[] JUMP_KEYS = {Key.W,};
     protected boolean jumpKeyLocked = false;
     protected Key MOVE_LEFT_KEY = Key.A;
     protected Key MOVE_RIGHT_KEY = Key.D;
@@ -573,7 +576,11 @@ public abstract class Player extends GameObject
             && !(enemy instanceof GunPOne)
             && attackBox.intersects(enemy))
             {
-                enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
+                //enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
+                if (enemy instanceof IDamagable) {
+					((IDamagable) enemy).takeDamage(1);
+					return;
+					}
             }
         }
     }

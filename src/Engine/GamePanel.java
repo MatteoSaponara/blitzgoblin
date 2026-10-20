@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 
+
 /*
  * This is where the game loop process and render back buffer is setup
  */
@@ -70,7 +71,7 @@ public class GamePanel extends JPanel {
 	// this had to be done outside of the constructor because it needed to know the JPanel's width and height, which aren't available in the constructor
 	public void setupGame() {
 		setBackground(Colors.CORNFLOWER_BLUE);
-		screenManager.initialize(new Rectangle(getX(), getY(), getWidth(), getHeight()));
+		screenManager.initialize(new Rectangle(0, 0, Config.GAME_WINDOW_WIDTH, Config.GAME_WINDOW_HEIGHT));
 	}
 
 	// this starts the timer (the game loop is started here)
@@ -172,11 +173,13 @@ public class GamePanel extends JPanel {
 
 				int panelWidth = getWidth();
 				int panelHeight = getHeight();
+				
+				//System.out.println("ScreenManager: " + ScreenManager.getScreenWidth() + "x" + ScreenManager.getScreenHeight());
+				//System.out.println("Panel: " + panelWidth + "x" + panelHeight + " | Game image: " + gameWidth + "x" + gameHeight);
 
 				double scaleX = (double) panelWidth / gameWidth;
 				double scaleY = (double) panelHeight / gameHeight;
 				double scale = Math.min(scaleX, scaleY);
-
 				int drawWidth = (int) (gameWidth * scale);
 				int drawHeight = (int) (gameHeight * scale);
 
@@ -184,6 +187,9 @@ public class GamePanel extends JPanel {
 				int drawY = (panelHeight - drawHeight) / 2;
 				
 				Mouse.setGameTransform(scale, drawX, drawY);
+				
+
+				
 				
 
 
@@ -197,14 +203,7 @@ public class GamePanel extends JPanel {
 						RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
 				);	
 
-				screenGraphics.drawImage(
-						gameImage,
-						drawX,
-						drawY,
-						drawWidth,
-						drawHeight,
-						null
-				);
+				screenGraphics.drawImage(gameImage, drawX, drawY, drawWidth, drawHeight, null);
 
 				screenGraphics.dispose();
 			}
