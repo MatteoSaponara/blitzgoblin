@@ -480,35 +480,25 @@ public abstract class Player extends GameObject
             if(playerCanShootShotgun()) {
                 switch (ammoMode) {
                     case "single":
-                        GunPOne gunPOne = new GunPOne(
-                            new Point(getShotgun().getCurrentGunBarrelEndPixelPosition()[0],
-                                    getShotgun().getCurrentGunBarrelEndPixelPosition()[1]),
-                            mouseX,
-                            mouseY
-                    );
-                        map.addEnemy(gunPOne);
-
-                        // Applies recoil to the character
-                        applyRecoil(singleAmmoRecoil);
-                        System.out.println("Firing single ammo");
+                        if (hasSingleAmmo) {
+                            shootSingleShot(mouseX, mouseY);
+                        }
+                        
                         break;
                     case "twelve":
-                        // Implement logic for twelve ammo mode
-                        System.out.println("Firing twelve ammo");
+                        if (hasTwelveAmmo) {
+                            System.out.println("Firing twelve ammo");
                         for (Enemy bullet : getShotgun().shootTwelveShot()) {
                             map.addEnemy(bullet);
                         }
                         // Applies recoil to the character
                         applyRecoil(twelveAmmoRecoil);
+                        }
                         break;
                     case "cannon":
-                        GunPCannonBall gunPCannonBall = new GunPCannonBall(
-                                new Point(getShotgun().getCurrentGunBarrelEndPixelPosition()[0],
-                                        getShotgun().getCurrentGunBarrelEndPixelPosition()[1]),
-                                mouseX,
-                                mouseY
-                        );
-                        System.out.println("Firing cannon ammo");
+                        if (hasCannonAmmo) {
+                            shootCannonBall(mouseX, mouseY);
+                        }
                         break;
                 }
             shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
@@ -931,6 +921,31 @@ public abstract class Player extends GameObject
     public void pickupShotgun() {
         hasShotgun = true;
         playerShotgun = new Shotgun(x,y, this);
+    }
+
+    private void shootSingleShot(float mouseX, float mouseY) {
+        GunPOne gunPOne = new GunPOne(
+                            new Point(getShotgun().getCurrentGunBarrelEndPixelPosition()[0],
+                                    getShotgun().getCurrentGunBarrelEndPixelPosition()[1]),
+                            mouseX,
+                            mouseY
+                        );
+                        map.addEnemy(gunPOne);
+
+                        // Applies recoil to the character
+                        applyRecoil(singleAmmoRecoil);
+                        System.out.println("Firing single ammo");
+    }
+
+    private void shootCannonBall(float mouseX, float mouseY) {
+        GunPCannonBall gunPCannonBall = new GunPCannonBall(
+                                new Point(getShotgun().getCurrentGunBarrelEndPixelPosition()[0],
+                                        getShotgun().getCurrentGunBarrelEndPixelPosition()[1]),
+                                mouseX,
+                                mouseY
+                        );
+                        applyRecoil(cannonAmmoRecoil);
+                        System.out.println("Firing cannon ammo");
     }
 
     // Uncomment this to have game draw player's bounds to make it easier to visualize
