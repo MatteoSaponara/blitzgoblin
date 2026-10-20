@@ -548,7 +548,7 @@ public abstract class Player extends GameObject
     }
 
     public boolean playerCanShootShotgun() {
-        return (hasShotgun && shotgunAttackTimer <= 0);
+        return (hasShotgun && getShotgun() != null && shotgunAttackTimer <= 0);
     }
 
     // positions the attack hitbox right in front of the player based on which way it's facing
