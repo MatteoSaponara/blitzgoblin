@@ -16,7 +16,7 @@ public class TitleScreenMap extends Map {
     public TitleScreenMap() {
         super("title_screen_map.txt", new CommonTileset());
         Point catLocation = getMapTile(6, 8).getLocation().subtractX(24).subtractY(27);
-        cat = new Sprite(ImageLoader.loadSubImage("goblin.png", Colors.MAGENTA, 0, 0, 48, 52));
+        cat = new Sprite(ImageLoader.loadSubImage("goblin.png", Colors.MAGENTA, 0, 0, 66, 52));
         cat.setScale(1.5f);
         cat.setLocation(catLocation.x, catLocation.y);
     }

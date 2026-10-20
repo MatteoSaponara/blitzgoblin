@@ -110,6 +110,7 @@ public class GargoyleEnemy extends Enemy implements IDamagable {
 
     public void die() {
         this.mapEntityStatus = MapEntityStatus.REMOVED;
+        map.addEnemy(new DeathAnimEnemies(new Point(getX(), getY())));
     }
 
     private boolean inRange(Player player) {
