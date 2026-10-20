@@ -1,6 +1,7 @@
 package Level;
 
 import Enemies.GunPOne;
+import Enemies.GunPTwelveShot;
 import Engine.GraphicsHandler;
 import Engine.Key;
 import Engine.KeyLocker;
@@ -104,7 +105,7 @@ public abstract class Player extends GameObject
     protected float cannonAmmoRecoil = 16.0f;
 
     // Ammo Mode
-    String ammoMode = "single"; // Default ammo mode is single
+    String ammoMode = "twelve"; // Default ammo mode is single
 
     public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName)
     {
@@ -488,6 +489,11 @@ public abstract class Player extends GameObject
                         break;
                     case "twelve":
                         // Implement logic for twelve ammo mode
+                        for (Enemy bullet : getShotgun().shootTwelveShot()) {
+                            map.addEnemy(bullet);
+                        }
+                        // Applies recoil to the character
+                        applyRecoil(twelveAmmoRecoil);
                         break;
                     case "cannon":
                         // Implement logic for cannon ammo mode
@@ -571,6 +577,7 @@ public abstract class Player extends GameObject
         {
             if (enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE 
             && !(enemy instanceof GunPOne)
+            && !(enemy instanceof GunPTwelveShot)
             && attackBox.intersects(enemy))
             {
                 enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
