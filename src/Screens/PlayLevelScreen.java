@@ -56,7 +56,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 player.update();
                 map.update(player);
                 if(player.hasShotgun())
-                    player.getShotgun().update();
+                    if (player.getShotgun() != null) {
+                        player.getShotgun().update();
+                    }
                 break;
             // if level has been completed, bring up the level cleared screen
             case LEVEL_COMPLETED:
@@ -84,7 +86,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case RUNNING:
                 map.draw(graphicsHandler);
                 player.draw(graphicsHandler);
-                if(player.hasShotgun()) { 
+                if(player.getShotgun() != null) { 
                     player.getShotgun().draw(graphicsHandler);
                     if(player.playerCanShootShotgun())
                         graphicsHandler.drawImage(ImageLoader.load("gunui.png"), 27, 80, 55, 25);
