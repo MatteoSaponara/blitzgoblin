@@ -95,6 +95,7 @@ public class Shotgun extends GameObject {
             mouseAngleChangedThisFrame = false;
         }
         //System.err.println("previousAimAngle(in degrees): "+(previousAimAngle*57.2958f));
+        weaponOwner.ChangeAmmoMode();
         super.update();
         advanceShotAnimation();
         updateCurrentFrame();
