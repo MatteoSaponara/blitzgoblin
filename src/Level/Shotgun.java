@@ -1,6 +1,8 @@
 package Level;
 
 import Builders.FrameBuilder;
+import Enemies.GunPOne;
+import Enemies.GunPTwelveShot;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
 import Engine.Mouse;
@@ -26,9 +28,9 @@ public class Shotgun extends GameObject {
     private double previousGunAimAngle = -1;
     
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    private int[] originalGunSpriteBarrelEndPixel = {54, 27}; // must be manually set !!
+    private int[] originalGunSpriteBarrelEndPixel = {65, 34}; // must be manually set !!
     //////////////////////////////////////////////////////////////////////////////////
-    private int[] currentGunSpriteBarrelEndPixel = {54, 27}; // updates when the gun sprite rotates
+    private int[] currentGunSpriteBarrelEndPixel = {65, 34}; // updates when the gun sprite rotates
     
     private Player weaponOwner;
     private Ellipse gunPositionalRange = new Ellipse(10, 15);
@@ -93,9 +95,38 @@ public class Shotgun extends GameObject {
             mouseAngleChangedThisFrame = false;
         }
         //System.err.println("previousAimAngle(in degrees): "+(previousAimAngle*57.2958f));
+        weaponOwner.ChangeAmmoMode();
         super.update();
         advanceShotAnimation();
         updateCurrentFrame();
+    }
+
+    public GunPTwelveShot[] shootTwelveShot(){
+        double angleBetweenShotgunProjectiles = Math.toRadians(3f);
+        float mouseX = Mouse.getGameMouseX() + map.getCamera().getLocation().x;
+		float mouseY = Mouse.getGameMouseY() + map.getCamera().getLocation().y;
+        double originalAngleFromGunBarrelToMouse = Math.atan2(mouseY - getCurrentGunBarrelEndPixelPosition()[1]
+        , mouseX - getCurrentGunBarrelEndPixelPosition()[0]);
+        System.err.println("originalAngleFromGunBarrelToMouse: "+originalAngleFromGunBarrelToMouse);
+        double hypotenuse = Math.sqrt(Math.pow(mouseX - getCurrentGunBarrelEndPixelPosition()[0], 2)
+        +Math.pow(mouseY - getCurrentGunBarrelEndPixelPosition()[1], 2));
+
+        GunPTwelveShot[] output = new GunPTwelveShot[12]; //projectile amount
+        float currentAngle = (float)Math.toRadians(1f);
+        for (int i = 0; i < output.length/2; i++) {
+            output[i*2] = new GunPTwelveShot(
+                            new Point(this.getCurrentGunBarrelEndPixelPosition()[0],
+                                    this.getCurrentGunBarrelEndPixelPosition()[1]),
+                            (float)(mouseX + (hypotenuse * Math.cos((originalAngleFromGunBarrelToMouse-currentAngle)%(2*Math.PI)))),
+                            (float)(mouseY + (hypotenuse * Math.sin((originalAngleFromGunBarrelToMouse-currentAngle)%(2*Math.PI)))));
+            output[i*2 + 1] = new GunPTwelveShot(
+                            new Point(this.getCurrentGunBarrelEndPixelPosition()[0],
+                                    this.getCurrentGunBarrelEndPixelPosition()[1]),
+                            (float)(mouseX + (hypotenuse * Math.cos((originalAngleFromGunBarrelToMouse+currentAngle)%(2*Math.PI)))),
+                            (float)(mouseY + (hypotenuse * Math.sin((originalAngleFromGunBarrelToMouse+currentAngle)%(2*Math.PI)))));
+            currentAngle += angleBetweenShotgunProjectiles; //angle degrees of angles between diverging projectiles
+        }
+        return output;
     }
 
     // call when a shot is fired; restarts the animation from its first frame
