@@ -1,7 +1,11 @@
 package Level;
 
 import Enemies.GunPOne;
+<<<<<<< HEAD
+import Enemies.GunPCannonBall;
+=======
 import Enemies.GunPTwelveShot;
+>>>>>>> 4eab5d5d7af2d7849109ed1a6c3cf7a8d3bc5a7e
 import Engine.GraphicsHandler;
 import Engine.Key;
 import Engine.KeyLocker;
@@ -486,17 +490,28 @@ public abstract class Player extends GameObject
 
                         // Applies recoil to the character
                         applyRecoil(singleAmmoRecoil);
+                        System.out.println("Firing single ammo");
                         break;
                     case "twelve":
                         // Implement logic for twelve ammo mode
+<<<<<<< HEAD
+                        System.out.println("Firing twelve ammo");
+=======
                         for (Enemy bullet : getShotgun().shootTwelveShot()) {
                             map.addEnemy(bullet);
                         }
                         // Applies recoil to the character
                         applyRecoil(twelveAmmoRecoil);
+>>>>>>> 4eab5d5d7af2d7849109ed1a6c3cf7a8d3bc5a7e
                         break;
                     case "cannon":
-                        // Implement logic for cannon ammo mode
+                        GunPCannonBall gunPCannonBall = new GunPCannonBall(
+                                new Point(getShotgun().getCurrentGunBarrelEndPixelPosition()[0],
+                                        getShotgun().getCurrentGunBarrelEndPixelPosition()[1]),
+                                mouseX,
+                                mouseY
+                        );
+                        System.out.println("Firing cannon ammo");
                         break;
                 }
             shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
