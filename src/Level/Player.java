@@ -928,6 +928,11 @@ public abstract class Player extends GameObject
         }
     }
 
+    public void pickupShotgun() {
+        hasShotgun = true;
+        playerShotgun = new Shotgun(x,y, this);
+    }
+
     // Uncomment this to have game draw player's bounds to make it easier to visualize
     /*
     public void drawBoundsForDebug(GraphicsHandler graphicsHandler) {
