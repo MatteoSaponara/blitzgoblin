@@ -109,7 +109,7 @@ public abstract class Player extends GameObject
     protected float cannonAmmoRecoil = 16.0f;
 
     // Ammo Mode
-    String ammoMode = "twelve"; // Default ammo mode is single
+    String ammoMode = "single"; // Default ammo mode is single
 
     public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName, boolean hasShotgun)
     {
