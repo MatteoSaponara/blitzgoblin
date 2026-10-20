@@ -38,7 +38,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
         // setup player
         this.heartImage = ImageLoader.load("HeartGB2.png");
-        this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y);
+        this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y, true);
         this.player.setMap(map);
         this.player.addListener(this);
 

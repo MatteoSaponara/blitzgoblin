@@ -27,9 +27,9 @@ public class Cat extends Player {
     private static final int BOUNDS_WIDTH = 33;
     private static final int BOUNDS_HEIGHT = 44;
 
-    public Cat(float x, float y) {
+    public Cat(float x, float y, boolean hasShotgun) {
         // updated spritesheet is a single row of 12 frames, each 73x54 with 1px of padding between them
-        super(new SpriteSheet(ImageLoader.load("Goblin.png"), 73, 54), x, y, "STAND_RIGHT", false);
+        super(new SpriteSheet(ImageLoader.load("Goblin.png"), 73, 54), x, y, "STAND_RIGHT", hasShotgun);
         gravity = .5f;
         terminalVelocityY = 7.5f;
         jumpHeight = 12.75f;
