@@ -38,7 +38,7 @@ public class HowToPlayScreen extends Screen {
         AControlsLabel = new SpriteFont("MoveLeft: A", 200, 240, "Copperplate Gothic Light", 25, Color.white);
         SControlsLabel = new SpriteFont("MoveRight: S", 200, 270, "Copperplate Gothic Light", 25, Color.white);
         DControlsLabel = new SpriteFont("Crouch: D", 200, 300, "Copperplate Gothic Light", 25, Color.white);
-        SPControlsLabel = new SpriteFont("Space: Interact", 200, 330, "Copperplate Gothic Light", 25, Color.white);
+        SPControlsLabel = new SpriteFont("Interact: E", 200, 330, "Copperplate Gothic Light", 25, Color.white);
         
         
         returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 532, "Copperplate Gothic Light", 30, Color.white);
