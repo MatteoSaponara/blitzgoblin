@@ -6,7 +6,6 @@ import Game.ScreenCoordinator;
 import Level.Map;
 import Maps.TitleScreenMapNewVersion;
 import SpriteFont.SpriteFont;
-
 import java.awt.*;
 
 // This class is for the credits screen

@@ -6,8 +6,9 @@ import Game.ScreenCoordinator;
 import Level.Map;
 import Maps.TitleScreenMapNewVersion;
 import SpriteFont.SpriteFont;
-
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 // This is the class for the main menu screen
 public class MenuScreen extends Screen {
@@ -27,24 +28,44 @@ public class MenuScreen extends Screen {
     public MenuScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
     }
+    private static Font customFont;
+
+
+    public static void loadCustomFont() {
+        try {
+            File fontFile = new File(Config.RESOURCES_PATH+Config.DEFAULT_FONT_FILENAME);
+
+            customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(customFont);
+            
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+            // Fallback font if loading fails
+            customFont = new Font("SansSerif", Font.PLAIN, 12);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(customFont);
+        }
+    }
 
     @Override
     public void initialize() {
-		Title = new SpriteFont("Blitz Goblin", 200, 100, "Copperplate Gothic Light", 45, new Color(255, 255, 255)); //new Color(49, 207, 240));
+        loadCustomFont();
+		Title = new SpriteFont("Blitz Goblin", 200, 100, Config.DEFAULT_FONT, 45, new Color(255, 255, 255)); //new Color(49, 207, 240));
         Title.setOutlineColor(Color.black);
         Title.setOutlineThickness(3);
-        playGame = new SpriteFont("PLAY GAME", 200, 170, "Copperplate Gothic Light", 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
+        playGame = new SpriteFont("PLAY GAME", 200, 170, Config.DEFAULT_FONT, 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
         playGame.setOutlineColor(Color.black);
         playGame.setOutlineThickness(3);
-        howToPlay = new SpriteFont("HOW TO PLAY", 200, 221, "Copperplate Gothic Light", 30, Color.white);
+        howToPlay = new SpriteFont("HOW TO PLAY", 200, 221, Config.DEFAULT_FONT, 30, Color.white);
 		howToPlay.setOutlineColor(Color.black);
 		howToPlay.setOutlineThickness(3);
-		levelSelect = new SpriteFont("LEVEL SELECT", 200, 272, "Copperplate Gothic Light", 30, Color.white);
+		levelSelect = new SpriteFont("LEVEL SELECT", 200, 272, Config.DEFAULT_FONT, 30, Color.white);
 		levelSelect.setOutlineColor(Color.black);
 		levelSelect.setOutlineThickness(3);
-        credits = new SpriteFont("CREDITS", 200, 323, "Copperplate Gothic Light", 30, new Color(255, 255, 255));     // new Color(49, 207, 240));
-        credits.setOutlineColor(Color.black);
-        credits.setOutlineThickness(3);
+        credits = new SpriteFont("CREDITS", 200, 323, Config.DEFAULT_FONT, 30, new Color(255, 255, 255));     // new Color(49, 207, 240));
+
         background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
         keyPressTimer = 0;

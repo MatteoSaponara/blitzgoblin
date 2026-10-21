@@ -1,8 +1,7 @@
 package Level;
 
-import Interfaces.IDamagable;
-import Enemies.GunPOne;
 import Enemies.GunPCannonBall;
+import Enemies.GunPOne;
 import Enemies.GunPTwelveShot;
 import Engine.GraphicsHandler;
 import Engine.Key;
@@ -12,6 +11,7 @@ import Engine.Mouse;
 import GameObject.GameObject;
 import GameObject.Rectangle;
 import GameObject.SpriteSheet;
+import Interfaces.IDamagable;
 import Utils.AirGroundState;
 import Utils.Direction;
 import Utils.Point;
@@ -75,6 +75,7 @@ public abstract class Player extends GameObject
     protected final int INVINCIBILITY_DURATION = 120;
 	protected int invincibilityTimer = 0;
     protected int health = 3;
+    protected int maxHealth = 3;
     protected int coins = 0;
 
     // melee attack values
@@ -683,6 +684,12 @@ public abstract class Player extends GameObject
         return platformDropTimer > 0;
     }
 
+    public void setPlayerHealth(int playerHealth){ this.health = playerHealth; }
+    public int getHealth(){ return health; }
+
+    public int getMaxHealth(){ return maxHealth; }
+    
+    public void setMaxHealth(int newMaxHealth) {maxHealth = newMaxHealth;}
     // other entities can call this method to hurt the player
     public void hurtPlayer(MapEntity mapEntity)
     {
@@ -778,11 +785,7 @@ public abstract class Player extends GameObject
             }
         }
     }
-
-    public int getHealth()
-    {
-        return health;
-    }
+    
 
     public void collectCoin()
     {

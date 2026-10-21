@@ -98,7 +98,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     graphicsHandler.drawImage(heartImage, 10 + (i * 40), 10, 60, 60);
                 }
 
-                graphicsHandler.drawString("Coins: " + player.getCoins(), 140, 45, new Font("Arial", Font.PLAIN, 20), Color.WHITE);
+                graphicsHandler.drawString("Coins: " + player.getCoins(), 160, 55, new Font(Engine.Config.DEFAULT_FONT, Font.PLAIN, 40), Color.WHITE);
 
                 break;
             case LEVEL_COMPLETED:

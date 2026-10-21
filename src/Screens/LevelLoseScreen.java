@@ -2,7 +2,6 @@ package Screens;
 
 import Engine.*;
 import SpriteFont.SpriteFont;
-
 import java.awt.*;
 
 // This is the class for the level lose screen
@@ -19,8 +18,8 @@ public class LevelLoseScreen extends Screen {
 
     @Override
     public void initialize() {
-        loseMessage = new SpriteFont("You lose!", 350, 239, "Arial", 30, Color.white);
-        instructions = new SpriteFont("Press Space to try again or Escape to go back to the main menu", 120, 279,"Arial", 20, Color.white);
+        loseMessage = new SpriteFont("You lose!", 350, 239, Engine.Config.DEFAULT_FONT, 30, Color.white);
+        instructions = new SpriteFont("Press Space to try again or Escape to go back to the main menu", 120, 279, Engine.Config.DEFAULT_FONT, 20, Color.white);
         keyLocker.lockKey(Key.SPACE);
         keyLocker.lockKey(Key.ESC);
     }

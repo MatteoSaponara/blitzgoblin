@@ -20,6 +20,27 @@ public class MapCollisionHandler {
         }
         return false;
     }
+    //Health pick-up tile (spike) logic
+    private static boolean ifPlayerTouchedHealthPickUpTile(GameObject gameObjectIN, MapTile tl){
+        
+        if(gameObjectIN instanceof Player
+        && (tl.getTileType() == TileType.HEALTH_PICKUP)) {
+            Player plr = (Player) gameObjectIN;
+            if(plr.getHealth() < plr.getMaxHealth()){
+                plr.setPlayerHealth(Math.clamp(plr.getHealth() + 1, 0, plr.getMaxHealth()));
+                Map tempMap = tl.getMap();
+                float tlX = tl.getX();
+                float tlY = tl.getY();
+                int tlMapTileX = Math.round(tl.getX()/(Engine.Config.TILE_ART_SIZE*Engine.Config.TILE_SCALE));
+                int tlMapTileY = Math.round(tl.getY()/(Engine.Config.TILE_ART_SIZE*Engine.Config.TILE_SCALE));
+                tl = tempMap.getTileset().getTile(1).build(tlX, tlY);
+                tl.setMap(tempMap);
+                tempMap.setMapTile(tlMapTileX, tlMapTileY, tl);
+                return true;
+            }
+        }
+        return false;
+    }
 
     // x axis collision logic
     // determines if a collision occurred with another entity on the map, and calculates where gameobject should be placed to resolve the collision
@@ -42,8 +63,11 @@ public class MapCollisionHandler {
                     adjustedPositionX = (mapTile.getBounds().getX2() + 1) - boundsDifference;
                 }
 
-                //player spike collision check
+                //ignores collision adjustment (horizontally) for the following tiles with collision checks: (tile, health pick-up)
                 if(ifPlayerTouchedDamageTile(gameObject, mapTile)) {
+                    return new MapCollisionCheckResult(null, null);
+                }
+                if(ifPlayerTouchedHealthPickUpTile(gameObject, mapTile)) {
                     return new MapCollisionCheckResult(null, null);
                 }
 
@@ -93,8 +117,11 @@ public class MapCollisionHandler {
                     adjustedPositionY = (mapTile.getBounds().getY2() + 1) - boundsDifference;
                 }
                 
-                //player spike collision check
+                //ignores collision adjustment (vertically) for the following tiles with collision checks: (tile, health pick-up)
                 if(ifPlayerTouchedDamageTile(gameObject, mapTile)) {
+                    return new MapCollisionCheckResult(null, null);
+                }
+                if(ifPlayerTouchedHealthPickUpTile(gameObject, mapTile)) {
                     return new MapCollisionCheckResult(null, null);
                 }
 
@@ -157,6 +184,13 @@ public class MapCollisionHandler {
                         Math.round(mapTile.getY()), 
                         mapTile.getWidth()/2,
                         mapTile.getHeight()/2));
+                case HEALTH_PICKUP:
+                    return ((gameObject instanceof Player
+            && ((Player)(gameObject)).getHealth() < ((Player)(gameObject)).getMaxHealth() && gameObject.intersects(new Rectangle(
+                        Math.round(mapTile.getX()+(mapTile.getWidth()/2) - mapTile.getWidth()/4),
+                        Math.round(mapTile.getY()), 
+                        mapTile.getWidth()/2,
+                        mapTile.getHeight()/2))));
                 default:
                     return false;
             }

@@ -4,6 +4,7 @@ import Builders.FrameBuilder;
 import Engine.ImageLoader;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
+import Interfaces.IDamagable;
 import Level.Enemy;
 import Level.MapEntity;
 import Level.MapEntityStatus;
@@ -57,16 +58,17 @@ public class GunPTwelveShot extends Enemy {
                     enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE 
                     && !(enemy instanceof GunPTwelveShot)
                     && this.intersects(enemy)) {
-				/*
+				
                 if (enemy instanceof IDamagable) {
                     ((IDamagable) enemy).takeDamage(1);
                     this.mapEntityStatus = MapEntityStatus.REMOVED;
                     return;
                 }
-                */
                 
+                /*
                 this.mapEntityStatus = MapEntityStatus.REMOVED;
 				enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
+				*/
 				return;
                 
             }
