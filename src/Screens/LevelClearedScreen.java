@@ -4,7 +4,6 @@ import Engine.GraphicsHandler;
 import Engine.Screen;
 import Engine.ScreenManager;
 import SpriteFont.SpriteFont;
-
 import java.awt.*;
 
 // This class is for the level cleared screen
@@ -17,7 +16,7 @@ public class LevelClearedScreen extends Screen {
 
     @Override
     public void initialize() {
-        winMessage = new SpriteFont("Level Cleared", 320, 239, "Arial", 30, Color.white);
+        winMessage = new SpriteFont("Level Cleared", 320, 239, Engine.Config.DEFAULT_FONT, 30, Color.white);
     }
 
     @Override

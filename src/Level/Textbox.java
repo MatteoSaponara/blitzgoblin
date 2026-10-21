@@ -1,9 +1,8 @@
 package Level;
 
-import java.awt.*;
-
 import Engine.GraphicsHandler;
 import SpriteFont.SpriteFont;
+import java.awt.*;
 
 public class Textbox {
     protected int x;
@@ -17,7 +16,8 @@ public class Textbox {
     protected int gap = 0; // horizontal space between lines of text -- only matters with multiline text
 
     public Textbox(String text) {
-        Font font = new Font("Copperplate Gothic Light", Font.PLAIN, 10);
+        Font font = new Font(Engine.Config.DEFAULT_FONT, Font.PLAIN, 10);
+        
         Point textLocation = new Point(x + hPadding + borderThickness, y + vPadding + borderThickness);
         spriteFont = new SpriteFont(text, textLocation.x, textLocation.y,  font, Color.white);
     }

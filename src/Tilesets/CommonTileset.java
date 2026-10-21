@@ -294,6 +294,15 @@ public class CommonTileset extends Tileset {
         mapTiles.add(spikeUpTile2);
         mapTiles.add(spikeDownTile2);
 
+        Frame healthPickUpFrame = new FrameBuilder(getSubImage(4, 2))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder healthPickUpTile = new MapTileBuilder(healthPickUpFrame)
+                .withTileType(TileType.HEALTH_PICKUP);
+
+        mapTiles.add(healthPickUpTile);
+
         return mapTiles;
     }
 }

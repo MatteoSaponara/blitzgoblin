@@ -3,7 +3,6 @@ package Level;
 import Engine.GraphicsHandler;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
-
 import java.util.HashMap;
 
 // Represents a map tile in a Map's tile map
