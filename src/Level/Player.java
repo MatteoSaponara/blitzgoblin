@@ -44,6 +44,7 @@ public abstract class Player extends GameObject
     protected float moveAmountX, moveAmountY;
     protected float lastAmountMovedX, lastAmountMovedY;
     protected float velocityX = 0;
+    protected float velocityY = 0;
     protected float recoilX;
     protected float recoilY;
 
@@ -901,8 +902,10 @@ public abstract class Player extends GameObject
         recoilY = (float) -Math.sin(recoilAngle) * recoilForce;
 
         this.velocityX += recoilX;
+        this.velocityY += recoilY;
 
-        if (recoilY < 0)
+        //old still semi-function jump recoil
+/*        if (recoilY < 0)
         {
             this.jumpForce += Math.abs(recoilY);
             this.jumpControlled = false; // a recoil boost isn't affected by the jump key
@@ -910,7 +913,7 @@ public abstract class Player extends GameObject
         else
         {
             this.momentumY += recoilY;
-        }
+        }*/
 
         if(recoilY < 0 && airGroundState == AirGroundState.GROUND)
         {

@@ -9,6 +9,7 @@ import Level.Map;
 import Level.Player;
 import Level.PlayerListener;
 import Maps.TestMap;
+import Maps.level1;
 import Players.Cat;
 import java.awt.Color;
 import java.awt.Font;
