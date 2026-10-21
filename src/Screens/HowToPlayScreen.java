@@ -21,6 +21,8 @@ public class HowToPlayScreen extends Screen {
     protected SpriteFont SControlsLabel;
     protected SpriteFont DControlsLabel;
     protected SpriteFont SPControlsLabel;
+    protected SpriteFont ATControlsLabel;
+    protected SpriteFont XControlsLabel;
     protected SpriteFont returnInstructionsLabel;
 
     public HowToPlayScreen(ScreenCoordinator screenCoordinator) {
@@ -33,12 +35,14 @@ public class HowToPlayScreen extends Screen {
         background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
         HTPLabel = new SpriteFont("How to Play", 200, 100, "Copperplate Gothic Light", 40, Color.white);
-        ControlsLabel = new SpriteFont("Controls:", 200, 180, "Copperplate Gothic Light", 30, Color.white);
-        WControlsLabel = new SpriteFont("Jump: W or Space", 200, 210, "Copperplate Gothic Light", 25, Color.white);
-        AControlsLabel = new SpriteFont("MoveLeft: A", 200, 240, "Copperplate Gothic Light", 25, Color.white);
-        DControlsLabel = new SpriteFont("MoveRight: D", 200, 270, "Copperplate Gothic Light", 25, Color.white);
-        SControlsLabel = new SpriteFont("Crouch: S", 200, 300, "Copperplate Gothic Light", 25, Color.white);
-        SPControlsLabel = new SpriteFont("Interact: E", 200, 330, "Copperplate Gothic Light", 25, Color.white);
+        ControlsLabel = new SpriteFont("Controls:", 100, 180, "Copperplate Gothic Light", 30, Color.white);
+        WControlsLabel = new SpriteFont("Jump: W or Space", 100, 210, "Copperplate Gothic Light", 25, Color.white);
+        AControlsLabel = new SpriteFont("MoveLeft: A", 100, 240, "Copperplate Gothic Light", 25, Color.white);
+        DControlsLabel = new SpriteFont("MoveRight: D", 100, 270, "Copperplate Gothic Light", 25, Color.white);
+        SControlsLabel = new SpriteFont("Crouch: S", 100, 300, "Copperplate Gothic Light", 25, Color.white);
+        SPControlsLabel = new SpriteFont("Interact: E", 100, 330, "Copperplate Gothic Light", 25, Color.white);
+        ATControlsLabel = new SpriteFont("Attack: Mouse Click", 350, 210, "Copperplate Gothic Light", 25, Color.white);
+        XControlsLabel = new SpriteFont("Injure/Reset: X", 350, 240, "Copperplate Gothic Light", 25, Color.white);
         
         
         returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 532, "Copperplate Gothic Light", 30, Color.white);
@@ -67,6 +71,8 @@ public class HowToPlayScreen extends Screen {
         SControlsLabel.draw(graphicsHandler);
         DControlsLabel.draw(graphicsHandler);
         SPControlsLabel.draw(graphicsHandler);
+        ATControlsLabel.draw(graphicsHandler);
+        XControlsLabel.draw(graphicsHandler);
         returnInstructionsLabel.draw(graphicsHandler);
     }
 }

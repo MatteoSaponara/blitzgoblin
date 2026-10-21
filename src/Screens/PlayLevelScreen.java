@@ -28,13 +28,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected LevelLoseScreen levelLoseScreen;
     protected boolean levelCompletedStateChangeStart;
 
-    public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
-        this.screenCoordinator = screenCoordinator;
-    }
+   public PlayLevelScreen(ScreenCoordinator screenCoordinator, Map map) {
+	   this.screenCoordinator = screenCoordinator;
+	   this.map = map;
+	   }
 
     public void initialize() {
         // define/setup map
-        this.map = new TestMap();
+        //this.map = new TestMap();
 
         // setup player
         this.heartImage = ImageLoader.load("HeartGB2.png");
