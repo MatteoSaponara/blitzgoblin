@@ -23,7 +23,12 @@ public class HowToPlayScreen extends Screen {
     protected SpriteFont SPControlsLabel;
     protected SpriteFont ATControlsLabel;
     protected SpriteFont XControlsLabel;
+   protected SpriteFont TyControlsLabel;
+    protected SpriteFont OneControlsLabel;
+    protected SpriteFont TwoControlsLabel;
+    protected SpriteFont ThreeControlsLabel;
     protected SpriteFont returnInstructionsLabel;
+    
 
     public HowToPlayScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -41,8 +46,12 @@ public class HowToPlayScreen extends Screen {
         DControlsLabel = new SpriteFont("MoveRight: D", 100, 270, "Copperplate Gothic Light", 25, Color.white);
         SControlsLabel = new SpriteFont("Crouch: S", 100, 300, "Copperplate Gothic Light", 25, Color.white);
         SPControlsLabel = new SpriteFont("Interact: E", 100, 330, "Copperplate Gothic Light", 25, Color.white);
-        ATControlsLabel = new SpriteFont("Attack: Mouse Click", 350, 210, "Copperplate Gothic Light", 25, Color.white);
-        XControlsLabel = new SpriteFont("Injure/Reset: X", 350, 240, "Copperplate Gothic Light", 25, Color.white);
+        ATControlsLabel = new SpriteFont("Attack: Mouse Click", 100, 360, "Copperplate Gothic Light", 25, Color.white);
+        XControlsLabel = new SpriteFont("Injure/Reset: X", 350, 210, "Copperplate Gothic Light", 25, Color.white);
+        TyControlsLabel = new SpriteFont("Gun types: ", 350, 240, "Copperplate Gothic Light", 25, Color.white);
+        OneControlsLabel = new SpriteFont("One Shot: 1", 350, 270, "Copperplate Gothic Light", 25, Color.white);
+        TwoControlsLabel = new SpriteFont("Twelve shot: 2", 350, 300, "Copperplate Gothic Light", 25, Color.white);
+        ThreeControlsLabel = new SpriteFont("Cannon Shot: 3", 350, 330, "Copperplate Gothic Light", 25, Color.white);
         
         
         returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 532, "Copperplate Gothic Light", 30, Color.white);
@@ -73,6 +82,10 @@ public class HowToPlayScreen extends Screen {
         SPControlsLabel.draw(graphicsHandler);
         ATControlsLabel.draw(graphicsHandler);
         XControlsLabel.draw(graphicsHandler);
+        OneControlsLabel.draw(graphicsHandler);
+        TyControlsLabel.draw(graphicsHandler);
+        TwoControlsLabel.draw(graphicsHandler);
+        ThreeControlsLabel.draw(graphicsHandler);
         returnInstructionsLabel.draw(graphicsHandler);
     }
 }

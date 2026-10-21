@@ -7,21 +7,24 @@ import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
 import Level.Enemy;
 import Level.MapEntity;
+import Level.MapEntityStatus;
 import Level.Player;
 import Utils.AirGroundState;
 import Utils.Direction;
 import Utils.Point;
 import java.util.HashMap;
+import Interfaces.IDamagable;
 
 // This class is for the hero enemy
 // 
 // 
-public class HeroEnemy extends Enemy {
+public class HeroEnemy extends Enemy implements IDamagable {
     private float gravity = .5f;
     private float movementSpeed = .5f;
     private Direction startFacingDirection;
     private Direction facingDirection;
     private AirGroundState airGroundState;
+    private int health = 1;
 
     public HeroEnemy(Point location, Direction facingDirection) {
         super(location.x, location.y, new SpriteSheet(ImageLoader.load("hero.png"), 84, 80), "WALK_LEFT");
@@ -112,4 +115,22 @@ public class HeroEnemy extends Enemy {
             });
         }};
     }
+    
+    public int getHealth() {
+        return health;
+    }
+    
+    public void takeDamage(int damage) {
+        health -= damage;
+        if (health < 1) {
+            die();
+        }
+    }
+
+    public void die() {
+        this.mapEntityStatus = MapEntityStatus.REMOVED;
+        map.addEnemy(new DeathAnimEnemies(new Point(getX(), getY())));
+    }
+    
+    
 }
