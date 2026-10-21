@@ -15,6 +15,7 @@ import Level.Player;
 import Utils.AirGroundState;
 import Utils.Direction;
 import Utils.Point;
+import Engine.GamePanel;
 
 import java.util.HashMap;
 
@@ -193,6 +194,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
 
     @Override 
     public void touchedPlayer(Player player) {
+		GamePanel.triggerJumpscare();
         player.killPlayer();
     }
 
