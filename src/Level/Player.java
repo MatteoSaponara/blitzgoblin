@@ -105,7 +105,7 @@ public abstract class Player extends GameObject
     // Recoil Forces By Ammo
     protected float singleAmmoRecoil = 0.3f;
     protected float twelveAmmoRecoil = 7.0f;
-    protected float cannonAmmoRecoil = 16.0f;
+    protected float cannonAmmoRecoil = 15.0f;
 
     // Ammo Mode
     String ammoMode = "single"; // Default ammo mode is single
@@ -945,6 +945,7 @@ public abstract class Player extends GameObject
                                 mouseX,
                                 mouseY
                         );
+                        map.addEnemy(gunPCannonBall);
                         applyRecoil(cannonAmmoRecoil);
                         System.out.println("Firing cannon ammo");
     }
