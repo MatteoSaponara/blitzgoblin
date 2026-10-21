@@ -56,7 +56,7 @@ public class NPC extends MapEntity {
     }
 
     public void checkTalkedTo(Player player) {
-        if (isInteractable && intersects(player) && Keyboard.isKeyDown(Key.SPACE)) {
+        if (isInteractable && intersects(player) && Keyboard.isKeyDown(Key.E)) {
             talkedTo = true;
             if (talkedToTime >= 0) {
                 timer = talkedToTime;
