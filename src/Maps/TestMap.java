@@ -18,6 +18,7 @@ import GameObject.Rectangle;
 import Level.*;
 import NPCs.Walrus;
 import NPCs.CrouchSign;
+import NPCs.HealthPickupSign;
 import Tilesets.CommonTileset;
 import Utils.Direction;
 import java.util.ArrayList;
@@ -56,9 +57,12 @@ public class TestMap extends Map {
 
         CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(20, 23).getLocation(), Direction.LEFT);
         enemies.add(coinMimicEnemy);
+        
+        CoinMimicEnemy coinMimicEnemy2 = new CoinMimicEnemy(getMapTile(57, 18).getLocation(), Direction.LEFT);
+        enemies.add(coinMimicEnemy2);
 
-        GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(13, 20).getLocation(), Direction.LEFT);
-        enemies.add(gargoyleEnemy);
+       // GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(13, 20).getLocation(), Direction.LEFT);
+       // enemies.add(gargoyleEnemy);
 
         return enemies;
     }
@@ -134,18 +138,19 @@ public class TestMap extends Map {
         enhancedMapTiles.add(endLevelBox);
 
         //ammo boxes
-        
+        /*
         SingleAmmo singleAmmo = new SingleAmmo(getMapTile(10, 27).getLocation());
         enhancedMapTiles.add(singleAmmo);
         TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(14, 24).getLocation());
         enhancedMapTiles.add(twelveAmmo);
         CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(18, 24).getLocation());
         enhancedMapTiles.add(cannonAmmo);
+        */
 
         Coin coin1 = new Coin(getMapTile(9, 22).getLocation());
 		enhancedMapTiles.add(coin1);
 
-		Coin coin2 = new Coin(getMapTile(20, 20).getLocation());
+		Coin coin2 = new Coin(getMapTile(16, 20).getLocation());
 		enhancedMapTiles.add(coin2);
 
 		Coin coin3 = new Coin(getMapTile(30, 17).getLocation());
@@ -168,8 +173,8 @@ public class TestMap extends Map {
 		enhancedMapTiles.add(coin11);
         Coin coin12 = new Coin(getMapTile(51, 11).getLocation());
 		enhancedMapTiles.add(coin12);
-        Coin coin13 = new Coin(getMapTile(57, 18).getLocation());
-		enhancedMapTiles.add(coin13);
+        //Coin coin13 = new Coin(getMapTile(57, 18).getLocation());
+		//enhancedMapTiles.add(coin13);
 
         return enhancedMapTiles;
     }
@@ -184,6 +189,10 @@ public class TestMap extends Map {
         CrouchSign crouchsign = new CrouchSign(getMapTile(17, 14).getLocation().subtractY(13));
 
         npcs.add(crouchsign);
+        
+        HealthPickupSign healthpickupsign = new HealthPickupSign(getMapTile(11, 23).getLocation().subtractY(13));
+
+        npcs.add(healthpickupsign);
 
         return npcs;
     }
