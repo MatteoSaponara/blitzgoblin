@@ -3,6 +3,7 @@ package Game;
 import Engine.DefaultScreen;
 import Engine.GraphicsHandler;
 import Engine.Screen;
+import Maps.level1;
 import Screens.CreditsScreen;
 import Screens.MenuScreen;
 import Screens.PlayLevelScreen;
@@ -52,9 +53,9 @@ public class ScreenCoordinator extends Screen {
 						currentScreen = new PlayLevelScreen(this, new TestMap());
 						break;
 						// Level 1 (when you create it)
-					//case LEVEL1:
-					//	currentScreen =new PlayLevelScreen(this, new Level1Map());
-					//	break;
+					case LEVEL1:
+						currentScreen =new PlayLevelScreen(this, new level1());
+						break;
 					
 					case HOW_TO_PLAY:
 					currentScreen = new HowToPlayScreen(this);

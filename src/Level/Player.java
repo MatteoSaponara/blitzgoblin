@@ -909,7 +909,7 @@ public abstract class Player extends GameObject
         this.velocityY += recoilY;
 
         //old still semi-function jump recoil
-/*        if (recoilY < 0)
+        if (recoilY < 0)
         {
             this.jumpForce += Math.abs(recoilY);
             this.jumpControlled = false; // a recoil boost isn't affected by the jump key
@@ -917,7 +917,7 @@ public abstract class Player extends GameObject
         else
         {
             this.momentumY += recoilY;
-        }*/
+        }
 
         if(recoilY < 0 && airGroundState == AirGroundState.GROUND)
         {

@@ -6,6 +6,7 @@ import Maps.TestMap;
 import Maps.TestMapBackup;
 import Maps.TitleScreenMap;
 import Maps.TitleScreenMapNewVersion;
+import Maps.level1;
 
 import java.util.ArrayList;
 
@@ -14,9 +15,10 @@ public class EditorMaps {
         return new ArrayList<String>() {{
             add("TestMap");
             add("TitleScreen");
-           // add("MatteosTestMap");
+//            add("MatteosTestMap");
             add("TestMapBackup");
             add("TitleScreenMapNewVersion");
+            add("level1");
         }};
     }
 
@@ -26,12 +28,14 @@ public class EditorMaps {
                 return new TestMap();
             case "TitleScreen":
                 return new TitleScreenMap();
-           // case "MatteosTestMap":
-             //   return new MatteosTestMap();
+            /*case "MatteosTestMap":
+                return new MatteosTestMap();*/
             case "TestMapBackup":
                 return new TestMapBackup();
             case "TitleScreenMapNewVersion":
                 return new TitleScreenMapNewVersion();
+            case "level1":
+                return new level1();
                 
             default:
                 throw new RuntimeException("Unrecognized map name");

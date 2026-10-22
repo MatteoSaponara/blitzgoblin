@@ -36,7 +36,11 @@ public class level1 extends Map {
     public ArrayList<Enemy> loadEnemies() {
         ArrayList<Enemy> enemies = new ArrayList<>();
 
+        Turret turretEnemy = new Turret(getMapTile(16, 12).getLocation().addY(2), Direction.RIGHT);
+        enemies.add(turretEnemy);
 
+        Turret turretEnemy2 = new Turret(getMapTile(15, 16).getLocation().addY(2), Direction.RIGHT);
+        enemies.add(turretEnemy2);
 
         return enemies;
     }
