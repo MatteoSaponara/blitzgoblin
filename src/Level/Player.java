@@ -91,7 +91,7 @@ public abstract class Player extends GameObject
     protected Rectangle attackBox;
 
     // shotgun values
-    private boolean hasShotgun = false; // Set to false 
+    private boolean hasShotgun = true; // Set to false
     private Shotgun playerShotgun;
 
     // Aiming system variables
@@ -122,7 +122,9 @@ public abstract class Player extends GameObject
         previousPlayerState = playerState;
         levelState = LevelState.RUNNING;
         if(hasShotgun)
-            playerShotgun = new Shotgun(x,y, this);
+        {
+            playerShotgun = new Shotgun(x, y, this);
+        }
     }
 
     public void update()
@@ -150,13 +152,15 @@ public abstract class Player extends GameObject
 
             applyGravity();
 
-            
 
-            //Adds horizontal velocity to this frame's movement amount
+
+            //Adds horizontal AND vertical recoil/velocity to frame movement
             moveAmountX += velocityX;
+            moveAmountY += velocityY;
 
-            // Applies drag to horizontal velocity
+            // Apply drag to both axes consistently
             velocityX *= drag;
+            velocityY *= drag;
 
             //Prevents infinite sub-pixel slides when velocity nears zero
             if (Math.abs(velocityX) < 0.01f)
@@ -350,19 +354,22 @@ public abstract class Player extends GameObject
         // if player is in air (currently in a jump) and has more jumpForce, continue sending player upwards
         else if (airGroundState == AirGroundState.AIR)
         {
-            // jump key released while still rising: cut the upward force so a short press gives a short hop
-            if (jumpControlled && jumpCutForce > 0 && !Keyboard.isKeyDown(JUMP_KEYS) && jumpForce > jumpCutForce)
+            if (jumpControlled)
             {
-                jumpForce = jumpCutForce;
-            }
-
-            if (jumpForce > 0)
-            {
-                moveAmountY -= jumpForce;
-                jumpForce -= jumpDegrade;
-                if (jumpForce < 0)
+                // jump key released while still rising: cut the upward force so a short press gives a short hop
+                if (jumpControlled && jumpCutForce > 0 && !Keyboard.isKeyDown(JUMP_KEYS) && jumpForce > jumpCutForce)
                 {
-                    jumpForce = 0;
+                    jumpForce = jumpCutForce;
+                }
+
+                if (jumpForce > 0)
+                {
+                    moveAmountY -= jumpForce;
+                    jumpForce -= jumpDegrade;
+                    if (jumpForce < 0)
+                    {
+                        jumpForce = 0;
+                    }
                 }
             }
 
@@ -659,6 +666,7 @@ public abstract class Player extends GameObject
             if (hasCollided)
             {
                 momentumY = 0;
+                velocityY = 0;
                 airGroundState = AirGroundState.GROUND;
                 recoilY = 0;
                 jumpForce = 0;
@@ -679,6 +687,7 @@ public abstract class Player extends GameObject
                 jumpControlled = false;
                 recoilY = 0;
                 momentumY = 0;
+                velocityY = 0;
             }
         }
     }
@@ -909,7 +918,23 @@ public abstract class Player extends GameObject
 
     public void applyRecoil(float recoilForce)
     {
-        // Angle Calculation
+        double recoilAngle = -aimAngle;
+
+        recoilX = (float) (Math.cos(recoilAngle) * recoilForce);
+        recoilY = (float) -(Math.sin(recoilAngle) * recoilForce);
+
+        this.velocityX = recoilX;
+        this.velocityY = recoilY;
+
+        this.momentumY = 0;
+
+        if (recoilY < 0 && airGroundState == AirGroundState.GROUND)
+        {
+            this.airGroundState = AirGroundState.AIR;
+            this.playerState = PlayerState.JUMPING;
+        }
+        //old recoil system
+       /* // Angle Calculation
         double recoilAngle = -aimAngle;
 
         // Polar Vector Calculations
@@ -934,7 +959,7 @@ public abstract class Player extends GameObject
         {
             this.airGroundState = AirGroundState.AIR;
             this.playerState = PlayerState.JUMPING;
-        }
+        }*/
     }
 
     public void pickupShotgun() {

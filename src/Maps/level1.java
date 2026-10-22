@@ -116,12 +116,12 @@ public class level1 extends Map {
         enhancedMapTiles.add(endLevelBox);
 
         //ammo boxes
-       // SingleAmmo singleAmmo = new SingleAmmo(getMapTile(10, 27).getLocation());
-        //enhancedMapTiles.add(singleAmmo);
-        //TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(14, 24).getLocation());
-        //enhancedMapTiles.add(twelveAmmo);
-        //CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(18, 24).getLocation());
-        //enhancedMapTiles.add(cannonAmmo);
+        SingleAmmo singleAmmo = new SingleAmmo(getMapTile(2, 24).getLocation());
+        enhancedMapTiles.add(singleAmmo);
+        TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(2, 24).getLocation());
+        enhancedMapTiles.add(twelveAmmo);
+        CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(2, 24).getLocation());
+        enhancedMapTiles.add(cannonAmmo);
 
         /*Coin coin1 = new Coin(getMapTile(9, 22).getLocation());
         enhancedMapTiles.add(coin1);
