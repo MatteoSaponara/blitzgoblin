@@ -134,8 +134,12 @@ public class TestMap extends Map {
         enhancedMapTiles.add(hmp3);
         enhancedMapTiles.add(hmp4);
         enhancedMapTiles.add(hmp5);
-        EndLevelBox endLevelBox = new EndLevelBox(getMapTile(67, 18).getLocation());
+        EndLevelBox endLevelBox = new EndLevelBox(getMapTile(68, 18).getLocation());
         enhancedMapTiles.add(endLevelBox);
+        EndLevelBox endLevelBox1 = new EndLevelBox(getMapTile(68, 19).getLocation());
+        enhancedMapTiles.add(endLevelBox1);
+        EndLevelBox endLevelBox2 = new EndLevelBox(getMapTile(68, 20).getLocation());
+        enhancedMapTiles.add(endLevelBox2);
 
         //ammo boxes
         /*

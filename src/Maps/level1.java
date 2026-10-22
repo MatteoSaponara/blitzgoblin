@@ -121,8 +121,12 @@ public class level1 extends Map {
         //enhancedMapTiles.add(hmp3);
         //enhancedMapTiles.add(hmp4);
         //enhancedMapTiles.add(hmp5);
-        EndLevelBox endLevelBox = new EndLevelBox(getMapTile(68, 7).getLocation());
+        EndLevelBox endLevelBox = new EndLevelBox(getMapTile(68, 8).getLocation());
         enhancedMapTiles.add(endLevelBox);
+        EndLevelBox endLevelBox1 = new EndLevelBox(getMapTile(68, 7).getLocation());
+        enhancedMapTiles.add(endLevelBox1);
+        EndLevelBox endLevelBox2 = new EndLevelBox(getMapTile(68, 6).getLocation());
+        enhancedMapTiles.add(endLevelBox2);
 
         //ammo boxes
         SingleAmmo singleAmmo = new SingleAmmo(getMapTile(2, 24).getLocation());
