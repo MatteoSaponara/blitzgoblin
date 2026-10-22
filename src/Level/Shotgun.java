@@ -156,7 +156,17 @@ public class Shotgun extends GameObject {
     }
 
     public void draw(GraphicsHandler graphicsHandler) {
-        super.draw(graphicsHandler);
+        float alpha = weaponOwner.getDrawAlpha();
+        if (alpha < 1f) {
+            graphicsHandler.setAlpha(alpha);
+        }
+        try {
+            super.draw(graphicsHandler);
+        } finally {
+            if (alpha < 1f) {
+                graphicsHandler.setAlpha(1f);
+            }
+        }
         //drawBounds(graphicsHandler, new Color(255, 0, 0, 170));
     }
     // currentFrame is essentially a sprite, so each game loop cycle the sprite

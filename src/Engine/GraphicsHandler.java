@@ -58,6 +58,17 @@ public class GraphicsHandler {
         deviceScaleY = Math.max(1, Math.hypot(t.getScaleY(), t.getShearX()));
     }
 
+    public void setAlpha(float alpha) {
+        flushPixelLayer();
+        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+        if (g != null) {
+            g.setComposite(composite);
+        }
+        if (pixelGraphics != null) {
+            pixelGraphics.setComposite(composite);
+        }
+    }
+
     private void ensurePixelBuffer() {
         int outW = (int) Math.round(ScreenManager.getScreenWidth() * deviceScaleX);
         int outH = (int) Math.round(ScreenManager.getScreenHeight() * deviceScaleY);
@@ -202,6 +213,7 @@ public class GraphicsHandler {
         Graphics2D device = (Graphics2D) g.create();
         AffineTransform t = g.getTransform();
         device.setTransform(new AffineTransform(1, 0, 0, 1, t.getTranslateX(), t.getTranslateY()));
+        device.setComposite(AlphaComposite.SrcOver);
         device.drawImage(outBuffer, 0, 0, null);
         device.dispose();
 

@@ -1,5 +1,6 @@
 package Level;
 
+import Engine.GraphicsHandler;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
 
@@ -7,6 +8,8 @@ import java.util.HashMap;
 
 // This class is a base class for all enemies in the game -- all enemies should extend from it
 public class Enemy extends MapEntity {
+    private static final int DAMAGE_FLASH_DURATION = 8;
+    private int damageFlashTimer;
 
     public Enemy(float x, float y, SpriteSheet spriteSheet, String startingAnimation) {
         super(x, y, spriteSheet, startingAnimation);
@@ -35,8 +38,30 @@ public class Enemy extends MapEntity {
 
     public void update(Player player) {
         super.update();
+        if (damageFlashTimer > 0) {
+            damageFlashTimer--;
+        }
         if (intersects(player)) {
             touchedPlayer(player);
+        }
+    }
+
+    protected void startDamageFlash() {
+        damageFlashTimer = DAMAGE_FLASH_DURATION;
+    }
+
+    @Override
+    public void draw(GraphicsHandler graphicsHandler) {
+        if (damageFlashTimer <= 0) {
+            super.draw(graphicsHandler);
+            return;
+        }
+
+        graphicsHandler.setAlpha(0.5f);
+        try {
+            super.draw(graphicsHandler);
+        } finally {
+            graphicsHandler.setAlpha(1f);
         }
     }
 

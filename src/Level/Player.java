@@ -852,8 +852,22 @@ public abstract class Player extends GameObject
     @Override
     public void draw(GraphicsHandler graphicsHandler)
     {
-        super.draw(graphicsHandler);
+        float alpha = getDrawAlpha();
+        if (alpha < 1f) {
+            graphicsHandler.setAlpha(alpha);
+        }
+        try {
+            super.draw(graphicsHandler);
+        } finally {
+            if (alpha < 1f) {
+                graphicsHandler.setAlpha(1f);
+            }
+        }
         // attack box is intentionally not drawn -- it's only used for collision detection against enemies
+    }
+
+    float getDrawAlpha() {
+        return invincibilityTimer > 0 && (invincibilityTimer / 6) % 2 == 1 ? 0.5f : 1f;
     }
 
     protected void updateFacingFromMouse() {

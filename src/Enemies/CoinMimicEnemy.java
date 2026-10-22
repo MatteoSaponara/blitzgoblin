@@ -138,6 +138,9 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
     }
     
     public void takeDamage(int damage) {
+        if (damage > 0) {
+            startDamageFlash();
+        }
         health -= damage;
         if (health < 1) {
             die();

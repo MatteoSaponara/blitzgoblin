@@ -209,6 +209,7 @@ public class HeroEnemy extends Enemy implements IDamagable {
             return;
         }
 
+        startDamageFlash();
         health = Math.max(0, health - damage);
         if (health == 0) {
             die();

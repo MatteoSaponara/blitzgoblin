@@ -20,8 +20,10 @@ public class MenuScreen extends Screen {
     protected SpriteFont credits;
     protected SpriteFont howToPlay;
 	protected SpriteFont levelSelect;
+    protected SpriteFont warning;
     protected Map background;
     protected int keyPressTimer;
+    protected int warningShakeFrame;
     protected int pointerLocationX, pointerLocationY;
     protected KeyLocker keyLocker = new KeyLocker();
 
@@ -65,10 +67,15 @@ public class MenuScreen extends Screen {
 		levelSelect.setOutlineColor(Color.black);
 		levelSelect.setOutlineThickness(3);
         credits = new SpriteFont("CREDITS", 200, 323, Config.DEFAULT_FONT, 30, new Color(255, 255, 255));     // new Color(49, 207, 240));
+        warning = new SpriteFont("warning: placeholder assets all over the place", 0, 8,
+                Config.DEFAULT_FONT, 28, new Color(255, 220, 80));
+        warning.setOutlineColor(Color.black);
+        warning.setOutlineThickness(4);
 
         background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
         keyPressTimer = 0;
+        warningShakeFrame = 0;
         menuItemSelected = -1;
         keyLocker.lockKey(Key.SPACE);
     }
@@ -76,6 +83,7 @@ public class MenuScreen extends Screen {
     public void update() {
         // update background map (to play tile animations)
         background.update(null);
+        warningShakeFrame++;
 
         // if down or up is pressed, change menu item "hovered" over (blue square in front of text will move along with currentMenuItemHovered changing)
         if (Keyboard.isKeyDown(Key.DOWN, Key.S) &&  keyPressTimer == 0) {
@@ -151,6 +159,11 @@ public class MenuScreen extends Screen {
 
     public void draw(GraphicsHandler graphicsHandler) {
         background.draw(graphicsHandler);
+        int warningWidth = graphicsHandler.getGraphics().getFontMetrics(warning.getFont()).stringWidth(warning.getText());
+        int shakeX = (int) (Math.sin(warningShakeFrame * 0.9) * 2);
+        int shakeY = (int) (Math.cos(warningShakeFrame * 1.3) * 2);
+        warning.setLocation(Config.GAME_WINDOW_WIDTH - warningWidth - 10 + shakeX, 8 + shakeY);
+        warning.draw(graphicsHandler);
         Title.draw(graphicsHandler);
         playGame.draw(graphicsHandler);
         howToPlay.draw(graphicsHandler);
