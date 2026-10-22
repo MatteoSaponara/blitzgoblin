@@ -79,8 +79,8 @@ public class Shotgun extends GameObject {
             else {
                 mouseAngleChangedThisFrame = false;
             }
-            gunPivotPosition = new Point(weaponOwner.getLocation().x + (weaponOwner.getBounds().getWidth()),
-            weaponOwner.getLocation().y + (weaponOwner.getBounds().getHeight()*(3f/4)));
+            gunPivotPosition = new Point(weaponOwner.getLocation().x + Math.round((weaponOwner.getBounds().getWidth())),
+            weaponOwner.getLocation().y + Math.round((weaponOwner.getBounds().getHeight()*(3f/4))));
             Point newPos = getGameObjectEllipticalPosition(gunPivotPosition, gunPositionalRange, previousAimAngle);
             if(getPointsDistance(getLocation(), newPos) > 0.01f){
                 setLocation(newPos.x - (getWidth()/2), newPos.y - (getHeight()/2));
