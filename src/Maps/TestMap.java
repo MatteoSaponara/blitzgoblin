@@ -134,6 +134,7 @@ public class TestMap extends Map {
         enhancedMapTiles.add(endLevelBox);
 
         //ammo boxes
+        
         SingleAmmo singleAmmo = new SingleAmmo(getMapTile(10, 27).getLocation());
         enhancedMapTiles.add(singleAmmo);
         TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(14, 24).getLocation());
