@@ -133,6 +133,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     }
 
     public void resetLevel() {
+		map.reset();
         initialize();
     }
 

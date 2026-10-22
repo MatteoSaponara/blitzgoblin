@@ -457,6 +457,8 @@ public abstract class Player extends GameObject
     // handles starting/updating/ending the melee attack based on left mouse button input
     protected void updateAttack()
     {
+		 updateShotgunOwnership();
+		
         if (Mouse.isLeftButtonDown() && !attackButtonLocked && !isAttacking)
         {
             attackButtonLocked = true;
@@ -894,6 +896,15 @@ public abstract class Player extends GameObject
     public void unlockCannonAmmo() {
         hasCannonAmmo = true;
     }
+    
+    protected void updateShotgunOwnership() {
+		if (hasSingleAmmo || hasTwelveAmmo || hasCannonAmmo) {
+			hasShotgun = true;
+			if (playerShotgun == null) {
+				playerShotgun = new Shotgun(getX(), getY(), this);
+			}
+		}
+	}
 
     public void applyRecoil(float recoilForce)
     {
