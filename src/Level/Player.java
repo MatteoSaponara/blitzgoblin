@@ -504,7 +504,7 @@ public abstract class Player extends GameObject
                             map.addEnemy(bullet);
                         }
                         // Applies recoil to the character
-                        applyRecoil(twelveAmmoRecoil);
+                        applyRecoil(twelveAmmoRecoil, mouseX, mouseY);
                         }
                         break;
                     case "cannon":
@@ -917,15 +917,23 @@ public abstract class Player extends GameObject
 		}
 	}
 
-    public void applyRecoil(float recoilForce)
+    public void applyRecoil(float recoilForce, float targetX, float targetY)
     {
-        double recoilAngle = -aimAngle;
+        float[] barrelPosition = getShotgun().getCurrentGunBarrelEndPixelPosition();
+        float recoilDirectionX = barrelPosition[0] - targetX;
+        float recoilDirectionY = barrelPosition[1] - targetY;
+        float directionLength = (float) Math.hypot(recoilDirectionX, recoilDirectionY);
 
-        recoilX = (float) (Math.cos(recoilAngle) * recoilForce);
-        recoilY = (float) -(Math.sin(recoilAngle) * recoilForce);
+        if (directionLength == 0)
+        {
+            return;
+        }
 
-        this.velocityX = recoilX;
-        this.velocityY = recoilY;
+        recoilX = recoilDirectionX / directionLength * recoilForce;
+        recoilY = recoilDirectionY / directionLength * recoilForce;
+
+        this.velocityX += recoilX;
+        this.velocityY += recoilY;
 
         this.momentumY = 0;
 
@@ -978,7 +986,7 @@ public abstract class Player extends GameObject
                         map.addEnemy(gunPOne);
 
                         // Applies recoil to the character
-                        applyRecoil(singleAmmoRecoil);
+                        applyRecoil(singleAmmoRecoil, mouseX, mouseY);
                         System.out.println("Firing single ammo");
     }
 
@@ -990,7 +998,7 @@ public abstract class Player extends GameObject
                                 mouseY
                         );
                         map.addEnemy(gunPCannonBall);
-                        applyRecoil(cannonAmmoRecoil);
+                        applyRecoil(cannonAmmoRecoil, mouseX, mouseY);
                         System.out.println("Firing cannon ammo");
     }
 
