@@ -102,7 +102,8 @@ public class Shotgun extends GameObject {
     }
 
     public GunPTwelveShot[] shootTwelveShot(){
-        double angleBetweenShotgunProjectiles = Math.toRadians(3f);
+        double angleBetweenShotgunProjectiles = Math.toRadians(8f);
+
         float mouseX = Mouse.getGameMouseX() + map.getCamera().getLocation().x;
 		float mouseY = Mouse.getGameMouseY() + map.getCamera().getLocation().y;
         double originalAngleFromGunBarrelToMouse = Math.atan2(mouseY - getCurrentGunBarrelEndPixelPosition()[1]

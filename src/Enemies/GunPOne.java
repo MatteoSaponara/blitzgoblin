@@ -60,7 +60,7 @@ public class GunPOne extends Enemy {
                     enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE && this.intersects(enemy)) {
 				
                 if (enemy instanceof IDamagable) {
-                    ((IDamagable) enemy).takeDamage(3);
+                    ((IDamagable) enemy).takeDamage(5);
                     this.mapEntityStatus = MapEntityStatus.REMOVED;
                     return;
                 }

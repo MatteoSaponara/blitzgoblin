@@ -26,7 +26,7 @@ public class GoblinEnemy extends Enemy implements IDamagable{
     private float aggroRadius = 175f; // 35x35 pixels is the size of a tile, so 175 pixels is about 5 tiles away from the player
     private boolean chasing = false;
     private boolean moving = true;
-    private int health = 3;
+    private int health = 8;
 
     public GoblinEnemy (Point location, Direction facingDirection) {
         // Change BugEnemy.png to GoblinEnemy.png when the sprite is ready
