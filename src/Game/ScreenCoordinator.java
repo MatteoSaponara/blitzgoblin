@@ -33,7 +33,8 @@ public class ScreenCoordinator extends Screen {
 		currentLevel++;
 		if (currentLevel == 1) {
 			setGameState(GameState.LEVEL1);
-		} else {
+		} else if (currentLevel == 2) {
+			currentLevel = 0;
 			setGameState(GameState.MENU);
 		}
 	}

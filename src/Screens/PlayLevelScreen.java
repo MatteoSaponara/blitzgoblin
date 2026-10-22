@@ -70,10 +70,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 } else {
                     levelClearedScreen.update();
                     screenTimer--;
-                    if (screenTimer == 0) {
+                    if (screenTimer <= 0) {
                         screenCoordinator.advanceLevel();
 					}
-			}
+				}
                     
                     break;
             // wait on level lose screen to make a decision (either resets level or sends player back to main menu)
