@@ -42,14 +42,14 @@ public class Cat extends Player {
         momentumYIncrease = .5f;
 
         // velocity and Momentum Implementation for Goblin Character
-        walkSpeed = 2.6f; //Top speed (units per frame); raise this to walk faster
+        walkSpeed = 2.61f; //Top speed (units per frame); raise this to walk faster
         drag = 0.75f; //Acceleration decrease calculation factor.
         acceleration = walkSpeed * (1 - drag) / drag; //Rate of acceleration per frame, derived so walkSpeed is actually reached
 
 
         //Recoil Tuning Parameters
-        singleAmmoRecoil = 3.5f;
-        twelveAmmoRecoil = 8.0f;
+        singleAmmoRecoil = 12.0f;
+        twelveAmmoRecoil = 4.0f;
         cannonAmmoRecoil = 18.0f;
 
 
