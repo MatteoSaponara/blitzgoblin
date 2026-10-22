@@ -165,10 +165,21 @@ public class GraphicsHandler {
         rows(srcH).forEach(sy -> {
             int src = sy * srcW;
             int dst = sy * outW;
-            for (int x = 0; x < outW; x++) {
+            for (int x = 0; x < outW;) {
                 int w = xW[x];
-                int p = pixelData[src + xI0[x]];
-                hData[dst + x] = w == 0 ? p : lerp(p, pixelData[src + xI1[x]], w);
+                int sourceX = xI0[x];
+                int p = pixelData[src + sourceX];
+                if (w == 0) {
+                    int end = x + 1;
+                    while (end < outW && xW[end] == 0 && xI0[end] == sourceX) {
+                        end++;
+                    }
+                    java.util.Arrays.fill(hData, dst + x, dst + end, p);
+                    x = end;
+                } else {
+                    hData[dst + x] = lerp(p, pixelData[src + xI1[x]], w);
+                    x++;
+                }
             }
         });
 
