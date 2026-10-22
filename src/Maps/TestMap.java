@@ -57,8 +57,8 @@ public class TestMap extends Map {
         CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(20, 23).getLocation(), Direction.LEFT);
         enemies.add(coinMimicEnemy);
 
-        GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(13, 20).getLocation(), Direction.LEFT);
-        enemies.add(gargoyleEnemy);
+       // GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(13, 20).getLocation(), Direction.LEFT);
+       // enemies.add(gargoyleEnemy);
 
         return enemies;
     }
@@ -134,18 +134,19 @@ public class TestMap extends Map {
         enhancedMapTiles.add(endLevelBox);
 
         //ammo boxes
-        
+        /*
         SingleAmmo singleAmmo = new SingleAmmo(getMapTile(10, 27).getLocation());
         enhancedMapTiles.add(singleAmmo);
         TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(14, 24).getLocation());
         enhancedMapTiles.add(twelveAmmo);
         CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(18, 24).getLocation());
         enhancedMapTiles.add(cannonAmmo);
+        */
 
         Coin coin1 = new Coin(getMapTile(9, 22).getLocation());
 		enhancedMapTiles.add(coin1);
 
-		Coin coin2 = new Coin(getMapTile(20, 20).getLocation());
+		Coin coin2 = new Coin(getMapTile(16, 20).getLocation());
 		enhancedMapTiles.add(coin2);
 
 		Coin coin3 = new Coin(getMapTile(30, 17).getLocation());
