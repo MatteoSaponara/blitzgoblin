@@ -167,13 +167,18 @@ public class GamePanel extends JPanel {
 			synchronized (stateLock) {
 				int gameWidth = Config.GAME_WINDOW_WIDTH;
 				int gameHeight = Config.GAME_WINDOW_HEIGHT;
+				int panelWidth = getWidth();
+				int panelHeight = getHeight();
+				if (panelWidth <= 0 || panelHeight <= 0) {
+					return;
+				}
 
 				if (gameImage == null ||
-						gameImage.getWidth() != gameWidth ||
-						gameImage.getHeight() != gameHeight) {
+						gameImage.getWidth() != panelWidth ||
+						gameImage.getHeight() != panelHeight) {
 					gameImage = new BufferedImage(
-							gameWidth,
-							gameHeight,
+							panelWidth,
+							panelHeight,
 							BufferedImage.TYPE_INT_ARGB
 					);
 				}
@@ -181,15 +186,7 @@ public class GamePanel extends JPanel {
 				Graphics2D gameGraphics = gameImage.createGraphics();
 
 				gameGraphics.setColor(Color.BLACK);
-				gameGraphics.fillRect(0, 0, gameWidth, gameHeight);
-
-				graphicsHandler.setGraphics(gameGraphics);
-				draw();
-
-				gameGraphics.dispose();
-
-				int panelWidth = getWidth();
-				int panelHeight = getHeight();
+				gameGraphics.fillRect(0, 0, panelWidth, panelHeight);
 				
 				//System.out.println("ScreenManager: " + ScreenManager.getScreenWidth() + "x" + ScreenManager.getScreenHeight());
 				//System.out.println("Panel: " + panelWidth + "x" + panelHeight + " | Game image: " + gameWidth + "x" + gameHeight);
@@ -204,11 +201,12 @@ public class GamePanel extends JPanel {
 				int drawY = (panelHeight - drawHeight) / 2;
 				
 				Mouse.setGameTransform(scale, drawX, drawY);
-				
 
-				
-				
-
+				gameGraphics.translate(drawX, drawY);
+				gameGraphics.scale(scale, scale);
+				graphicsHandler.setGraphics(gameGraphics);
+				draw();
+				gameGraphics.dispose();
 
 				Graphics2D screenGraphics = (Graphics2D) g.create();
 
@@ -220,7 +218,7 @@ public class GamePanel extends JPanel {
 						RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
 				);	
 
-				screenGraphics.drawImage(gameImage, drawX, drawY, drawWidth, drawHeight, null);
+				screenGraphics.drawImage(gameImage, 0, 0, null);
 				
 				if (jumpscareTimer > 0 && jumpscareImage != null) {
 					screenGraphics.drawImage(jumpscareImage, drawX, drawY, drawWidth, drawHeight, null);
