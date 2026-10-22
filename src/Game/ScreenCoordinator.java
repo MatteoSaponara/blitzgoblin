@@ -23,9 +23,19 @@ public class ScreenCoordinator extends Screen {
 	// keep track of gameState so ScreenCoordinator knows which Screen to show
 	protected GameState gameState;
 	protected GameState previousGameState;
+	protected int currentLevel = 0;
 
 	public GameState getGameState() {
 		return gameState;
+	}
+	
+	public void advanceLevel() {
+		currentLevel++;
+		if (currentLevel == 1) {
+			setGameState(GameState.LEVEL1);
+		} else {
+			setGameState(GameState.MENU);
+		}
 	}
 
 	// Other Screens can set the gameState of this class to force it to change the currentScreen
