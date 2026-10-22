@@ -115,6 +115,7 @@ public abstract class Player extends GameObject
     public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName, boolean hasShotgun)
     {
         super(spriteSheet, x, y, startingAnimationName);
+        this.hasShotgun = hasShotgun;
         facingDirection = Direction.RIGHT;
         airGroundState = AirGroundState.AIR;
         previousAirGroundState = airGroundState;
