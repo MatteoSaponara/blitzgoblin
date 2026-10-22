@@ -16,7 +16,7 @@ public class Coin extends EnhancedMapTile {
 
     public Coin(Point location)
     {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("Coin.png"), 26, 26), TileType.PASSABLE);
+        super(location.x + 6, location.y + 6, new SpriteSheet(ImageLoader.load("Coin.png"), 26, 26), TileType.PASSABLE);
     }
 
     @Override
@@ -72,4 +72,3 @@ public class Coin extends EnhancedMapTile {
         }};
     }
 }
-
