@@ -1,11 +1,13 @@
 package Enemies;
 
+import Interfaces.IDamagable;
 import Builders.FrameBuilder;
 import Engine.ImageLoader;
 import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
 import Level.MapEntity;
+import Level.MapEntityStatus;
 import Level.Player;
 import Utils.Direction;
 import Utils.Point;
@@ -13,7 +15,9 @@ import Level.Enemy;
 
 import java.util.HashMap;
 
-public class Turret extends Enemy{
+public class Turret extends Enemy implements IDamagable{
+	
+	private int health = 1000;
 
     // start and end location defines the two points that it walks between
     // is only made to walk along the x axis and has no air ground state logic, so make sure both points have the same Y value
@@ -126,6 +130,23 @@ public class Turret extends Enemy{
             });
         }};
     }
+    
+    public int getHealth() {
+        return health;
+    }
+    
+    public void takeDamage(int damage) {
+        health -= damage;
+        if (health < 1) {
+            die();
+     
+        }
+    }
+    public void die() {
+        this.mapEntityStatus = MapEntityStatus.REMOVED;
+        getMap().addEnemy(new DeathAnimEnemies(new Point(getX(), getY()), "DeathAnimationEnemies.png", 32, 32, 4, 8, 1.4f));
+    }
+
 
     public enum TurretState {
         TURRET

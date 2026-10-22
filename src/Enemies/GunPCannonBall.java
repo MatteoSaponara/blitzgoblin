@@ -5,7 +5,7 @@ import Engine.ImageLoader;
 import Engine.Mouse;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
-//import Interfaces.IDamagable;
+import Interfaces.IDamagable;
 import Level.Enemy;
 import Level.MapEntity;
 import Level.MapEntityStatus;
@@ -19,17 +19,17 @@ public class GunPCannonBall extends Enemy {
     private float movementSpeed;
     private float distanceTraveled;
     private float maxDistance;
-    private float gravity;
+    private float gravity; // Gravity value for the cannonball's downward movement
 
     private float moveX;
     private float moveY;
 
     public GunPCannonBall(Point spawnPoint, float targetX, float targetY) {
         super(spawnPoint.x-(3*4), spawnPoint.y-(3*4),
-                new SpriteSheet(ImageLoader.load("Bullet1.png"), 7, 7),"DEFAULT");
+                new SpriteSheet(ImageLoader.load("Bullet1.png"), 15, 15),"DEFAULT");
 
         movementSpeed = 4f;
-        gravity = 0.5f;
+        gravity = 0.05f;
         maxDistance = 3000f;
         distanceTraveled = 0;
 
@@ -51,7 +51,7 @@ public class GunPCannonBall extends Enemy {
         if (map == null) {
             return;
         }
-
+        moveY += gravity; // Apply gravity to the vertical movement
         moveXHandleCollision(moveX);
         moveYHandleCollision(moveY);
 
@@ -60,16 +60,17 @@ public class GunPCannonBall extends Enemy {
         for (Enemy enemy : map.getActiveEnemies()) {
             if (enemy != this &&
                     enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE && this.intersects(enemy)) {
-				/*
+				
                 if (enemy instanceof IDamagable) {
-                    ((IDamagable) enemy).takeDamage(1);
+                    ((IDamagable) enemy).takeDamage(50);
                     this.mapEntityStatus = MapEntityStatus.REMOVED;
                     return;
                 }
-                */
                 
+                /*
                 this.mapEntityStatus = MapEntityStatus.REMOVED;
 				enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
+				*/
 				return;
                 
             }

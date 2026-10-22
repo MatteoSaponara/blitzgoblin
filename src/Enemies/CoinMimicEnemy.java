@@ -15,11 +15,12 @@ import Level.Player;
 import Utils.AirGroundState;
 import Utils.Direction;
 import Utils.Point;
+import Engine.GamePanel;
 
 import java.util.HashMap;
 
 public class CoinMimicEnemy extends Enemy implements IDamagable {
-    private float flySpeed = 5f; //Speed of the CoinMimic when the player is in its aggro range
+    private float flySpeed = 10f; //Speed of the CoinMimic when the player is in its aggro range
     private float aggroRadius = 200; // 35 x 35 pixels is the size of a tile, so 70 pixels is about 2 tiles away from the player
     private int health = 1;
     
@@ -145,7 +146,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
 
     public void die() {
         this.mapEntityStatus = MapEntityStatus.REMOVED;
-        map.addEnemy(new DeathAnimEnemies(new Point(getX(), getY())));
+        getMap().addEnemy(new DeathAnimEnemies(new Point(getX(), getY()), "DeathAnimationEnemies.png", 32, 32, 4, 8, 1.4f));
     }
 
     // lifts the mimic 2px per update while the revealed form's hitbox would overlap a solid tile, so it has
@@ -193,6 +194,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
 
     @Override 
     public void touchedPlayer(Player player) {
+		GamePanel.triggerJumpscare();
         player.killPlayer();
     }
 

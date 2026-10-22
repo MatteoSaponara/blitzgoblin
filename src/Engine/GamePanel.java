@@ -31,6 +31,9 @@ public class GamePanel extends JPanel {
 	private boolean showFPS = false;
 	private int currentFPS;
 	private boolean doPaint;
+	private static BufferedImage jumpscareImage;
+	private static int jumpscareTimer = 0;
+	private static final int JUMPSCARE_DURATION = 60;
 
 	// update and paint run on different threads; this keeps a frame from being drawn halfway through an update
 	private final Object stateLock = new Object();
@@ -66,6 +69,16 @@ public class GamePanel extends JPanel {
 		this.addMouseListener(Mouse.getMouseListener());
 		this.addMouseMotionListener(Mouse.getMouseMotionListener());
 	}
+	
+	public static void triggerJumpscare() {
+		if (jumpscareTimer == 0) {
+        jumpscareImage = ImageLoader.load("fakecoinJumpScare.png");
+        jumpscareTimer = JUMPSCARE_DURATION;
+		}
+	}
+	
+	
+	
 
 	// this is called later after instantiation, and will initialize screenManager
 	// this had to be done outside of the constructor because it needed to know the JPanel's width and height, which aren't available in the constructor
@@ -100,6 +113,10 @@ public class GamePanel extends JPanel {
 				screenManager.update();
 			}
 		}
+		
+		if (jumpscareTimer > 0) {
+			jumpscareTimer--;
+			}			
 	}
 
 	private void updatePauseState() {
@@ -204,6 +221,10 @@ public class GamePanel extends JPanel {
 				);	
 
 				screenGraphics.drawImage(gameImage, drawX, drawY, drawWidth, drawHeight, null);
+				
+				if (jumpscareTimer > 0 && jumpscareImage != null) {
+					screenGraphics.drawImage(jumpscareImage, drawX, drawY, drawWidth, drawHeight, null);
+					}
 
 				screenGraphics.dispose();
 			}

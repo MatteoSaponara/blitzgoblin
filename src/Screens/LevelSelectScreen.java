@@ -9,15 +9,15 @@ import SpriteFont.SpriteFont;
 
 import java.awt.*;
 
-// This is the class for the main menu screen
+
 public class LevelSelectScreen extends Screen {
     protected ScreenCoordinator screenCoordinator;
     protected int currentMenuItemHovered = 0; // current menu item being "hovered" over
     protected int menuItemSelected = -1;
     protected SpriteFont Title;
-    protected SpriteFont playGame;
+	protected SpriteFont Level;
+	protected SpriteFont Level1;
     protected SpriteFont ReturnMenu;
-    protected SpriteFont howToPlay;
     protected SpriteFont returnInstructionsLabel;
     protected Map background;
     protected int keyPressTimer;
@@ -36,12 +36,12 @@ public class LevelSelectScreen extends Screen {
         returnInstructionsLabel = new SpriteFont("Return to Menu", 200, 170, "Copperplate Gothic Light", 30, new Color(255, 255, 255)); 
         returnInstructionsLabel.setOutlineColor(Color.black);
         returnInstructionsLabel.setOutlineThickness(3);
-        playGame = new SpriteFont("Level 1", 200, 221, "Copperplate Gothic Light", 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
-        playGame.setOutlineColor(Color.black);
-        playGame.setOutlineThickness(3);
-        howToPlay = new SpriteFont("HOW TO PLAY", 200, 272, "Copperplate Gothic Light", 30, Color.white);
-		howToPlay.setOutlineColor(Color.black);
-		howToPlay.setOutlineThickness(3);
+        Level = new SpriteFont("Tutorial", 200, 221, "Copperplate Gothic Light", 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
+        Level.setOutlineColor(Color.black);
+        Level.setOutlineThickness(3);
+        Level1 = new SpriteFont("Level 1", 200, 272, "Copperplate Gothic Light", 30, Color.white);
+		Level1.setOutlineColor(Color.black);
+		Level1.setOutlineThickness(3);
         background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
         keyPressTimer = 0;
@@ -70,25 +70,25 @@ public class LevelSelectScreen extends Screen {
         if (currentMenuItemHovered > 2) {
             currentMenuItemHovered = 0;
         } else if (currentMenuItemHovered < 0) {
-            currentMenuItemHovered = 1;
+            currentMenuItemHovered = 2;
         }
 
         // sets location for blue square in front of text (pointerLocation) and also sets color of spritefont text based on which menu item is being hovered
         if (currentMenuItemHovered == 0) {
-            playGame.setColor(new Color(255, 255, 255)); //new Color(255, 215, 0));
-            howToPlay.setColor(new Color(255, 255, 255));
+            Level.setColor(new Color(255, 255, 255)); //new Color(255, 215, 0));
+            Level1.setColor(new Color(255, 255, 255));
             returnInstructionsLabel.setColor(new Color(255, 255, 255));
             pointerLocationX = 170;
             pointerLocationY = 177;
         } else if (currentMenuItemHovered == 1) {
-            playGame.setColor(new Color(255, 255, 255)); //new Color(49, 207, 240));
-            howToPlay.setColor(new Color(255, 255, 255));
+            Level.setColor(new Color(255, 255, 255)); //new Color(49, 207, 240));
+            Level1.setColor(new Color(255, 255, 255));
             returnInstructionsLabel.setColor(new Color(255, 255, 255));
             pointerLocationX = 170;
             pointerLocationY = 228;
         } else if (currentMenuItemHovered == 2) {
-			playGame.setColor(new Color(255, 255, 255));
-			howToPlay.setColor(new Color(255, 255, 255));
+			Level.setColor(new Color(255, 255, 255));
+			Level1.setColor(new Color(255, 255, 255));
 			returnInstructionsLabel.setColor(new Color(255, 255, 255));
 			pointerLocationX = 170;
 			pointerLocationY = 279;
@@ -105,8 +105,8 @@ public class LevelSelectScreen extends Screen {
                 screenCoordinator.setGameState(GameState.MENU);
             } else if (menuItemSelected == 1) {
                 screenCoordinator.setGameState(GameState.LEVEL);
-			} else if (menuItemSelected == 1) {
-                screenCoordinator.setGameState(GameState.HOW_TO_PLAY);
+			} else if (menuItemSelected == 2) {
+                //screenCoordinator.setGameState(GameState.LEVEL1);
 			}
 		}
                 
@@ -115,8 +115,8 @@ public class LevelSelectScreen extends Screen {
     public void draw(GraphicsHandler graphicsHandler) {
         background.draw(graphicsHandler);
         Title.draw(graphicsHandler);
-        playGame.draw(graphicsHandler);
-        howToPlay.draw(graphicsHandler);
+        Level.draw(graphicsHandler);
+        Level1.draw(graphicsHandler);
         returnInstructionsLabel.draw(graphicsHandler);
         graphicsHandler.drawFilledRectangleWithBorder(pointerLocationX, pointerLocationY, 20, 20, new Color(255, 255, 255), Color.black, 2); //new Color(49, 207, 240), Color.black, 2);
     }

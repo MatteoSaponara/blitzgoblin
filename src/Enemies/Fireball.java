@@ -10,15 +10,17 @@ import Level.MapEntityStatus;
 import Level.Player;
 import Utils.Direction;
 import Utils.Point;
+import Interfaces.IDamagable;
 
 import java.util.HashMap;
 
 // This class is for the fireball enemy that the DinosaurEnemy class shoots out
 // it will travel in a straight line (x axis) for a set time before disappearing
 // it will disappear early if it collides with a solid map tile
-public class Fireball extends Enemy {
+public class Fireball extends Enemy implements IDamagable {
     private float movementSpeed;
     private int existenceFrames;
+    private int health = 1;
 
     public Fireball(Point location, float movementSpeed, int existenceFrames) {
         super(location.x, location.y, new SpriteSheet(ImageLoader.load("Fireball.png"), 7, 7), "DEFAULT");
@@ -70,4 +72,22 @@ public class Fireball extends Enemy {
             });
         }};
     }
+    
+    public int getHealth() {
+        return health;
+    }
+    
+    public void takeDamage(int damage) {
+        health -= damage;
+        if (health < 1) {
+            die();
+     
+        }
+    }
+    public void die() {
+        this.mapEntityStatus = MapEntityStatus.REMOVED;
+        getMap().addEnemy(new DeathAnimEnemies(new Point(getX(), getY()), "DeathAnimationEnemies2.png", 32, 32, 4, 6, 1f));
+    }
+    
+    
 }

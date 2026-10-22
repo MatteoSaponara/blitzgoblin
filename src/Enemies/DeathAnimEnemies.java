@@ -4,7 +4,6 @@ import Builders.FrameBuilder;
 import Engine.ImageLoader;
 import GameObject.Frame;
 import GameObject.ImageEffect;
-import GameObject.SpriteSheet;
 import Level.Enemy;
 import Level.MapEntityStatus;
 import Level.Player;
@@ -14,42 +13,35 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class DeathAnimEnemies extends Enemy {
-
-    private static final int FRAME_WIDTH = 32;
-    private static final int FRAME_HEIGHT = 32;
-    private static final int FRAME_COUNT = 4;
-    private static final int FRAME_DELAY = 8;
-    private static final float SCALE = 1.4f;
+    private final int frameWidth;
+    private final int frameHeight;
+    private final int frameCount;
+    private final int frameDelay;
+    private final float scale;
 
     private int animationTimer = 0;
 
-    public DeathAnimEnemies(Point location) {
-		
-		super(location.x, location.y, new SpriteSheet(ImageLoader.load("DeathAnimationEnemies.png"), FRAME_WIDTH, FRAME_HEIGHT),"DEATH");
+    public DeathAnimEnemies(Point location, String imageName, int frameWidth, int frameHeight, int frameCount, int frameDelay, float scale) {
+        super(location.x, location.y, createAnimations(imageName, frameWidth, frameHeight, frameCount, frameDelay, scale), "DEATH");
+
+        this.frameWidth = frameWidth;
+        this.frameHeight = frameHeight;
+        this.frameCount = frameCount;
+        this.frameDelay = frameDelay;
+        this.scale = scale;
 
         initialize();
     }
 
-    @Override
-    public HashMap<String, Frame[]> loadAnimations(
-        SpriteSheet spriteSheet
-    ) {
-        BufferedImage image = spriteSheet.getImage();
-        Frame[] frames = new Frame[FRAME_COUNT];
+    private static HashMap<String, Frame[]> createAnimations(String imageName, int frameWidth, int frameHeight, int frameCount, int frameDelay, float scale) {
+        BufferedImage image = ImageLoader.load(imageName);
+        Frame[] frames = new Frame[frameCount];
 
-        for (int i = 0; i < FRAME_COUNT; i++) {
-            frames[i] = new FrameBuilder(
-                image.getSubimage(
-                    i * FRAME_WIDTH,
-                    0,
-                    FRAME_WIDTH,
-                    FRAME_HEIGHT
-                ),
-                FRAME_DELAY
-            )
-                .withScale(SCALE)
+        for (int i = 0; i < frameCount; i++) {
+            frames[i] = new FrameBuilder(image.getSubimage(i * frameWidth, 0, frameWidth, frameHeight), frameDelay)
+                .withScale(scale)
                 .withImageEffect(ImageEffect.NONE)
-                .withBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT)
+                .withBounds(0, 0, frameWidth, frameHeight)
                 .build();
         }
 
@@ -65,7 +57,7 @@ public class DeathAnimEnemies extends Enemy {
 
         animationTimer++;
 
-        if (animationTimer >= FRAME_DELAY * FRAME_COUNT) {
+        if (animationTimer >= frameDelay * frameCount) {
             mapEntityStatus = MapEntityStatus.REMOVED;
         }
     }
