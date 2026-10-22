@@ -596,7 +596,7 @@ public abstract class Player extends GameObject
             {
                 //enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
                 if (enemy instanceof IDamagable) {
-					((IDamagable) enemy).takeDamage(1);
+					((IDamagable) enemy).takeDamage(3);
 					HasHitEnemy = true;
 					return;
 					}
