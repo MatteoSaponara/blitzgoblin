@@ -50,6 +50,9 @@ public class level1 extends Map {
 
         GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(62, 10).getLocation().addY(2), Direction.LEFT);
         enemies.add(gargoyleEnemy);
+        
+        CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(59, 13).getLocation(), Direction.LEFT);
+        enemies.add(coinMimicEnemy);
 
         return enemies;
     }
