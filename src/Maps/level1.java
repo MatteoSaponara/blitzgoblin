@@ -42,6 +42,9 @@ public class level1 extends Map {
         Turret turretEnemy2 = new Turret(getMapTile(15, 16).getLocation().addY(2), Direction.RIGHT);
         enemies.add(turretEnemy2);
 
+        GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(17, 17).getLocation().addY(2), Direction.RIGHT);
+        enemies.add(goblinEnemy);
+
         return enemies;
     }
 
