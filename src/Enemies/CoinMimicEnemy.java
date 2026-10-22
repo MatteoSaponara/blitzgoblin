@@ -196,6 +196,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
     public void touchedPlayer(Player player) {
 		GamePanel.triggerJumpscare();
         player.killPlayer();
+        this.mapEntityStatus = MapEntityStatus.REMOVED;
     }
 
     public enum CoinMimicState {
