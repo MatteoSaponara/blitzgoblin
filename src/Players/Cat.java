@@ -48,8 +48,8 @@ public class Cat extends Player {
 
 
         //Recoil Tuning Parameters
-        singleAmmoRecoil = 3.5f;
-        twelveAmmoRecoil = 8.0f;
+        singleAmmoRecoil = 8.0f;
+        twelveAmmoRecoil = 3.5f;
         cannonAmmoRecoil = 18.0f;
 
 
