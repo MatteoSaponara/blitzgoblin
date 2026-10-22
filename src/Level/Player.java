@@ -91,7 +91,7 @@ public abstract class Player extends GameObject
     protected Rectangle attackBox;
 
     // shotgun values
-    private boolean hasShotgun = true; // Set to false
+    private boolean hasShotgun;
     private Shotgun playerShotgun;
 
     // Aiming system variables
