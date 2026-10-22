@@ -60,16 +60,17 @@ public class GunPCannonBall extends Enemy {
         for (Enemy enemy : map.getActiveEnemies()) {
             if (enemy != this &&
                     enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE && this.intersects(enemy)) {
-				/*
+				
                 if (enemy instanceof IDamagable) {
-                    ((IDamagable) enemy).takeDamage(1);
+                    ((IDamagable) enemy).takeDamage(50);
                     this.mapEntityStatus = MapEntityStatus.REMOVED;
                     return;
                 }
-                */
                 
+                /*
                 this.mapEntityStatus = MapEntityStatus.REMOVED;
 				enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
+				*/
 				return;
                 
             }

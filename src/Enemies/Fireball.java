@@ -86,6 +86,7 @@ public class Fireball extends Enemy implements IDamagable {
     }
     public void die() {
         this.mapEntityStatus = MapEntityStatus.REMOVED;
+        getMap().addEnemy(new DeathAnimEnemies(new Point(getX(), getY()), "DeathAnimationEnemies2.png", 32, 32, 4, 6, 1f));
     }
     
     

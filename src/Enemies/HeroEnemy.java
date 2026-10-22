@@ -14,6 +14,7 @@ import Utils.Direction;
 import Utils.Point;
 import java.util.HashMap;
 import Interfaces.IDamagable;
+import Utils.Point;
 
 // This class is for the hero enemy
 // 
@@ -129,7 +130,7 @@ public class HeroEnemy extends Enemy implements IDamagable {
 
     public void die() {
         this.mapEntityStatus = MapEntityStatus.REMOVED;
-        map.addEnemy(new DeathAnimEnemies(new Point(getX(), getY())));
+        getMap().addEnemy(new DeathAnimEnemies(new Point(getX(), getY()), "DeathAnimationEnemies.png", 32, 32, 4, 8, 1.4f));
     }
     
     

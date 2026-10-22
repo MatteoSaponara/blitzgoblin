@@ -146,7 +146,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
 
     public void die() {
         this.mapEntityStatus = MapEntityStatus.REMOVED;
-        map.addEnemy(new DeathAnimEnemies(new Point(getX(), getY())));
+        getMap().addEnemy(new DeathAnimEnemies(new Point(getX(), getY()), "DeathAnimationEnemies.png", 32, 32, 4, 8, 1.4f));
     }
 
     // lifts the mimic 2px per update while the revealed form's hitbox would overlap a solid tile, so it has

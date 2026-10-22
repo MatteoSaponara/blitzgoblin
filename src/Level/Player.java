@@ -79,6 +79,7 @@ public abstract class Player extends GameObject
     // melee attack values
     protected boolean isAttacking = false;
     protected boolean attackButtonLocked = false;
+    protected boolean HasHitEnemy = false;
     protected int attackTimer = 0;
 
     protected int shotgunAttackTimer = 0;
@@ -89,7 +90,7 @@ public abstract class Player extends GameObject
     protected Rectangle attackBox;
 
     // shotgun values
-    private boolean hasShotgun = true; // Set to false 
+    private boolean hasShotgun = false; // Set to false 
     private Shotgun playerShotgun;
 
     // Aiming system variables
@@ -461,6 +462,7 @@ public abstract class Player extends GameObject
             attackButtonLocked = true;
             isAttacking = true;
             attackTimer = ATTACK_DURATION;
+            HasHitEnemy = false;
             
             float cameraX = map.getCamera().getX();
 		    float cameraY = map.getCamera().getY();
@@ -569,7 +571,7 @@ public abstract class Player extends GameObject
     // MELEE ATTACK kills any enemy currently touching the attack hitbox
     protected void checkAttackCollisions()
     {
-        if (map == null || attackBox == null)
+        if (map == null || attackBox == null || HasHitEnemy)
         {
             return;
         }
@@ -584,10 +586,12 @@ public abstract class Player extends GameObject
                 //enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
                 if (enemy instanceof IDamagable) {
 					((IDamagable) enemy).takeDamage(1);
+					HasHitEnemy = true;
 					return;
 					}
             }
         }
+        
     }
 
     // anything extra the player should do based on interactions can be handled here
