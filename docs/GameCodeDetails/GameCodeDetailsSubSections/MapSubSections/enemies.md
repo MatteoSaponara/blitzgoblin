@@ -131,8 +131,8 @@ The image file for the dinosaur enemy is `DinosaurEnemy.png`.
 This enemy is defnied by the `Fireball` class. 
 
 As mentioned in the previous [dinosaur enemy](#dinosaur-enemy) section, the dinosaur enemy will shoot out a fireball every so often.
-The fireball will travel straight for a few frames before disappearing. 
-It will also disappear if it collides with a solid tile.
+Dinosaur fireballs travel straight for a limited number of frames, while turret fireballs continue until they hit a solid tile.
+Fireballs also disappear if they hit the player.
 Notice that this enemy sets itself to `REMOVED` when it should disappear -- a map entity with a `REMOVED` status will be permanently removed from the map enemies list and will not ever respawn.
 
 ```java

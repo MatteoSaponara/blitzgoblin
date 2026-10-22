@@ -53,7 +53,7 @@ public class DeathAnimEnemies extends Enemy {
 
     @Override
     public void update(Player player) {
-        super.update(player);
+        super.update();
 
         animationTimer++;
 
