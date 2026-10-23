@@ -34,6 +34,8 @@ public class Cat extends Player {
         super(new SpriteSheet(ImageLoader.load(hasShotgun ? "goblinarmless.png" : "goblin.png"), 73, 54),
                 x, y, "STAND_RIGHT", hasShotgun);
         spriteHasShotgun = hasShotgun;
+        
+        numLayer = 0;
         gravity = .5f;
         terminalVelocityY = 7.5f;
         jumpHeight = 12.75f;

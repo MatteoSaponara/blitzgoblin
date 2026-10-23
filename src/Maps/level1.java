@@ -6,10 +6,12 @@ import Enemies.GargoyleEnemy;
 import Enemies.GoblinEnemy;
 import Enemies.Turret;
 import Engine.ImageLoader;
+import EnhancedMapTiles.CannonAmmo;
 import EnhancedMapTiles.Coin;
 import EnhancedMapTiles.EndLevelBox;
 import EnhancedMapTiles.HorizontalMovingPlatform;
 import EnhancedMapTiles.SingleAmmo;
+import EnhancedMapTiles.TwelveAmmo;
 import GameObject.Rectangle;
 import Level.*;
 import Tilesets.CommonTileset;
@@ -22,7 +24,8 @@ import java.util.ArrayList;
 public class level1 extends Map {
 
     public level1() {
-        super("level1.txt", new CommonTileset());
+        super("level1.txt", new CommonTileset(), 0);
+        //currentGameplayLayer = 0;
         this.playerStartPosition = getMapTile(2, 24).getLocation();
         //this.playerStartPosition = getMapTile(51, 17).getLocation(); //test spawn
     }
@@ -37,6 +40,7 @@ public class level1 extends Map {
         Turret turretEnemy2 = new Turret(getMapTile(15, 16).getLocation().addY(2), Direction.RIGHT);
         enemies.add(turretEnemy2);
 
+
         Turret turretEnemy3 = new Turret(getMapTile(35, 6).getLocation().addY(2), Direction.RIGHT);
         enemies.add(turretEnemy3);
 
@@ -50,9 +54,10 @@ public class level1 extends Map {
         enemies.add(turretEnemy6);
 
         GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(17, 17).getLocation().addY(2), Direction.RIGHT);
+
         enemies.add(goblinEnemy);
 
-        GoblinEnemy goblinEnemy2 = new GoblinEnemy(getMapTile(38, 17).getLocation().addY(2), Direction.LEFT);
+        GoblinEnemy goblinEnemy2 = new GoblinEnemy(getMapTile(38, 17).getLocation().addY(2), this.getCurrentGameplayLayer(), Direction.LEFT);
         enemies.add(goblinEnemy2);
 
         GoblinEnemy goblinEnemy3 = new GoblinEnemy(getMapTile(10, 15).getLocation().addY(2), Direction.RIGHT);

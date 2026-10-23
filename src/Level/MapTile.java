@@ -12,7 +12,6 @@ public class MapTile extends MapEntity {
     protected TileLayout tileLayout; // only used for slopes
 
     private int tileIndex;
-
     {
         sharedEdgeDraw = true;
     }
@@ -22,7 +21,11 @@ public class MapTile extends MapEntity {
         this.tileType = tileType;
         this.tileIndex = tileIndex;
     }
-
+    public MapTile(float x, float y, int layer, HashMap<String, Frame[]> animations, TileType tileType, int tileIndex) {
+        super(x, y,layer, animations, "DEFAULT");
+        this.tileType = tileType;
+        this.tileIndex = tileIndex;
+    }
     public MapTile(float x, float y, HashMap<String, Frame[]> animations, TileType tileType) {
         super(x, y, animations, "DEFAULT");
         this.tileType = tileType;

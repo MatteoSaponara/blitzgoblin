@@ -2,6 +2,7 @@ package Enemies;
 
 import Builders.FrameBuilder;
 import Engine.ImageLoader;
+import Engine.ScreenManager;
 import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
@@ -28,9 +29,9 @@ public class GoblinEnemy extends Enemy implements IDamagable{
     private boolean moving = true;
     private int health = 8;
 
-    public GoblinEnemy (Point location, Direction facingDirection) {
+    public GoblinEnemy (Point location, int layer, Direction facingDirection) {
         // Change BugEnemy.png to GoblinEnemy.png when the sprite is ready
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("enemygoblin.png"), 48, 52), "WALK_LEFT");
+        super(location.x, location.y, layer, new SpriteSheet(ImageLoader.load("enemygoblin.png"), 48, 52), "WALK_LEFT");
         this.startFacingDirection = facingDirection;
         this.initialize();
     }

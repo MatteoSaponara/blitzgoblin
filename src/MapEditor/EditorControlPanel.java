@@ -4,24 +4,26 @@ import Engine.Config;
 import Level.Map;
 import Level.MapTile;
 import Utils.Colors;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class EditorControlPanel extends JPanel {
 
-    private ArrayList<String> mapNames;
-    private JComboBox<String> mapNamesComboBox;
-    private TilePicker tilePicker;
-    private MapBuilder mapBuilder;
-    private Map selectedMap;
+    protected ArrayList<String> mapNames;
+    protected JComboBox<String> mapNamesComboBox;
+    protected TilePicker tilePicker;
+    protected MapBuilder mapBuilder;
+    protected Map selectedMap;
+    protected static EditorControlPanel thisEditorControlPanel;
 
     public EditorControlPanel(SelectedTileIndexHolder selectedTileIndexHolder, MapBuilder mapBuilder, JFrame parent) {
+        if(this.getClass() == EditorControlPanel.class)
+            thisEditorControlPanel = this;
         setLayout(new BorderLayout());
         setBackground(Colors.CORNFLOWER_BLUE);
         setLocation(0, 0);
@@ -111,18 +113,24 @@ public class EditorControlPanel extends JPanel {
         String fileName = getSelectedMap().getMapFileName();
         try {
             FileWriter fileWriter = new FileWriter(Config.MAP_FILES_PATH + fileName);
-            fileWriter.write(map.getWidth() + " " + map.getHeight() + "\n");
-            MapTile[] mapTiles = map.getMapTiles();
-            for (int i = 0; i < map.getHeight(); i++) {
-                for (int j = 0; j < map.getWidth(); j++) {
-                    fileWriter.write(String.valueOf(mapTiles[j + map.getWidth() * i].getTileIndex()));
-                    if (j < map.getWidth() - 1) {
-                        fileWriter.write(" ");
-                    } else if (j >= map.getWidth() -1 && i < map.getHeight() - 1) {
-                        fileWriter.write("\n");
+            fileWriter.write(map.getWidth() + " " + map.getHeight() + " " +map.getCurrentMapLayerNumber()+"\n");
+            MapTile[][] mapTiles = map.getAllMapTiles();
+            for(int layerNum = 0; layerNum < map.getCurrentMapLayerNumber(); layerNum++) {
+                for (int i = 0; i < map.getHeight(); i++) {
+                    for (int j = 0; j < map.getWidth(); j++) {
+                        System.err.println("j, i: "+j+", "+i+"\nmap.getWidth(): "+map.getWidth() + "layerNum: "+layerNum);
+                        System.err.println(j + (map.getWidth() * i));
+                        fileWriter.write(String.valueOf(mapTiles[j + (map.getWidth() * i)][layerNum].getTileIndex()));
+                        if (j < map.getWidth() - 1) {
+                            fileWriter.write(" ");
+                        } else if (j >= map.getWidth() -1 && i < map.getHeight() - 1) {
+                            fileWriter.write("\n");
+                        }
                     }
                 }
+                fileWriter.write("\n");            
             }
+            
             fileWriter.close();
         } catch (IOException ex) {
             ex.printStackTrace();

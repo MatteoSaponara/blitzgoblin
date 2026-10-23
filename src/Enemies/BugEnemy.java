@@ -24,7 +24,12 @@ public class BugEnemy extends Enemy {
     private Direction facingDirection;
     private AirGroundState airGroundState;
 
-    public BugEnemy(Point location, Direction facingDirection) {
+    public BugEnemy(Point location, int numLayerIN, Direction facingDirection) {
+        super(location.x, location.y, numLayerIN, new SpriteSheet(ImageLoader.load("BugEnemy.png"), 24, 15), "WALK_LEFT");
+        this.startFacingDirection = facingDirection;
+        this.initialize();
+    }
+    public BugEnemy(Point location,  Direction facingDirection) {
         super(location.x, location.y, new SpriteSheet(ImageLoader.load("BugEnemy.png"), 24, 15), "WALK_LEFT");
         this.startFacingDirection = facingDirection;
         this.initialize();

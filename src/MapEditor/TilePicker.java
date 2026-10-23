@@ -6,8 +6,6 @@ import Level.Map;
 import Level.MapTile;
 import Level.Tileset;
 import Utils.Colors;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -15,6 +13,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import javax.swing.*;
 
 public class TilePicker extends JPanel {
 
@@ -76,6 +75,7 @@ public class TilePicker extends JPanel {
                 int x = j * tileset.getScaledSpriteWidth() + ((j * 5) + 5);
                 int y = i * tileset.getScaledSpriteHeight() + ((i * 5) + 5);
                 MapTile tile = mapTileBuilders.get(tileKeys[currentKeyIndex]).build(x, y);
+                tile.setNumLayer(TileBuilder.getCurrentlyViewedLayer());
                 tile.setMap(map);
                 mapTiles.put(currentKeyIndex, tile);
                 currentKeyIndex++;

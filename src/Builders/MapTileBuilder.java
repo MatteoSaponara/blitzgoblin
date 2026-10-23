@@ -4,7 +4,6 @@ import GameObject.Frame;
 import Level.MapTile;
 import Level.TileLayout;
 import Level.TileType;
-
 import java.util.HashMap;
 
 // Builder class to instantiate a MapTile class
@@ -48,6 +47,13 @@ public class MapTileBuilder {
             animationsCopy.put(key, framesCopy);
         }
         return animationsCopy;
+    }
+    public MapTile build(float x, float y, int layer) {
+        MapTile mapTile = new MapTile(x, y, layer, cloneAnimations(), tileType, tileIndex);
+        if (tileLayout != null) {
+            mapTile.setLayout(tileLayout);
+        }
+        return mapTile;
     }
 
     public MapTile build(float x, float y) {

@@ -6,8 +6,10 @@ import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.Rectangle;
 import GameObject.SpriteSheet;
+import Interfaces.IDamagable;
 import Level.Enemy;
 import Level.MapEntity;
+import Level.MapEntityStatus;
 import Level.Player;
 import Utils.AirGroundState;
 import Utils.Direction;
@@ -31,12 +33,32 @@ public class HeroEnemy extends Enemy implements IDamagable {
     private int hitTimer;
     private int shakeTimer;
 
+    public HeroEnemy(Point location, int numLayerIN, Direction facingDirection) {
+        super(location.x, location.y, numLayerIN, new SpriteSheet(ImageLoader.load("hero.png"), 84, 80), "WALK_LEFT");
+        this.startFacingDirection = facingDirection;
+        this.initialize();
+    }
     public HeroEnemy(Point location, Direction facingDirection) {
         super(location.x, location.y, new SpriteSheet(ImageLoader.load("hero.png"), 91, 85), "WALK_LEFT");
         this.startFacingDirection = facingDirection;
         this.initialize();
     }
+    /*public int getHealth() {
 
+        return health;
+    }
+    
+    public void takeDamage(int damage) {
+        health -= damage;
+        if (health < 1) {
+            die();
+        }
+    }
+
+    public void die() {
+        this.mapEntityStatus = MapEntityStatus.REMOVED;
+        map.addEnemy(new DeathAnimEnemies(new Point(getX(), getY())));
+    */
     @Override
     public void initialize() {
         super.initialize();

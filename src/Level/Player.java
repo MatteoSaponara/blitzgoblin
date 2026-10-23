@@ -140,6 +140,7 @@ public abstract class Player extends GameObject
 
     public void update()
     {
+        numLayer = map.getCurrentGameplayLayer();
         moveAmountX = 0;
         moveAmountY = 0;
 
@@ -600,7 +601,6 @@ public abstract class Player extends GameObject
                             shootSingleShot(mouseX, mouseY);
                             shotFired = true;
                         }
-                        
                         break;
                     case "twelve":
                         if (hasTwelveAmmo) {
@@ -1149,8 +1149,8 @@ public abstract class Player extends GameObject
 
     private void shootSingleShot(float mouseX, float mouseY) {
         GunPOne gunPOne = new GunPOne(
-                            new Point(getShotgun().getCurrentGunBarrelEndPixelPosition()[0],
-                                    getShotgun().getCurrentGunBarrelEndPixelPosition()[1]),
+                            new Point(getShotgun().getCurrentGunBarrelEndPixelPosition()[0], 
+                                    getShotgun().getCurrentGunBarrelEndPixelPosition()[1]), map.getCurrentGameplayLayer(),
                             mouseX,
                             mouseY
                         );
