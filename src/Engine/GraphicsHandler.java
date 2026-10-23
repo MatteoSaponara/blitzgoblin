@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 /*
  * Sprites and tiles are drawn to an internal pixel grid (1 art pixel = 1 buffer pixel), which is flushed to the
- * window with a sharp-bilinear upscale before any other draw call and at the end of the frame.
+ * window with a coverage-weighted upscale before any other draw call and at the end of the frame.
  */
 public class GraphicsHandler {
     private Graphics2D g;
@@ -28,7 +28,7 @@ public class GraphicsHandler {
     // output at device resolution, built from the pixel grid
     private BufferedImage outBuffer;
     private int[] outData;
-    private int[] hData; // grid rows resampled horizontally
+    private int[] hData;
     private int[] xI0, xI1, xW, yI0, yI1, yW;
 
     // when disabled (map editor), sprites are drawn straight to the window at world size
@@ -84,39 +84,29 @@ public class GraphicsHandler {
             pixelBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
             pixelGraphics = pixelBuffer.createGraphics();
             pixelGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-            pixelData = ((DataBufferInt) pixelBuffer.getRaster().getDataBuffer()).getData();
             outBuffer = new BufferedImage(outW, outH, BufferedImage.TYPE_INT_ARGB_PRE);
+            pixelData = ((DataBufferInt) pixelBuffer.getRaster().getDataBuffer()).getData();
             outData = ((DataBufferInt) outBuffer.getRaster().getDataBuffer()).getData();
             hData = new int[outW * height];
-
             xI0 = new int[outW]; xI1 = new int[outW]; xW = new int[outW];
             yI0 = new int[outH]; yI1 = new int[outH]; yW = new int[outH];
-            buildSampleTable(outW, width, scaleX, xI0, xI1, xW);
-            buildSampleTable(outH, height, scaleY, yI0, yI1, yW);
+            buildCoverageTable(outW, width, scaleX, xI0, xI1, xW);
+            buildCoverageTable(outH, height, scaleY, yI0, yI1, yW);
         }
     }
 
-    // for each output pixel: the art pixel it lands in, the neighbouring art pixel to blend with, and the blend
-    // weight (0-128). only output pixels touching the border between two art pixels blend, by their overlap, so
-    // every art pixel keeps the same size and crisp edges at any window scale.
-    private static void buildSampleTable(int outSize, int artSize, float scale, int[] i0, int[] i1, int[] weight) {
-        for (int d = 0; d < outSize; d++) {
-            float p = (d + 0.5f) / scale;
-            int a = Math.min((int) p, artSize - 1);
-            float t = (p - a) * scale;          // output pixels from the art pixel's start edge
-            float tEnd = (a + 1 - p) * scale;   // output pixels to the art pixel's end edge
-            int neighbour = a;
-            float w = 0;
-            if (t < 0.5f && a > 0) {
-                neighbour = a - 1;
-                w = 0.5f - t;
-            } else if (tEnd < 0.5f && a < artSize - 1) {
-                neighbour = a + 1;
-                w = 0.5f - tEnd;
-            }
-            i0[d] = a;
-            i1[d] = neighbour;
-            weight[d] = Math.round(w * 256f);
+    private static void buildCoverageTable(int outputSize, int inputSize, float scale,
+                                           int[] firstIndex, int[] secondIndex, int[] secondWeight) {
+        for (int output = 0; output < outputSize; output++) {
+            double start = output / (double) scale;
+            double end = (output + 1) / (double) scale;
+            int first = Math.min((int) start, inputSize - 1);
+            int second = Math.min(first + 1, inputSize - 1);
+            double secondCoverage = Math.max(0, end - Math.max(start, first + 1.0));
+
+            firstIndex[output] = first;
+            secondIndex[output] = second;
+            secondWeight[output] = Math.min(256, (int) Math.round(secondCoverage * scale * 256));
         }
     }
 
@@ -127,11 +117,11 @@ public class GraphicsHandler {
         return MULTI_CORE ? rows.parallel() : rows;
     }
 
-    private static int lerp(int p, int q, int w) {
-        if (w == 0 || p == q) return p;
-        int iw = 256 - w;
-        int rb = (((p & 0xFF00FF) * iw + (q & 0xFF00FF) * w) >>> 8) & 0xFF00FF;
-        int ag = (((p >>> 8) & 0xFF00FF) * iw + ((q >>> 8) & 0xFF00FF) * w) & 0xFF00FF00;
+    private static int lerp(int first, int second, int weight) {
+        if (weight == 0 || first == second) return first;
+        int inverseWeight = 256 - weight;
+        int rb = (((first & 0xFF00FF) * inverseWeight + (second & 0xFF00FF) * weight) >>> 8) & 0xFF00FF;
+        int ag = (((first >>> 8) & 0xFF00FF) * inverseWeight + ((second >>> 8) & 0xFF00FF) * weight) & 0xFF00FF00;
         return rb | ag;
     }
 
@@ -167,45 +157,27 @@ public class GraphicsHandler {
         }
         pixelLayerDirty = false;
 
-        int outW = outBuffer.getWidth();
-        int outH = outBuffer.getHeight();
         int srcW = pixelBuffer.getWidth();
         int srcH = pixelBuffer.getHeight();
+        int outW = outBuffer.getWidth();
+        int outH = outBuffer.getHeight();
 
-        // pass 1: resample each grid row horizontally (once per row, however many output rows use it)
-        rows(srcH).forEach(sy -> {
-            int src = sy * srcW;
-            int dst = sy * outW;
-            for (int x = 0; x < outW;) {
-                int w = xW[x];
-                int sourceX = xI0[x];
-                int p = pixelData[src + sourceX];
-                if (w == 0) {
-                    int end = x + 1;
-                    while (end < outW && xW[end] == 0 && xI0[end] == sourceX) {
-                        end++;
-                    }
-                    java.util.Arrays.fill(hData, dst + x, dst + end, p);
-                    x = end;
-                } else {
-                    hData[dst + x] = lerp(p, pixelData[src + xI1[x]], w);
-                    x++;
-                }
+        rows(srcH).forEach(y -> {
+            int src = y * srcW;
+            int dst = y * outW;
+            for (int x = 0; x < outW; x++) {
+                int first = pixelData[src + xI0[x]];
+                hData[dst + x] = lerp(first, pixelData[src + xI1[x]], xW[x]);
             }
         });
 
-        // pass 2: blend vertically only on rows that touch an art pixel border, plain copies elsewhere
         rows(outH).forEach(y -> {
-            int wy = yW[y];
-            int row0 = yI0[y] * outW;
-            int out = y * outW;
-            if (wy == 0) {
-                System.arraycopy(hData, row0, outData, out, outW);
-            } else {
-                int row1 = yI1[y] * outW;
-                for (int x = 0; x < outW; x++) {
-                    outData[out + x] = lerp(hData[row0 + x], hData[row1 + x], wy);
-                }
+            int firstRow = yI0[y] * outW;
+            int secondRow = yI1[y] * outW;
+            int dst = y * outW;
+            int weight = yW[y];
+            for (int x = 0; x < outW; x++) {
+                outData[dst + x] = lerp(hData[firstRow + x], hData[secondRow + x], weight);
             }
         });
 

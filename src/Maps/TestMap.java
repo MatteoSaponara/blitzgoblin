@@ -44,8 +44,6 @@ public class TestMap extends Map {
         enemies.add(goblinEnemy1);
         GoblinEnemy goblinEnemy2 = new GoblinEnemy(getMapTile(42, 26).getLocation().subtractY(25), Direction.RIGHT);
         enemies.add(goblinEnemy2);
-        BugEnemy bugEnemy2 = new BugEnemy(getMapTile(13, 15).getLocation().subtractY(25), Direction.LEFT);
-        enemies.add(bugEnemy2);
 
         Turret turretEnemy = new Turret(getMapTile(23, 23).getLocation().addY(2), Direction.LEFT);
         enemies.add(turretEnemy);

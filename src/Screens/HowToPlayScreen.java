@@ -27,6 +27,7 @@ public class HowToPlayScreen extends Screen {
     protected SpriteFont OneControlsLabel;
     protected SpriteFont TwoControlsLabel;
     protected SpriteFont ThreeControlsLabel;
+    protected SpriteFont fullscreenControlsLabel;
     protected SpriteFont returnInstructionsLabel;
     
 
@@ -52,6 +53,7 @@ public class HowToPlayScreen extends Screen {
         OneControlsLabel = new SpriteFont("One Shot: 1", 350, 270, "Copperplate Gothic Light", 25, Color.white);
         TwoControlsLabel = new SpriteFont("Twelve shot: 2", 350, 300, "Copperplate Gothic Light", 25, Color.white);
         ThreeControlsLabel = new SpriteFont("Cannon Shot: 3", 350, 330, "Copperplate Gothic Light", 25, Color.white);
+        fullscreenControlsLabel = new SpriteFont("Fullscreen: F11", 350, 360, "Copperplate Gothic Light", 25, Color.white);
         
         
         returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 532, "Copperplate Gothic Light", 30, Color.white);
@@ -86,6 +88,7 @@ public class HowToPlayScreen extends Screen {
         TyControlsLabel.draw(graphicsHandler);
         TwoControlsLabel.draw(graphicsHandler);
         ThreeControlsLabel.draw(graphicsHandler);
+        fullscreenControlsLabel.draw(graphicsHandler);
         returnInstructionsLabel.draw(graphicsHandler);
     }
 }
