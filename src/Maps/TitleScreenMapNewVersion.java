@@ -14,7 +14,8 @@ public class TitleScreenMapNewVersion extends Map {
     private Sprite cat;
 
     public TitleScreenMapNewVersion() {
-        super("title_screen_map_newversion.txt", new CommonTileset());
+        super("title_screen_map_newversion.txt", new CommonTileset(), 0);
+        currentGameplayLayer = 0;
         Point catLocation = getMapTile(6, 8).getLocation().subtractX(24).subtractY(27);
         cat = new Sprite(ImageLoader.loadSubImage("goblin.png", Colors.MAGENTA, 0, 0, 66, 52));
         cat.setScale(1.5f);
@@ -26,5 +27,5 @@ public class TitleScreenMapNewVersion extends Map {
         super.draw(graphicsHandler);
         cat.draw(graphicsHandler);
     }
-
+    
 }

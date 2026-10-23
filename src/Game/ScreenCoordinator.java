@@ -3,13 +3,13 @@ package Game;
 import Engine.DefaultScreen;
 import Engine.GraphicsHandler;
 import Engine.Screen;
+import Maps.TestMap;
 import Maps.level1;
 import Screens.CreditsScreen;
-import Screens.MenuScreen;
-import Screens.PlayLevelScreen;
 import Screens.HowToPlayScreen;
 import Screens.LevelSelectScreen;
-import Maps.TestMap;
+import Screens.MenuScreen;
+import Screens.PlayLevelScreen;
 //import Maps.Level1Map;
 
 /*
@@ -43,7 +43,7 @@ public class ScreenCoordinator extends Screen {
 	public void setGameState(GameState gameState) {
 		this.gameState = gameState;
 	}
-
+	public Screen getCurrentScreen() {return currentScreen;}
 	@Override
 	public void initialize() {
 		// start game off with Menu Screen
@@ -86,7 +86,6 @@ public class ScreenCoordinator extends Screen {
 			currentScreen.update();
 		} while (previousGameState != gameState);
 	}
-
 	@Override
 	public void draw(GraphicsHandler graphicsHandler) {
 		// call the draw method for the currentScreen

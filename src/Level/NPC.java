@@ -6,7 +6,6 @@ import Engine.Keyboard;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
 import SpriteFont.SpriteFont;
-
 import java.util.HashMap;
 
 // This class is a base class for all npcs in the game -- all npcs should extend from it
@@ -51,6 +50,7 @@ public class NPC extends MapEntity {
 
     public void update(Player player) {
         super.update();
+        numLayer = map.getCurrentGameplayLayer();
         checkTalkedTo(player);
         textbox.setLocation((int)getCalibratedXLocation() + textboxOffsetX, (int)getCalibratedYLocation() + textboxOffsetY);
     }

@@ -25,7 +25,7 @@ public class EditorMaps {
     public static Map getMapByName(String mapName) {
         switch(mapName) {
             case "TestMap":
-                return new TestMap();
+                return (new TestMap());
             case "TitleScreen":
                 return new TitleScreenMap();
             /*case "MatteosTestMap":

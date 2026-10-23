@@ -6,7 +6,6 @@ import Game.ScreenCoordinator;
 import Level.Map;
 import Maps.TitleScreenMapNewVersion;
 import SpriteFont.SpriteFont;
-
 import java.awt.*;
 
 
@@ -111,7 +110,7 @@ public class LevelSelectScreen extends Screen {
 		}
                 
      }
-
+    
     public void draw(GraphicsHandler graphicsHandler) {
         background.draw(graphicsHandler);
         Title.draw(graphicsHandler);
@@ -119,5 +118,9 @@ public class LevelSelectScreen extends Screen {
         Level1.draw(graphicsHandler);
         returnInstructionsLabel.draw(graphicsHandler);
         graphicsHandler.drawFilledRectangleWithBorder(pointerLocationX, pointerLocationY, 20, 20, new Color(255, 255, 255), Color.black, 2); //new Color(49, 207, 240), Color.black, 2);
+    }
+     
+    @Override public Level.Map hasMap(){
+        return this.background;
     }
 }

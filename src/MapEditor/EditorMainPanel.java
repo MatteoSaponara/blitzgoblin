@@ -1,7 +1,7 @@
 package MapEditor;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class EditorMainPanel extends JPanel {
     private EditorControlPanel editorControlPanel;
@@ -14,7 +14,7 @@ public class EditorMainPanel extends JPanel {
         mapBuilder = new MapBuilder(selectedTileIndexHolder);
         add(mapBuilder, BorderLayout.CENTER);
         editorControlPanel = new EditorControlPanel(selectedTileIndexHolder, mapBuilder, parent);
-        mapBuilder.setMap(editorControlPanel.getSelectedMap());;
+        mapBuilder.setMap(editorControlPanel.getSelectedMap());
         add(editorControlPanel, BorderLayout.WEST);
     }
 

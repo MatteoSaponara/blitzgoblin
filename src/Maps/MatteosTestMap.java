@@ -1,7 +1,5 @@
 package Maps;
 
-import Enemies.BugEnemy;
-import Enemies.DinosaurEnemy;
 import Enemies.GoblinEnemy;
 import Enemies.Turret;
 import Engine.ImageLoader;
@@ -12,7 +10,6 @@ import Level.*;
 import NPCs.Walrus;
 import Tilesets.CommonTileset;
 import Utils.Direction;
-
 import java.util.ArrayList;
 
 public class MatteosTestMap extends Map{
@@ -28,7 +25,7 @@ public class MatteosTestMap extends Map{
         //BugEnemy bugEnemy = new BugEnemy(getMapTile(16, 10).getLocation().subtractY(25), Direction.LEFT);
         //enemies.add(bugEnemy);
 
-        GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(16, 10).getLocation().subtractY(25), Direction.LEFT);
+        GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(16, 10).getLocation().subtractY(25), this.getCurrentGameplayLayer(), Direction.LEFT);
         enemies.add(goblinEnemy);
 
         //DinosaurEnemy dinosaurEnemy = new DinosaurEnemy(getMapTile(19, 1).getLocation().addY(2), getMapTile(22, 1).getLocation().addY(2), Direction.RIGHT);

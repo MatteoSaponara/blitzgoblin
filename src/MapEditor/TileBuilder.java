@@ -3,12 +3,11 @@ package MapEditor;
 import Engine.GraphicsHandler;
 import Level.*;
 import Utils.Colors;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import javax.swing.*;
 
 public class TileBuilder extends JPanel {
     private Map map;
@@ -23,6 +22,10 @@ public class TileBuilder extends JPanel {
     private boolean showEnhancedMapTiles;
     private boolean showEnemies;
 
+    private static int currentlyViewedLayer = 0;
+
+    public static int getCurrentlyViewedLayer(){ return currentlyViewedLayer; }
+    public static void setCurrentlyViewedLayer(int inputLayer){ currentlyViewedLayer = inputLayer;}
     public TileBuilder(SelectedTileIndexHolder controlPanelHolder, JLabel hoveredTileIndexLabel) {
         setBackground(Colors.MAGENTA);
         setLocation(0, 0);
@@ -33,12 +36,14 @@ public class TileBuilder extends JPanel {
             @Override
             public void mouseExited(MouseEvent e) {
                 hoveredMapTile = null;
+                System.err.println("current "+currentlyViewedLayer);
                 hoveredTileIndexLabel.setText("");
                 repaint();
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
+                System.err.println("testestes");
                 tileSelected(e.getPoint());
             }
 
@@ -71,11 +76,30 @@ public class TileBuilder extends JPanel {
         setPreferredSize(new Dimension(map.getWidthPixels(), map.getHeightPixels()));
         repaint();
     }
+    public Map getMap(){
+        return map;
+    }
 
     public void draw() {
-        for (MapTile tile : map.getMapTiles()) {
-            tile.draw(graphicsHandler);
+        for (int layer = 0; layer < map.getCurrentMapLayerNumber(); layer++) {
+            for (MapTile tile : map.getMapTiles(layer)) {
+            /*if (layer+1 == (map.getCurrentGameplayLayer())){
+                BufferedImage test = GameObject.copyImage(map.getTileset().getTile(tile.getTileIndex()).cloneAnimations().get("DEFAULT")[0].getImage());
+                int[] fsfe = ((DataBufferInt)test.getRaster().getDataBuffer()).getData();
+                for (int i = 0; i < test.getHeight(); i++) {
+                    for (int j = 0; j < test.getWidth(); j++) {
+                        if(((fsfe[(i * (test.getWidth())) + j]) >>> 6) > 0x00)
+                            fsfe[(i * (test.getWidth())) + j] = (GameObject.adjustBrightnessOfHexColor(((fsfe[(i * (test.getWidth())) + j])-0xFF000000), 0.65) + 0xFF000000
+                        );
+                    }    
+                }
+                tile.setImage
+            }*/
+                if(tile != null)
+                    tile.draw(graphicsHandler);
+            }
         }
+        
 
         if (showEnhancedMapTiles) {
             for (EnhancedMapTile enhancedMapTile : map.getEnhancedMapTiles()) {
@@ -115,13 +139,14 @@ public class TileBuilder extends JPanel {
     }
 
     public void tileSelected(Point selectedPoint) {
+        
         int selectedTileIndex = getSelectedTileIndex(selectedPoint);
         if (selectedTileIndex != -1) {
             MapTile oldMapTile = map.getMapTiles()[selectedTileIndex];
             MapTile newMapTile =  map.getTileset().getTile(controlPanelHolder.getSelectedTileIndex()).build(oldMapTile.getX(), oldMapTile.getY());
+            newMapTile.setNumLayer(currentlyViewedLayer);
             newMapTile.setMap(map);
-            map.getMapTiles()[selectedTileIndex] = newMapTile;
-
+            map.getAllMapTiles()[selectedTileIndex][currentlyViewedLayer] = newMapTile;
         }
         repaint();
     }

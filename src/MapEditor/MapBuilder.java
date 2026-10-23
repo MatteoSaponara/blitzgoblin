@@ -2,17 +2,17 @@ package MapEditor;
 
 import Level.Map;
 import Utils.Colors;
-
-import javax.swing.*;
 import java.awt.*;
-
+import javax.swing.*;
 public class MapBuilder extends JPanel {
-    private Map map;
-    private JScrollPane tileBuilderScroll;
-    private TileBuilder tileBuilder;
-    private JLabel mapWidthLabel;
-    private JLabel mapHeightLabel;
-    private JLabel hoveredTileIndexLabel;
+    private static Map map;
+    private static JScrollPane tileBuilderScroll;
+    private static TileBuilder tileBuilder;
+    private static JLabel mapWidthLabel;
+    private static JLabel mapHeightLabel;
+    private static JLabel hoveredTileIndexLabel;
+    private static JLabel currentlyViewedLayerLabel;
+    
 
     public MapBuilder(SelectedTileIndexHolder controlPanelHolder) {
         setBackground(Colors.CORNFLOWER_BLUE);
@@ -35,6 +35,10 @@ public class MapBuilder extends JPanel {
         hoveredTileIndexLabel.setSize(140, 20);
         hoveredTileIndexLabel.setLocation(152, 5);
         labelPanel.add(hoveredTileIndexLabel);
+        currentlyViewedLayerLabel = new JLabel("Editing Layer: 0/2");
+        currentlyViewedLayerLabel.setSize(120, 20);
+        currentlyViewedLayerLabel.setLocation(280, 5);
+        labelPanel.add(currentlyViewedLayerLabel);
         add(labelPanel, BorderLayout.SOUTH);
 
         tileBuilder = new TileBuilder(controlPanelHolder, hoveredTileIndexLabel);
@@ -51,12 +55,13 @@ public class MapBuilder extends JPanel {
         refreshTileBuilder();
     }
 
-    public void refreshTileBuilder() {
+    public static void refreshTileBuilder() {
         tileBuilder.setMap(map);
         tileBuilderScroll.setViewportView(tileBuilder);
         tileBuilderScroll.getVerticalScrollBar().setValue(tileBuilderScroll.getVerticalScrollBar().getMaximum());
         mapWidthLabel.setText("Width: " + map.getWidth());
         mapHeightLabel.setText("Height: " + map.getHeight());
+        currentlyViewedLayerLabel.setText("Editing Layer: "+tileBuilder.getCurrentlyViewedLayer()+"/"+(map.getCurrentMapLayerNumber()-1));
     }
 
     public void scrollToMaxY() {

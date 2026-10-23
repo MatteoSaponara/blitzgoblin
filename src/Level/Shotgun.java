@@ -70,25 +70,22 @@ public class Shotgun extends GameObject {
         }
     }
     public void update() {
-        if (map != null) {
+        if (map != null) {  
+            numLayer = map.getCurrentGameplayLayer();
             if((previousAimAngle < 0 || mouseAngleHasChanged())) {
                 previousAimAngle = weaponOwner.aimAngle;
-                previousAimAngle = (Math.PI)-previousAimAngle;
+                previousAimAngle = calibratedCircularMouseAngle();
                 mouseAngleChangedThisFrame = true;
             }
             else {
                 mouseAngleChangedThisFrame = false;
             }
-            gunPivotPosition = new Point(weaponOwner.getLocation().x + Math.round((weaponOwner.getBounds().getWidth())),
+            gunPivotPosition = new Point(weaponOwner.getLocation().x + Math.round(weaponOwner.getBounds().getWidth()),
             weaponOwner.getLocation().y + Math.round((weaponOwner.getBounds().getHeight()*(3f/4))));
             Point newPos = getGameObjectEllipticalPosition(gunPivotPosition, gunPositionalRange, previousAimAngle);
-            if(getPointsDistance(getLocation(), newPos) > 0.01f){
+            
+            if(getPointsDistance(getLocation(), newPos) > 0.01f)
                 setLocation(newPos.x - (getWidth()/2), newPos.y - (getHeight()/2));
-                //System.err.println("newPos.x, x: "+ newPos.x+ ", " +x+"\n"+
-                //    "newPos.y, y: "+ newPos.y+ ", " +y+"\n"+
-                //    "weaponOwner.getLocation(): " + weaponOwner.getLocation()
-                //);
-           }
         }
         else {
             map = weaponOwner.getMap();
@@ -100,7 +97,6 @@ public class Shotgun extends GameObject {
         advanceShotAnimation();
         updateCurrentFrame();
     }
-
     public GunPTwelveShot[] shootTwelveShot(){
         double angleBetweenShotgunProjectiles = Math.toRadians(8f);
 
@@ -131,6 +127,7 @@ public class Shotgun extends GameObject {
     }
 
     // call when a shot is fired; restarts the animation from its first frame
+
     public void playShootAnimation() {
         shotAnimating = true;
         currentFrameIndex = 0;
@@ -154,7 +151,7 @@ public class Shotgun extends GameObject {
             }
         }
     }
-
+    @Override 
     public void draw(GraphicsHandler graphicsHandler) {
         float alpha = weaponOwner.getDrawAlpha();
         if (alpha < 1f) {
@@ -172,7 +169,6 @@ public class Shotgun extends GameObject {
     // currentFrame is essentially a sprite, so each game loop cycle the sprite
 	// needs to have its current state updated based on animation logic,
 	// and location updated to match any changes to the animated sprite class
-    double currentDegreeTest = 140D;
     
     private double calibratedCircularMouseAngle() {return (Math.PI)-previousAimAngle;}
     
@@ -265,20 +261,7 @@ public class Shotgun extends GameObject {
 
 	}
 
-    //self-explanatory
-    public static BufferedImage copyImage(BufferedImage original) {
-        BufferedImage copy = new BufferedImage(
-            original.getWidth(),
-            original.getHeight(),
-            original.getType()
-        );
-
-        Graphics2D g = copy.createGraphics();
-        g.drawImage(original, 0, 0, null);
-        g.dispose();
-
-        return copy;
-    }
+    
 
     public BufferedImage getOriginalGunSprite(){
         return originalGunSprite;
@@ -329,6 +312,8 @@ public class Shotgun extends GameObject {
         Point sourceImageCenterPixel = new Point((sourceImage.getWidth())/2, (sourceImage.getHeight())/2);
         Point destinationImageCenterPixel = new Point(((destinationImage.getWidth())/2), ((destinationImage.getHeight())/2));
 
+        //radial distance from the center of an inputted image, to an input pixel
+        //(input depends on rotatePixelRelativeToCenterPixel())
         double pixelRadius = getPointsDistance(sourceImageCenterPixel, new Point(xCoorIN, yCoorIN));
 
         int modSpaceX = (int)Math.round(xCoorIN - sourceImageCenterPixel.x);
@@ -395,18 +380,11 @@ public class Shotgun extends GameObject {
         modSpriteRadiusLength = Math.ceil(modSpriteRadiusLength);
 
         modSprite = new BufferedImage((int)(modSpriteRadiusLength*2), (int)(modSpriteRadiusLength*2), BufferedImage.TYPE_INT_ARGB);
-        //System.out.println("width: "+modSprite.getWidth() + "length: "+modSprite.getHeight());
-
-        Point modSpriteCenterPixel = new Point(((modSprite.getWidth())/2), ((modSprite.getHeight())/2));
 
         //where image data is read from and written to  
         int[] originalSpritePixels = ((DataBufferInt) originalImage.getRaster().getDataBuffer()).getData();
         int[] modSpritePixels = ((DataBufferInt) modSprite.getRaster().getDataBuffer()).getData();
         
-        //radial distance from the center of an inputted image, to an input pixel
-        //(input depends on rotatePixelRelativeToCenterPixel())
-        double pixelRadius;
-
         //for testing
         int fail=0;
         

@@ -1,11 +1,15 @@
 package GameObject;
 
 import Engine.GraphicsHandler;
+import Engine.ScreenManager;
+import Game.ScreenCoordinator;
 import Level.*;
 import Utils.Direction;
 import Utils.ImageUtils;
 import Utils.MathUtils;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.util.HashMap;
 
 /*
@@ -32,13 +36,40 @@ public class GameObject extends AnimatedSprite {
 
     // the map instance this game object "belongs" to.
     protected Map map;
+    protected int numLayer = 0;
 
     // true for map tiles: stretch between grid positions of the edges so neighbours never gap or overlap
     protected boolean sharedEdgeDraw = false;
 
+    protected SpriteSheet darkSpriteSheet;
+    protected HashMap<String, Frame[]> animationsDark;
+
+    protected boolean hasTransparentPixels = false;
+    public boolean getHasTransparentPixels(){ return hasTransparentPixels;}
+    
+    private BufferedImage darkenImage(BufferedImage bufferedImageIN){
+        BufferedImage outputImage = copyImage(bufferedImageIN);
+        int[] outputImageDataBuffer = ((DataBufferInt)outputImage.getRaster().getDataBuffer()).getData();
+        for (int i = 0; i < outputImage.getHeight(); i++) {
+            for (int j = 0; j < outputImage.getWidth(); j++) {
+                if(((outputImageDataBuffer[(i * (outputImage.getWidth())) + j]) >>> 6) > 0x00) 
+                    outputImageDataBuffer[(i * (outputImage.getWidth())) + j] = (adjustBrightnessOfHexColor(((outputImageDataBuffer[(i * (outputImage.getWidth())) + j])-0xFF000000), 0.65) + 0xFF000000
+                );
+                else
+                    this.hasTransparentPixels = true;
+            }    
+        }
+        return outputImage;
+    }
 
     public GameObject(SpriteSheet spriteSheet, float x, float y, String startingAnimation) {
         super(spriteSheet, x, y, startingAnimation);
+        
+        darkSpriteSheet = new SpriteSheet(darkenImage(spriteSheet.getImage())
+    ,spriteSheet.getSpriteWidth()
+    ,spriteSheet.getSpriteHeight());
+        animationsDark = loadAnimations(darkSpriteSheet);
+
         this.startPositionX = x;
         this.startPositionY = y;
         this.previousX = x;
@@ -47,6 +78,19 @@ public class GameObject extends AnimatedSprite {
 
     public GameObject(float x, float y, HashMap<String, Frame[]> animations, String startingAnimation) {
         super(x, y, animations, startingAnimation);
+        if(true){
+            animationsDark = new HashMap<String, Frame[]>();
+            for (String animName: animations.keySet()) {
+                Frame[] animationFrames = new Frame[animations.get(animName).length];
+                for (Frame animFrame: animations.get(animName)) {
+                    for (int j = 0; j < animations.get(animName).length; j++) {
+                        animationFrames[j] = new Frame(darkenImage(animFrame.copy().getImage()));
+                        //animationsDark.get(animName)[j].setImage(darkenImage(animationsDark.get(animName)[j].getImage()));
+                    }
+                }
+                animationsDark.put(animName, animationFrames);
+            }
+        }
         this.startPositionX = x;
         this.startPositionY = y;
         this.previousX = x;
@@ -63,6 +107,8 @@ public class GameObject extends AnimatedSprite {
 
     public GameObject(float x, float y, Frame frame) {
         super(x, y, frame);
+        this.animationsDark = new HashMap<String, Frame[]>();
+        this.animationsDark.put(currentAnimationName, new Frame[]{new Frame(darkenImage(frame.getImage()))} );
         this.startPositionX = x;
         this.startPositionY = y;
         this.previousX = x;
@@ -323,43 +369,98 @@ public class GameObject extends AnimatedSprite {
 
     @Override
     public void draw(GraphicsHandler graphicsHandler) {
-        if (map != null && !graphicsHandler.isPixelGridEnabled()) {
-            graphicsHandler.drawImage(
-                currentFrame.getImage(),
-                Math.round(getCalibratedXLocation()),
-                Math.round(getCalibratedYLocation()),
-                currentFrame.getWidth(),
-                currentFrame.getHeight(),
-                currentFrame.getImageEffect());
-        } else if (map != null) {
-            // position relative to the exact camera, then snapped to the pixel grid
-            float relX = Math.round(x) - map.getCamera().getX();
-            float relY = Math.round(y) - map.getCamera().getY();
-            int worldW = currentFrame.getWidth();
-            int worldH = currentFrame.getHeight();
+        if (map != null) {
+            if (!graphicsHandler.isPixelGridEnabled()) {
+                if (numLayer+1 == (map.getCurrentGameplayLayer())) {
+                    if(map.getTileByPosition(this.x, this.y) != null &&
+                        map.getTileByPosition(this.x, this.y).getHasTransparentPixels()) {
+                        graphicsHandler.drawImage(
+                        animationsDark.get(currentAnimationName)[getCurrentFrameIndex()].getImage(),
+                        Math.round(getCalibratedXLocation()),
+                        Math.round(getCalibratedYLocation()),
+                        currentFrame.getWidth(),
+                        currentFrame.getHeight(),
+                        currentFrame.getImageEffect());
+                    }
+                    
+                }
+                else {
+                    graphicsHandler.drawImage(
+                    currentFrame.getImage(),
+                    Math.round(getCalibratedXLocation()),
+                    Math.round(getCalibratedYLocation()),
+                    currentFrame.getWidth(),
+                    currentFrame.getHeight(),
+                    currentFrame.getImageEffect());
+                }
+            } 
+            else {
+                // position relative to the exact camera, then snapped to the pixel grid
+                float relX = Math.round(x) - map.getCamera().getX();
+                float relY = Math.round(y) - map.getCamera().getY();
+                int worldW = currentFrame.getWidth();
+                int worldH = currentFrame.getHeight();
 
-            int px1, py1, px2, py2;
-            if (sharedEdgeDraw) {
-                px1 = GraphicsHandler.toPixelGrid(relX);
-                py1 = GraphicsHandler.toPixelGrid(relY);
-                px2 = GraphicsHandler.toPixelGrid(relX + worldW);
-                py2 = GraphicsHandler.toPixelGrid(relY + worldH);
-            } else {
-                int pw = Math.max(GraphicsHandler.toPixelGrid(worldW), 1);
-                int ph = Math.max(GraphicsHandler.toPixelGrid(worldH), 1);
-                px1 = GraphicsHandler.toPixelGrid(relX);
-                // anchored by the bottom edge so sprites line up with tile tops
-                py2 = GraphicsHandler.toPixelGrid(relY + worldH);
-                py1 = py2 - ph;
-                px2 = px1 + pw;
+                int px1, py1, px2, py2;
+                if (sharedEdgeDraw) {
+                    px1 = GraphicsHandler.toPixelGrid(relX);
+                    py1 = GraphicsHandler.toPixelGrid(relY);
+                    px2 = GraphicsHandler.toPixelGrid(relX + worldW);
+                    py2 = GraphicsHandler.toPixelGrid(relY + worldH);
+                } else {
+                    int pw = Math.max(GraphicsHandler.toPixelGrid(worldW), 1);
+                    int ph = Math.max(GraphicsHandler.toPixelGrid(worldH), 1);
+                    px1 = GraphicsHandler.toPixelGrid(relX);
+                    // anchored by the bottom edge so sprites line up with tile tops
+                    py2 = GraphicsHandler.toPixelGrid(relY + worldH);
+                    py1 = py2 - ph;
+                    px2 = px1 + pw; 
+                }
+                ScreenCoordinator currentScreen = (ScreenCoordinator)ScreenManager.getCurrentScreen();   
+                if (animationsDark != null 
+                    && (currentScreen.getCurrentScreen().hasMap() != null)
+                    && numLayer+1 == (currentScreen.getCurrentScreen().hasMap().getCurrentGameplayLayer())){
+                    graphicsHandler.drawPixelImage((animationsDark.get(currentAnimationName)[getCurrentFrameIndex()].getImage()), px1, py1, px2, py2, currentFrame.getImageEffect());
+                }
+                else {
+                    graphicsHandler.drawPixelImage(currentFrame.getImage(), px1, py1, px2, py2, currentFrame.getImageEffect()); 
+                }  
             }
-            graphicsHandler.drawPixelImage(currentFrame.getImage(), px1, py1, px2, py2, currentFrame.getImageEffect());
-        } else {
+        } 
+        else{
             super.draw(graphicsHandler);
+            
         }
     }
-    
+    public static int adjustBrightnessOfHexColor(int color, double factor) {
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
 
+        r = (int) Math.min(255, Math.max(0, r * factor));
+        g = (int) Math.min(255, Math.max(0, g * factor));
+        b = (int) Math.min(255, Math.max(0, b * factor));
+
+        return (r << 16) | (g << 8) | b;
+    }
+
+    //self-explanatory
+    public static BufferedImage copyImage(BufferedImage original) {
+        BufferedImage copy = new BufferedImage(
+            original.getWidth(),
+            original.getHeight(),
+            original.getType()
+        );
+
+        Graphics2D g = copy.createGraphics();
+        g.drawImage(original, 0, 0, null);
+        g.dispose();
+
+        return copy;
+    }
+    public void setNumLayer(int numLayerIN){
+        this.numLayer = numLayerIN;
+    }
     @Override
     public void drawBounds(GraphicsHandler graphicsHandler, Color color) {
         if (map != null) {

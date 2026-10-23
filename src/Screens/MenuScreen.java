@@ -21,6 +21,7 @@ public class MenuScreen extends Screen {
     protected SpriteFont howToPlay;
 	protected SpriteFont levelSelect;
     protected SpriteFont warning;
+
     protected Map background;
     protected int keyPressTimer;
     protected int warningShakeFrame;
@@ -74,6 +75,7 @@ public class MenuScreen extends Screen {
 
         background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
+
         keyPressTimer = 0;
         warningShakeFrame = 0;
         menuItemSelected = -1;
@@ -83,7 +85,9 @@ public class MenuScreen extends Screen {
     public void update() {
         // update background map (to play tile animations)
         background.update(null);
+
         warningShakeFrame++;
+
 
         // if down or up is pressed, change menu item "hovered" over (blue square in front of text will move along with currentMenuItemHovered changing)
         if (Keyboard.isKeyDown(Key.DOWN, Key.S) &&  keyPressTimer == 0) {
@@ -156,7 +160,7 @@ public class MenuScreen extends Screen {
             }
         }
     }
-
+    
     public void draw(GraphicsHandler graphicsHandler) {
         background.draw(graphicsHandler);
         int warningWidth = graphicsHandler.getGraphics().getFontMetrics(warning.getFont()).stringWidth(warning.getText());
@@ -164,11 +168,15 @@ public class MenuScreen extends Screen {
         int shakeY = (int) (Math.cos(warningShakeFrame * 1.3) * 2);
         warning.setLocation(Config.GAME_WINDOW_WIDTH - warningWidth - 10 + shakeX, 8 + shakeY);
         warning.draw(graphicsHandler);
+
         Title.draw(graphicsHandler);
         playGame.draw(graphicsHandler);
         howToPlay.draw(graphicsHandler);
 		levelSelect.draw(graphicsHandler);
         credits.draw(graphicsHandler);
         graphicsHandler.drawFilledRectangleWithBorder(pointerLocationX, pointerLocationY, 20, 20, new Color(255, 255, 255), Color.black, 2); //new Color(49, 207, 240), Color.black, 2);
+    }
+    @Override public Level.Map hasMap(){
+        return this.background;
     }
 }

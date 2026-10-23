@@ -4,7 +4,6 @@ import Engine.GraphicsHandler;
 import Engine.ScreenManager;
 import GameObject.GameObject;
 import GameObject.Rectangle;
-
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -152,8 +151,14 @@ public class Camera extends Rectangle {
     }
 
     public void draw(GraphicsHandler graphicsHandler) {
-        drawMapTiles(graphicsHandler);
+        graphicsHandler.getGraphics().setColor(this.map.mapBackgroundColor);
+        graphicsHandler.getGraphics().fillRect(0, 0, ScreenManager.getScreenWidth(), ScreenManager.getScreenHeight());
+        drawMapTilesUnderGameplayLayerInclusive(graphicsHandler);
         drawMapEntities(graphicsHandler);
+    }
+    public void draw(GraphicsHandler graphicsHandler, boolean renderAboveGameplay) {
+        if(map.getCurrentGameplayLayer() < map.getCurrentMapLayerNumber()-1)
+            drawMapTilesAboveGameplayLayer(graphicsHandler);
     }
 
     // draws visible map tiles to the screen
@@ -161,16 +166,45 @@ public class Camera extends Rectangle {
     // so this does not include the extra range granted by the UPDATE_OFF_SCREEN_RANGE value
     public void drawMapTiles(GraphicsHandler graphicsHandler) {
         Point tileIndex = getTileIndexByCameraPosition();
-        for (int i = tileIndex.y - 1; i <= tileIndex.y + height + 1; i++) {
+        for (int i = tileIndex.y - 1; i <= tileIndex.y + height + 1; i++) 
             for (int j = tileIndex.x - 1; j <= tileIndex.x + width + 1; j++) {
-                MapTile tile = map.getMapTile(j, i);
-                if (tile != null) {
-                    tile.draw(graphicsHandler);
+                for (int currentLayer = 0; currentLayer < map.getCurrentMapLayerNumber(); currentLayer++) {
+                    MapTile tile = map.getMapTile(j, i, currentLayer);
+                    //MapTile tile2 = map.getMapTile(j, i, 1);
+                    if (tile != null){
+                        tile.draw(graphicsHandler);
+                    }
                 }
             }
-        }
     }
-
+    
+    public void drawMapTilesUnderGameplayLayerInclusive(GraphicsHandler graphicsHandler) {
+        Point tileIndex = getTileIndexByCameraPosition();
+        for (int i = tileIndex.y - 1; i <= tileIndex.y + height + 1; i++) 
+            for (int j = tileIndex.x - 1; j <= tileIndex.x + width + 1; j++) {
+                for (int currentLayer = 0; currentLayer <= map.getCurrentGameplayLayer(); currentLayer++) {
+                    MapTile tile = map.getMapTile(j, i, currentLayer);
+                    //MapTile tile2 = map.getMapTile(j, i, 1);
+                    if (tile != null){
+                        tile.draw(graphicsHandler);
+                    }
+                }
+            }
+    }
+    
+    public void drawMapTilesAboveGameplayLayer(GraphicsHandler graphicsHandler) {
+        Point tileIndex = getTileIndexByCameraPosition();
+        for (int i = tileIndex.y - 1; i <= tileIndex.y + height + 1; i++) 
+            for (int j = tileIndex.x - 1; j <= tileIndex.x + width + 1; j++) {
+                for (int currentLayer = map.getCurrentGameplayLayer() + 1; currentLayer < map.getCurrentMapLayerNumber(); currentLayer++) {
+                    MapTile tile = map.getMapTile(j, i, currentLayer);
+                    //MapTile tile2 = map.getMapTile(j, i, 1);
+                    if (tile != null){
+                        tile.draw(graphicsHandler);
+                    }
+                }
+            }
+    }
     // draws active map entities to the screen
     public void drawMapEntities(GraphicsHandler graphicsHandler) {
         for (Enemy enemy : activeEnemies) {

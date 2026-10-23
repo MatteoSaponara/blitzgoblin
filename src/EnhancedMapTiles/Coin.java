@@ -17,7 +17,14 @@ public class Coin extends EnhancedMapTile {
     public Coin(Point location)
     {
         super(location.x + 6, location.y + 6, new SpriteSheet(ImageLoader.load("Coin.png"), 26, 26), TileType.PASSABLE);
+		numLayer = 1;
     }
+	public Coin(Point location, int numLayerIN)
+    {
+        super(location.x + 6, location.y + 6, new SpriteSheet(ImageLoader.load("Coin.png"), 26, 26), TileType.PASSABLE);
+
+		numLayer = numLayerIN;
+	}
 
     @Override
     public void update(Player player)

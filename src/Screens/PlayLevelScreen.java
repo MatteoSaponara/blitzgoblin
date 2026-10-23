@@ -8,8 +8,6 @@ import Game.ScreenCoordinator;
 import Level.Map;
 import Level.Player;
 import Level.PlayerListener;
-import Maps.TestMap;
-import Maps.level1;
 import Players.Cat;
 import java.awt.Color;
 import java.awt.Font;
@@ -82,7 +80,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 break;
         }
     }
-
+    
     public void draw(GraphicsHandler graphicsHandler) {
         // based on screen state, draw appropriate graphics
         switch (playLevelScreenState) {
@@ -96,6 +94,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     else
                         graphicsHandler.drawImage(ImageLoader.load("gunuireload.png"), 27, 80, 55, 25);
                 }
+                map.draw(graphicsHandler, true);
 
                 for (int i = 0; i < player.getHealth(); i++) {
                     graphicsHandler.drawImage(heartImage, 10 + (i * 40), 10, 60, 60);
@@ -113,7 +112,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         }
     }
 
-
+    @Override public Level.Map hasMap(){
+        return this.map;
+    }
 
     public PlayLevelScreenState getPlayLevelScreenState() {
         return playLevelScreenState;

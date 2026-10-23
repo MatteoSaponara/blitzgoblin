@@ -1,21 +1,16 @@
 package EnhancedMapTiles;
 
-import Builders.FrameBuilder;
-import Engine.ImageLoader;
-import GameObject.Frame;
-import GameObject.SpriteSheet;
-import Level.EnhancedMapTile;
-import Level.MapEntityStatus;
 import Level.Player;
-import Level.TileType;
 import Utils.Point;
-
-import java.util.HashMap;
 
 public class CannonAmmo extends Ammo {
 
     public CannonAmmo(Point location) {
         super(location, "CannonAmmo.png");
+    }
+    public CannonAmmo(Point location, int numLayerIN) {
+        super(location, "CannonAmmo.png");
+        numLayer = numLayerIN;
     }
     
     @Override
