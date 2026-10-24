@@ -4,6 +4,7 @@ import Enemies.GunPCannonBall;
 import Enemies.GunPOne;
 import Enemies.GunPTwelveShot;
 import Enemies.Turret;
+import Engine.Config;
 import Engine.GraphicsHandler;
 import Engine.Key;
 import Engine.KeyLocker;
@@ -32,7 +33,7 @@ public abstract class Player extends GameObject
     protected float momentumYIncrease = 0;
     protected float acceleration = 0;
     protected float drag = 0;
-
+    protected float airDrag = 0;
     // values used to handle player movement
     protected float jumpForce = 0;
 
@@ -50,6 +51,8 @@ public abstract class Player extends GameObject
     protected float velocityY = 0;
     protected float recoilX;
     protected float recoilY;
+
+    public static boolean isTouchingSomething = true;
 
     // values used to keep track of player's current state
     protected PlayerState playerState;
@@ -138,7 +141,10 @@ public abstract class Player extends GameObject
             playerShotgun = new Shotgun(x, y, this);
         }
     }
-
+    public boolean ifPlayerIsStandingOnTile(){
+        System.out.println(map.getTileByPosition(this.x, this.y+this.getHeight()-(Config.TILE_ART_SIZE*Config.TILE_SCALE) + 5f));
+        return (map.getTileByPosition(this.x+(this.getWidth()/2), this.y+this.getHeight()+(Config.TILE_ART_SIZE*Config.TILE_SCALE)).getTileType() == TileType.NOT_PASSABLE);
+    }
     public void update()
     {
         numLayer = map.getCurrentGameplayLayer();
@@ -361,7 +367,7 @@ public abstract class Player extends GameObject
         if (Keyboard.isKeyDown(MOVE_LEFT_KEY))
         {
             velocityX -= acceleration;
-            if (velocityX < -getMaxVelocityX())
+            if (velocityX < -getMaxVelocityX() && ifPlayerIsStandingOnTile())
             {
                 velocityX = -getMaxVelocityX();
             }
@@ -371,7 +377,7 @@ public abstract class Player extends GameObject
         else if (Keyboard.isKeyDown(MOVE_RIGHT_KEY))
         {
             velocityX += acceleration;
-            if (velocityX > getMaxVelocityX())
+            if (velocityX > getMaxVelocityX() && ifPlayerIsStandingOnTile())
             {
                 velocityX = getMaxVelocityX();
             }
@@ -463,19 +469,19 @@ public abstract class Player extends GameObject
             // allows you to move left and right while in the air
             if (Keyboard.isKeyDown(MOVE_LEFT_KEY))
             {
-                velocityX -= acceleration;
-                if (velocityX < -getMaxVelocityX())
+                velocityX -= acceleration/2;
+                if (velocityX < -(getMaxVelocityX()*3f))
                 {
-                    velocityX = -getMaxVelocityX();
+                    velocityX = -getMaxVelocityX()*3f;
                 }
             }
 
             else if (Keyboard.isKeyDown(MOVE_RIGHT_KEY))
             {
-                velocityX += acceleration;
-                if (velocityX > getMaxVelocityX())
+                velocityX += acceleration/2;
+                if (velocityX > (getMaxVelocityX()*3f))
                 {
-                    velocityX = getMaxVelocityX();
+                    velocityX = getMaxVelocityX()*3f;
                 }
             }
 

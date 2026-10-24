@@ -10,6 +10,23 @@ import Utils.Point;
 public class MapCollisionHandler {
 
     //Damage tile (spike) logic
+    /*private static boolean ifPlayerTouchedTile(GameObject gameObjectIN, MapTile tl){
+        
+        if(gameObjectIN instanceof Player){
+            Player plr = (Player) gameObjectIN;
+            if(tl.getTileType() == TileType.NOT_PASSABLE && tl.getNumLayer() == tl.getMap().getCurrentGameplayLayer()) {
+                plr.isTouchingSomething = true;
+                return true;
+            }
+            else{
+                System.err.println("not touching");
+                plr.isTouchingSomething = false;
+            }
+        }
+        //Player.isTouchingSomething = false;
+        return false;
+    }*/
+    //Damage tile (spike) logic
     private static boolean ifPlayerTouchedDamageTile(GameObject gameObjectIN, MapTile tl){
         
         if(gameObjectIN instanceof Player
