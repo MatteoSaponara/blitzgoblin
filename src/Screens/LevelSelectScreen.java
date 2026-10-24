@@ -25,6 +25,7 @@ public class LevelSelectScreen extends Screen {
 
     public LevelSelectScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
+        this.background = new TitleScreenMapNewVersion();
     }
 
     @Override
@@ -41,7 +42,6 @@ public class LevelSelectScreen extends Screen {
         Level1 = new SpriteFont("Level 1", 200, 272, "Copperplate Gothic Light", 30, Color.white);
 		Level1.setOutlineColor(Color.black);
 		Level1.setOutlineThickness(3);
-        background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
         keyPressTimer = 0;
         menuItemSelected = -1;

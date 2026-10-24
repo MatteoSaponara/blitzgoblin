@@ -92,6 +92,7 @@ public abstract class Player extends GameObject
 
     // shotgun values
     private boolean hasShotgun = false; // Set to false
+
     private Shotgun playerShotgun;
 
     // Aiming system variables
@@ -112,9 +113,9 @@ public abstract class Player extends GameObject
     // Ammo Mode
     String ammoMode = "single"; // Default ammo mode is single
 
-    public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName, boolean hasShotgun)
+    public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName, boolean hasShotgun) 
     {
-        super(spriteSheet, x, y, startingAnimationName);
+        super(spriteSheet, 0, 0, x, y, startingAnimationName);
         this.hasShotgun = hasShotgun;
         facingDirection = Direction.RIGHT;
         airGroundState = AirGroundState.AIR;

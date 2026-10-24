@@ -37,23 +37,24 @@ public class GameObject extends AnimatedSprite {
     // the map instance this game object "belongs" to.
     protected Map map;
     protected int numLayer = 0;
+    public int distanceFromGameplayLayer = 0;
 
     // true for map tiles: stretch between grid positions of the edges so neighbours never gap or overlap
     protected boolean sharedEdgeDraw = false;
 
     protected SpriteSheet darkSpriteSheet;
     protected HashMap<String, Frame[]> animationsDark;
-
+    float baseDarknessValue = 0.65f; //initial factor/value a tile layer behind the gameplay one is darkened by
     protected boolean hasTransparentPixels = false;
     public boolean getHasTransparentPixels(){ return hasTransparentPixels;}
     
-    private BufferedImage darkenImage(BufferedImage bufferedImageIN){
+    private BufferedImage darkenImage(BufferedImage bufferedImageIN, float factor){
         BufferedImage outputImage = copyImage(bufferedImageIN);
         int[] outputImageDataBuffer = ((DataBufferInt)outputImage.getRaster().getDataBuffer()).getData();
         for (int i = 0; i < outputImage.getHeight(); i++) {
             for (int j = 0; j < outputImage.getWidth(); j++) {
                 if(((outputImageDataBuffer[(i * (outputImage.getWidth())) + j]) >>> 6) > 0x00) 
-                    outputImageDataBuffer[(i * (outputImage.getWidth())) + j] = (adjustBrightnessOfHexColor(((outputImageDataBuffer[(i * (outputImage.getWidth())) + j])-0xFF000000), 0.65) + 0xFF000000
+                    outputImageDataBuffer[(i * (outputImage.getWidth())) + j] = (adjustBrightnessOfHexColor(((outputImageDataBuffer[(i * (outputImage.getWidth())) + j])-0xFF000000), factor) + 0xFF000000
                 );
                 else
                     this.hasTransparentPixels = true;
@@ -62,10 +63,12 @@ public class GameObject extends AnimatedSprite {
         return outputImage;
     }
 
-    public GameObject(SpriteSheet spriteSheet, float x, float y, String startingAnimation) {
+    public GameObject(SpriteSheet spriteSheet, int numLayerIN, int gameplayLayerIN, float x, float y, String startingAnimation) {
         super(spriteSheet, x, y, startingAnimation);
-        
-        darkSpriteSheet = new SpriteSheet(darkenImage(spriteSheet.getImage())
+        numLayer = numLayerIN;
+        distanceFromGameplayLayer = numLayerIN-gameplayLayerIN;
+        darkSpriteSheet = new SpriteSheet(darkenImage(GameObject.copyImage(spriteSheet.getImage()), baseDarknessValue - Math.clamp(.10f*
+            (distanceFromGameplayLayer), 0, baseDarknessValue))
     ,spriteSheet.getSpriteWidth()
     ,spriteSheet.getSpriteHeight());
         animationsDark = loadAnimations(darkSpriteSheet);
@@ -76,15 +79,18 @@ public class GameObject extends AnimatedSprite {
         this.previousY = y;
     }
 
-    public GameObject(float x, float y, HashMap<String, Frame[]> animations, String startingAnimation) {
+    public GameObject(float x, float y, int numLayerIN, int gameplayLayerIN, HashMap<String, Frame[]> animations, String startingAnimation) {
         super(x, y, animations, startingAnimation);
+        numLayer = numLayerIN;
         if(true){
             animationsDark = new HashMap<String, Frame[]>();
+            distanceFromGameplayLayer = numLayerIN-gameplayLayerIN;
             for (String animName: animations.keySet()) {
                 Frame[] animationFrames = new Frame[animations.get(animName).length];
                 for (Frame animFrame: animations.get(animName)) {
                     for (int j = 0; j < animations.get(animName).length; j++) {
-                        animationFrames[j] = new Frame(darkenImage(animFrame.copy().getImage()));
+                        animationFrames[j] = new Frame(darkenImage(animFrame.copy().getImage(),baseDarknessValue - Math.clamp(.10f*
+            (distanceFromGameplayLayer),0, baseDarknessValue)));
                         //animationsDark.get(animName)[j].setImage(darkenImage(animationsDark.get(animName)[j].getImage()));
                     }
                 }
@@ -107,8 +113,9 @@ public class GameObject extends AnimatedSprite {
 
     public GameObject(float x, float y, Frame frame) {
         super(x, y, frame);
-        this.animationsDark = new HashMap<String, Frame[]>();
-        this.animationsDark.put(currentAnimationName, new Frame[]{new Frame(darkenImage(frame.getImage()))} );
+        //this.animationsDark = new HashMap<String, Frame[]>();
+        //this.animationsDark.put(currentAnimationName, new Frame[]{new Frame(darkenImage(frame.getImage(), baseDarknessValue - Math.clamp(10f*
+        //    (numLayer-map.getCurrentGameplayLayer()), 100-baseDarknessValue, 0)))} );
         this.startPositionX = x;
         this.startPositionY = y;
         this.previousX = x;
@@ -371,7 +378,7 @@ public class GameObject extends AnimatedSprite {
     public void draw(GraphicsHandler graphicsHandler) {
         if (map != null) {
             if (!graphicsHandler.isPixelGridEnabled()) {
-                if (numLayer+1 == (map.getCurrentGameplayLayer())) {
+                if (distanceFromGameplayLayer < 0) {
                     if(map.getTileByPosition(this.x, this.y) != null &&
                         map.getTileByPosition(this.x, this.y).getHasTransparentPixels()) {
                         graphicsHandler.drawImage(

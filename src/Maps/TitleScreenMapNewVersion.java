@@ -10,11 +10,11 @@ import Utils.Point;
 
 // Represents the map that is used as a background for the main menu and credits menu screen
 public class TitleScreenMapNewVersion extends Map {
-
+    public static int startingGameplayLayer = 0; //set to layer you want gameplay to start in on load
     private Sprite cat;
 
     public TitleScreenMapNewVersion() {
-        super("title_screen_map_newversion.txt", new CommonTileset(), 0);
+        super("title_screen_map_newversion.txt", new CommonTileset(), startingGameplayLayer);
         currentGameplayLayer = 0;
         Point catLocation = getMapTile(6, 8).getLocation().subtractX(24).subtractY(27);
         cat = new Sprite(ImageLoader.loadSubImage("goblin.png", Colors.MAGENTA, 0, 0, 66, 52));

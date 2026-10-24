@@ -12,14 +12,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.*;
 
-public class EditorControlPanel extends JPanel {
-
-    protected ArrayList<String> mapNames;
-    protected JComboBox<String> mapNamesComboBox;
-    protected TilePicker tilePicker;
-    protected MapBuilder mapBuilder;
-    protected Map selectedMap;
-    protected static EditorControlPanel thisEditorControlPanel;
+public class EditorControlPanel extends JPanel implements EditorControlPanelInterface {
+    private ArrayList<String> mapNames;
+    private JComboBox<String> mapNamesComboBox;
+    private TilePicker tilePicker;
+    private MapBuilder mapBuilder;
+    private Map selectedMap;
+    public static EditorControlPanel thisEditorControlPanel;
 
     public EditorControlPanel(SelectedTileIndexHolder selectedTileIndexHolder, MapBuilder mapBuilder, JFrame parent) {
         if(this.getClass() == EditorControlPanel.class)
@@ -55,6 +54,19 @@ public class EditorControlPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setMap();
+                if (!selectedMap.getHasEntities()) {
+                    mapBuilder.setEntityMapTiles(MapBuilder.createEmptyVersionOfInputMapTiles(selectedMap.getMapTiles()));
+                }
+                else {
+                    MapTile[] newEnemyMaptiles = MapBuilder.createEmptyVersionOfInputMapTiles(selectedMap.getMapTiles());
+                    for (MapTile tileIN : selectedMap.getEntityMapTiles()) {
+                        if(tileIN == null)
+                            continue;
+                        newEnemyMaptiles[Math.round(tileIN.getY()/(Engine.Config.TILE_ART_SIZE*Engine.Config.TILE_SCALE)) * selectedMap.getWidth() +
+                            Math.round(tileIN.getX()/(Engine.Config.TILE_ART_SIZE*Engine.Config.TILE_SCALE))] = tileIN;
+                    }
+                    mapBuilder.setEntityMapTiles(newEnemyMaptiles);
+                }
             }
         });
         mapChoosePanel.add(mapNamesComboBox);
@@ -121,6 +133,12 @@ public class EditorControlPanel extends JPanel {
                         System.err.println("j, i: "+j+", "+i+"\nmap.getWidth(): "+map.getWidth() + "layerNum: "+layerNum);
                         System.err.println(j + (map.getWidth() * i));
                         fileWriter.write(String.valueOf(mapTiles[j + (map.getWidth() * i)][layerNum].getTileIndex()));
+                        //change this later if messing with interactions between entities on different layers.
+                        if(layerNum == map.getCurrentGameplayLayer() &&
+                        TileBuilder.getEntityMapTiles()[j + map.getWidth() * i].getTileIndex() > 0) {
+                        System.err.println("tileindex: "+TileBuilder.getEntityMapTiles()[j + map.getWidth() * i].getTileIndex());
+                        fileWriter.write(" : "+TileBuilder.getEntityMapTiles()[j + map.getWidth() * i].getTileIndex());
+                        }
                         if (j < map.getWidth() - 1) {
                             fileWriter.write(" ");
                         } else if (j >= map.getWidth() -1 && i < map.getHeight() - 1) {

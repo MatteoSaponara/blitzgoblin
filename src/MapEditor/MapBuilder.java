@@ -1,18 +1,20 @@
 package MapEditor;
 
 import Level.Map;
+import Level.MapTile;
+import Tilesets.CommonEntityTileset;
 import Utils.Colors;
 import java.awt.*;
 import javax.swing.*;
 public class MapBuilder extends JPanel {
     private static Map map;
+    private static MapTile[] currentEntityMapTiles;
     private static JScrollPane tileBuilderScroll;
     private static TileBuilder tileBuilder;
     private static JLabel mapWidthLabel;
     private static JLabel mapHeightLabel;
     private static JLabel hoveredTileIndexLabel;
     private static JLabel currentlyViewedLayerLabel;
-    
 
     public MapBuilder(SelectedTileIndexHolder controlPanelHolder) {
         setBackground(Colors.CORNFLOWER_BLUE);
@@ -54,9 +56,15 @@ public class MapBuilder extends JPanel {
         this.map = map;
         refreshTileBuilder();
     }
+    public void setEntityMapTiles(MapTile[] inputMapTiles) {
+        this.currentEntityMapTiles = inputMapTiles;
+        refreshTileBuilder();
+    }
 
     public static void refreshTileBuilder() {
         tileBuilder.setMap(map);
+        tileBuilder.setEntityMapTiles(currentEntityMapTiles);
+        tileBuilder.setEntityTileset(new CommonEntityTileset());
         tileBuilderScroll.setViewportView(tileBuilder);
         tileBuilderScroll.getVerticalScrollBar().setValue(tileBuilderScroll.getVerticalScrollBar().getMaximum());
         mapWidthLabel.setText("Width: " + map.getWidth());
@@ -69,4 +77,12 @@ public class MapBuilder extends JPanel {
     }
 
     public TileBuilder getTileBuilder() { return tileBuilder; }
+
+    public static MapTile[] createEmptyVersionOfInputMapTiles(MapTile[] inputTiles){
+        MapTile[] resultTiles = new MapTile[inputTiles.length];
+        for (int i = 0; i < resultTiles.length; i++) {
+            resultTiles[i] = inputTiles[i].copyEmpty();
+        }
+        return resultTiles;
+    }
 }

@@ -21,9 +21,9 @@ import java.util.ArrayList;
 
 
 public class level1 extends Map {
-
+    public static int startingGameplayLayer = 0; //set to layer you want gameplay to start in on load
     public level1() {
-        super("level1.txt", new CommonTileset(), 0);
+        super("level1.txt", new CommonTileset(), startingGameplayLayer);
         //currentGameplayLayer = 0;
         this.playerStartPosition = getMapTile(2, 24).getLocation();
         //this.playerStartPosition = getMapTile(40, 24).getLocation(); //test spawn
@@ -32,6 +32,9 @@ public class level1 extends Map {
     @Override
     public ArrayList<Enemy> loadEnemies() {
         ArrayList<Enemy> enemies = new ArrayList<>();
+        for (Enemy enem: enemyQueue) {
+            enemies.add(enem);
+        }
 
         Turret turretEnemy = new Turret(getMapTile(16, 12).getLocation().addY(2), Direction.RIGHT);
         enemies.add(turretEnemy);
@@ -39,10 +42,10 @@ public class level1 extends Map {
         Turret turretEnemy2 = new Turret(getMapTile(15, 16).getLocation().addY(2), Direction.RIGHT);
         enemies.add(turretEnemy2);
 
-        GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(17, 17).getLocation().addY(2), this.getCurrentGameplayLayer(), Direction.RIGHT);
+        GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(17, 17).getLocation().addY(2), this.getCurrentGameplayLayer(), this.getCurrentGameplayLayer(), Direction.RIGHT);
         enemies.add(goblinEnemy);
 
-        GoblinEnemy goblinEnemy2 = new GoblinEnemy(getMapTile(38, 17).getLocation().addY(2), this.getCurrentGameplayLayer(), Direction.LEFT);
+        GoblinEnemy goblinEnemy2 = new GoblinEnemy(getMapTile(38, 17).getLocation().addY(2), this.getCurrentGameplayLayer(), this.getCurrentGameplayLayer(), Direction.LEFT);
         enemies.add(goblinEnemy2);
 
         GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(62, 10).getLocation().addY(2), Direction.LEFT);

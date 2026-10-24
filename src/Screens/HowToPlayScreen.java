@@ -6,7 +6,6 @@ import Game.ScreenCoordinator;
 import Level.Map;
 import Maps.TitleScreenMapNewVersion;
 import SpriteFont.SpriteFont;
-
 import java.awt.*;
 
 // This class is for the credits screen
@@ -32,12 +31,12 @@ public class HowToPlayScreen extends Screen {
 
     public HowToPlayScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
+       this.background = new TitleScreenMapNewVersion();
     }
 
     @Override
     public void initialize() {
         // setup graphics on screen (background map, spritefont text)
-        background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
         HTPLabel = new SpriteFont("How to Play", 200, 100, "Copperplate Gothic Light", 40, Color.white);
         ControlsLabel = new SpriteFont("Controls:", 100, 180, "Copperplate Gothic Light", 30, Color.white);

@@ -1,5 +1,6 @@
 package MapEditor;
 
+
 import Level.Map;
 import Level.MapTile;
 import java.awt.event.ActionEvent;
@@ -12,10 +13,12 @@ public class MenuBar extends JMenuBar {
     JCheckBoxMenuItem showEnchancedMapTiles;
     JCheckBoxMenuItem showTriggers;
     JCheckBoxMenuItem toggleEntityEditingMode;
+
     JButton incrementCurrentlyViewedLayer;
     JButton decrementCurrentlyViewedLayer;
     JButton addLayer;
     JButton removeTopMostLayer;
+
 
     public MenuBar(TileBuilder tileBuilder) {
         options = new JMenu("Options");
@@ -47,7 +50,7 @@ public class MenuBar extends JMenuBar {
         toggleEntityEditingMode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tileBuilder.setShowEnhancedMapTiles(!tileBuilder.getShowEnhancedMapTiles());
+                tileBuilder.setToggleEditEntitiesMode(!tileBuilder.getToggleEditEntitiesMode());
             }
         });
         options.add(showEnchancedMapTiles);
@@ -64,7 +67,7 @@ public class MenuBar extends JMenuBar {
         decrementCurrentlyViewedLayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.err.println("asweeeeeeeeeeeeeeeeeeeeeeee");
+                //System.err.println("asweeeeeeeeeeeeeeeeeeeeeeee");
                 tileBuilder.setCurrentlyViewedLayer((int)Math.clamp(tileBuilder.getCurrentlyViewedLayer() - 1, 0, tileBuilder.getMap().getCurrentMapLayerNumber()-1));
                 MapBuilder.refreshTileBuilder();
             }
@@ -76,7 +79,7 @@ public class MenuBar extends JMenuBar {
             public void actionPerformed(ActionEvent e) {
                 addEmptyLayerOntoMap(tileBuilder.getMap());
 
-                tileBuilder.setCurrentlyViewedLayer((int)Math.clamp(tileBuilder.getCurrentlyViewedLayer() + 1, 0, tileBuilder.getMap().getCurrentMapLayerNumber()-1));
+                tileBuilder.setCurrentlyViewedLayer((int)Math.clamp(tileBuilder.getMap().getCurrentMapLayerNumber() - 1, 0, tileBuilder.getMap().getCurrentMapLayerNumber()-1));
 
                 //tileBuilder.setCurrentlyViewedLayer((int)Math.clamp(tileBuilder.getCurrentlyViewedLayer() - 1, 0, tileBuilder.getMap().getCurrentMapLayerNumber()-1));
                 MapBuilder.refreshTileBuilder();
@@ -89,14 +92,17 @@ public class MenuBar extends JMenuBar {
             public void actionPerformed(ActionEvent e) {
                 removeTopMostLayerFromMap(tileBuilder.getMap());
                 if(tileBuilder.getCurrentlyViewedLayer() >= tileBuilder.getMap().getCurrentMapLayerNumber()) {
-                    tileBuilder.setCurrentlyViewedLayer(tileBuilder.getMap().getCurrentMapLayerNumber()-1);
+                    tileBuilder.setCurrentlyViewedLayer(tileBuilder.getMap().getCurrentMapLayerNumber() - 1);
                 }
                 //tileBuilder.getMap().
                 //tileBuilder.setCurrentlyViewedLayer((int)Math.clamp(tileBuilder.getCurrentlyViewedLayer() - 1, 0, tileBuilder.getMap().getCurrentMapLayerNumber()-1));
                 MapBuilder.refreshTileBuilder();
+                tileBuilder.setToggleEditEntitiesMode(!tileBuilder.getToggleEditEntitiesMode());
             }
         });
-        options.add(removeTopMostLayer);
+
+        options.add(removeTopMostLayer); 
+        options.add(toggleEntityEditingMode);
         add(options);
     }
     public void addEmptyLayerOntoMap(Map inputMap) {
@@ -109,7 +115,7 @@ public class MenuBar extends JMenuBar {
                         resultMap[(i * inputMap.getWidth() ) + j][iLayer] = inputMap.getMapTile(j, i, iLayer);
                     }
                     else {
-                        resultMap[(i * inputMap.getWidth() ) + j][iLayer] = inputMap.getTileset().getTile(1).build(j, i, iLayer); 
+                        resultMap[(i * inputMap.getWidth() ) + j][iLayer] = inputMap.getTileset().getTile(1).build(j, i, iLayer, inputMap.getCurrentGameplayLayer()); 
                     }
                 }
             }

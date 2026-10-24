@@ -48,8 +48,8 @@ public class MapTileBuilder {
         }
         return animationsCopy;
     }
-    public MapTile build(float x, float y, int layer) {
-        MapTile mapTile = new MapTile(x, y, layer, cloneAnimations(), tileType, tileIndex);
+    public MapTile build(float x, float y, int layer, int gamePlayLayerIN) {
+        MapTile mapTile = new MapTile(x, y, layer, gamePlayLayerIN, cloneAnimations(), tileType, tileIndex);
         if (tileLayout != null) {
             mapTile.setLayout(tileLayout);
         }

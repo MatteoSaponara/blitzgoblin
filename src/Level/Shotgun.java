@@ -57,7 +57,7 @@ public class Shotgun extends GameObject {
         //when setting the sprite for the shotgun (ImageLoader.load(file)), ensure that the barrel end 
         //(where you want the pellets to fire from), is aligned with the center of the image.
         //the further from the center the less accurate the gun tracks the mouse
-        super(new SpriteSheet(ImageLoader.load("gunnn3n.png"), 65, 65), x, y, "test"); //just a test anim
+        super(new SpriteSheet(ImageLoader.load("gunnn3n.png"), 65, 65), 0,0, x, y, "test"); //just a test anim
         ///////////////////////////////////////////
         currentFrameIndex = FRAME_COUNT - 1; // rests on the last frame until a shot is fired
         weaponOwner = weaponOwnerIN;

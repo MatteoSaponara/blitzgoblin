@@ -24,8 +24,8 @@ public class GargoyleEnemy extends Enemy implements IDamagable {
     private boolean chasing = false;
     private int health = 3;
 
-    public GargoyleEnemy(Point location, int numLayerIN, Direction facingDirection) {
-        super(location.x, location.y, numLayerIN, new SpriteSheet(ImageLoader.load("Walrus.png"), 24, 24), "FLY_LEFT");
+    public GargoyleEnemy(Point location, int numLayerIN, int gamePlayLayerIN, Direction facingDirection) {
+        super(location.x, location.y, numLayerIN, gamePlayLayerIN, new SpriteSheet(ImageLoader.load("Walrus.png"), 24, 24), "FLY_LEFT");
         this.startFacingDirection = facingDirection;
         this.initialize();
     }

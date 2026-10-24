@@ -3,6 +3,7 @@ package Level;
 import Engine.GraphicsHandler;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
+import Tilesets.CommonEntityTileset;
 import java.util.HashMap;
 
 // Represents a map tile in a Map's tile map
@@ -21,8 +22,8 @@ public class MapTile extends MapEntity {
         this.tileType = tileType;
         this.tileIndex = tileIndex;
     }
-    public MapTile(float x, float y, int layer, HashMap<String, Frame[]> animations, TileType tileType, int tileIndex) {
-        super(x, y,layer, animations, "DEFAULT");
+    public MapTile(float x, float y, int layer, int gamePlayLayerIN, HashMap<String, Frame[]> animations, TileType tileType, int tileIndex) {
+        super(x, y,layer, gamePlayLayerIN, animations, "DEFAULT");
         this.tileType = tileType;
         this.tileIndex = tileIndex;
     }
@@ -44,6 +45,13 @@ public class MapTile extends MapEntity {
     public MapTile(float x, float y, Frame frame, TileType tileType) {
         super(x, y, frame);
         this.tileType = tileType;
+    }
+    public MapTile copy(){
+        return new MapTile(this.x, this.y, this.animations, this.tileType, this.tileIndex);
+    }
+    public MapTile copyEmpty(){
+        //return new MapTile(this.x, this.y, this.animations, TileType.PASSABLE, 1);
+        return new MapTile(this.x, this.y, new CommonEntityTileset().getTile(0).cloneAnimations(), TileType.PASSABLE, 0);
     }
 
     public TileType getTileType() {

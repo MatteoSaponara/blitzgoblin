@@ -13,14 +13,18 @@ import Utils.Direction;
 import java.util.ArrayList;
 
 public class MatteosTestMap extends Map{
+    public static int startingGameplayLayer = 0; //set to layer you want gameplay to start in on load
     public MatteosTestMap() {
-        super("matteos_test_map.txt", new CommonTileset());
+        super("matteos_test_map.txt", new CommonTileset(), startingGameplayLayer);
         this.playerStartPosition = getMapTile(2, 11).getLocation();
     }
 
     @Override
     public ArrayList<Enemy> loadEnemies() {
         ArrayList<Enemy> enemies = new ArrayList<>();
+        for (Enemy enem: enemyQueue) {
+            enemies.add(enem);
+        }
 
         //BugEnemy bugEnemy = new BugEnemy(getMapTile(16, 10).getLocation().subtractY(25), Direction.LEFT);
         //enemies.add(bugEnemy);
