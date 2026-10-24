@@ -33,8 +33,8 @@ public class HeroEnemy extends Enemy implements IDamagable {
     private int hitTimer;
     private int shakeTimer;
 
-    public HeroEnemy(Point location, int numLayerIN, Direction facingDirection) {
-        super(location.x, location.y, numLayerIN, new SpriteSheet(ImageLoader.load("hero.png"), 84, 80), "WALK_LEFT");
+    public HeroEnemy(Point location, int numLayerIN, int gamePlayLayerIN, Direction facingDirection) {
+        super(location.x, location.y, numLayerIN, gamePlayLayerIN, new SpriteSheet(ImageLoader.load("hero.png"), 84, 80), "WALK_LEFT");
         this.startFacingDirection = facingDirection;
         this.initialize();
     }

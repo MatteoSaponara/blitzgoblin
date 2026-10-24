@@ -28,6 +28,7 @@ public class LevelSelectScreen extends Screen {
 
     public LevelSelectScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
+        this.background = new TitleScreenMapNewVersion();
     }
 
     @Override

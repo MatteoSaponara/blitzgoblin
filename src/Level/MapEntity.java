@@ -21,26 +21,26 @@ public class MapEntity extends GameObject {
     // if true, entity will continue to be updated even if off camera
     protected boolean isUpdateOffScreen = false;
 
-    public MapEntity(float x, float y, int numLayerIN, SpriteSheet spriteSheet, String startingAnimation) {
-        super(spriteSheet, x, y, startingAnimation);
+    public MapEntity(float x, float y, int numLayerIN, int gameplayLayerIN, SpriteSheet spriteSheet, String startingAnimation) {
+        super(spriteSheet, numLayerIN, gameplayLayerIN, x, y, startingAnimation);
         numLayer = numLayerIN;
     }
 
     public MapEntity(float x, float y, SpriteSheet spriteSheet, String startingAnimation) {
-        super(spriteSheet, x, y, startingAnimation);
+        super(spriteSheet, 0, 0, x, y, startingAnimation);
         //numLayer = 1;
         if(ScreenManager.getCurrentScreen() != null && ScreenManager.getCurrentScreen().hasMap() != null)
         numLayer = ScreenManager.getCurrentScreen().hasMap().getCurrentGameplayLayer();
     }
 
     public MapEntity(float x, float y, HashMap<String, Frame[]> animations, String startingAnimation) {
-        super(x, y, animations, startingAnimation);
+        super(x, y, 0, 0, animations, startingAnimation);
         if(ScreenManager.getCurrentScreen() != null && ScreenManager.getCurrentScreen().hasMap() != null)
             numLayer = map.getCurrentGameplayLayer();
     }
 
-    public MapEntity(float x, float y, int numLayerIN, HashMap<String, Frame[]> animations, String startingAnimation) {
-        super(x, y, animations, startingAnimation);
+    public MapEntity(float x, float y, int numLayerIN, int gameplayLayerIN, HashMap<String, Frame[]> animations, String startingAnimation) {
+        super(x, y, numLayerIN, gameplayLayerIN,animations, startingAnimation);
         numLayer = numLayerIN;
     }
 

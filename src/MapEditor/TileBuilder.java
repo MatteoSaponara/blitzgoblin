@@ -11,6 +11,8 @@ import javax.swing.*;
 
 public class TileBuilder extends JPanel {
     private Map map;
+    private static MapTile[] entityMapTiles;
+    private Tileset entityTileset;
     private MapTile hoveredMapTile;
     private SelectedTileIndexHolder controlPanelHolder;
     private GraphicsHandler graphicsHandler = new GraphicsHandler();
@@ -21,6 +23,11 @@ public class TileBuilder extends JPanel {
     private boolean showNPCs;
     private boolean showEnhancedMapTiles;
     private boolean showEnemies;
+    private boolean toggleEditEntitiesMode;
+
+    public static MapTile[] getEntityMapTiles(){
+        return entityMapTiles;
+    }
 
     private static int currentlyViewedLayer = 0;
 
@@ -36,14 +43,13 @@ public class TileBuilder extends JPanel {
             @Override
             public void mouseExited(MouseEvent e) {
                 hoveredMapTile = null;
-                System.err.println("current "+currentlyViewedLayer);
+                //System.err.println("current "+currentlyViewedLayer);
                 hoveredTileIndexLabel.setText("");
                 repaint();
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                System.err.println("testestes");
                 tileSelected(e.getPoint());
             }
 
@@ -78,6 +84,14 @@ public class TileBuilder extends JPanel {
     }
     public Map getMap(){
         return map;
+    }
+
+    public void setEntityMapTiles(MapTile[] mapTiles) {
+        this.entityMapTiles = mapTiles;
+    }
+    public void setEntityTileset(Tileset inputTilesetIN) {
+        this.entityTileset = inputTilesetIN;
+
     }
 
     public void draw() {
@@ -119,6 +133,12 @@ public class TileBuilder extends JPanel {
             }
         }
 
+        if(toggleEditEntitiesMode) {
+            for (MapTile tile : entityMapTiles) {
+                tile.draw(graphicsHandler);
+            }
+        }
+
         if (hoveredMapTile != null) {
             graphicsHandler.drawRectangle(
                     Math.round(hoveredMapTile.getX()) + 2,
@@ -138,16 +158,44 @@ public class TileBuilder extends JPanel {
         draw();
     }
 
+    
     public void tileSelected(Point selectedPoint) {
         
         int selectedTileIndex = getSelectedTileIndex(selectedPoint);
-        if (selectedTileIndex != -1) {
+        if(selectedPoint.x > map.getWidthPixels() || selectedPoint.y > map.getHeightPixels() ||
+        selectedPoint.x < 0 || selectedPoint.y < 0)
+            {return;}
+
+        //System.err.println("selected"+ selectedTileIndex);
+        if(!toggleEditEntitiesMode) {
+            //System.err.println("trying to spawn tile"+toggleEditEntitiesMode);
             MapTile oldMapTile = map.getMapTiles()[selectedTileIndex];
             MapTile newMapTile =  map.getTileset().getTile(controlPanelHolder.getSelectedTileIndex()).build(oldMapTile.getX(), oldMapTile.getY());
             newMapTile.setNumLayer(currentlyViewedLayer);
             newMapTile.setMap(map);
+
             map.getAllMapTiles()[selectedTileIndex][currentlyViewedLayer] = newMapTile;
+
+            map.getMapTiles()[selectedTileIndex] = newMapTile;
+            //System.out.println("mapTile: "+map.getMapTiles()[selectedTileIndex].getTileType()+ map.getMapTiles()[selectedTileIndex].getTileIndex()+
+            //"\nmapEntityTile: "+entityMapTiles[selectedTileIndex].getTileType() + entityMapTiles[selectedTileIndex].getTileIndex());
+
         }
+        else if(entityTileset.getTile(controlPanelHolder.getSelectedTileIndex()).build(0,0).getTileIndex() != -1) {
+            //System.err.println("trying to spawn entity tile" +toggleEditEntitiesMode);
+            MapTile oldMapTile = entityMapTiles[selectedTileIndex];
+            MapTile newMapTile =  entityTileset.getTile(controlPanelHolder.getSelectedTileIndex()).build(oldMapTile.getX(), oldMapTile.getY());
+            //newMapTile.setMap(map);
+            entityMapTiles[selectedTileIndex] = newMapTile;
+            //System.out.println("mapTile: "+map.getMapTiles()[selectedTileIndex].getTileType() + map.getMapTiles()[selectedTileIndex].getTileIndex()+
+            //"\nmapEntityTile: "+entityMapTiles[selectedTileIndex].getTileType() + entityMapTiles[selectedTileIndex].getTileIndex());
+        }
+        else {
+            MapTile oldMapTile = entityMapTiles[selectedTileIndex];
+            MapTile newMapTile =  entityTileset.getTile(controlPanelHolder.getSelectedTileIndex()).build(oldMapTile.getX(), oldMapTile.getY());
+            entityMapTiles[selectedTileIndex] = newMapTile;
+        }
+        
         repaint();
     }
 
@@ -209,6 +257,14 @@ public class TileBuilder extends JPanel {
 
     public void setShowEnemies(boolean showEnemies) {
         this.showEnemies = showEnemies;
+        repaint();
+    }
+    public boolean getToggleEditEntitiesMode() {
+        return toggleEditEntitiesMode;
+    }
+
+    public void setToggleEditEntitiesMode(boolean newMode) {
+        this.toggleEditEntitiesMode = newMode;
         repaint();
     }
 }

@@ -6,7 +6,6 @@ import Game.ScreenCoordinator;
 import Level.Map;
 import Maps.TitleScreenMapNewVersion;
 import SpriteFont.SpriteFont;
-
 import java.awt.*;
 
 // This class is for the credits screen
@@ -33,12 +32,12 @@ public class HowToPlayScreen extends Screen {
 
     public HowToPlayScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
+       this.background = new TitleScreenMapNewVersion();
     }
 
     @Override
     public void initialize() {
         // setup graphics on screen (background map, spritefont text)
-        background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
         HTPLabel = new SpriteFont("How to Play", 200, 305, Config.DEFAULT_FONT, 40, Color.white);
         ControlsLabel = new SpriteFont("Controls:", 100, 344, Config.DEFAULT_FONT, 30, Color.white);

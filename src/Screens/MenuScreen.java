@@ -35,6 +35,7 @@ public class MenuScreen extends Screen {
 
     public MenuScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
+        this.background = new TitleScreenMapNewVersion();
     }
     private static Font customFont;
 
@@ -90,7 +91,6 @@ public class MenuScreen extends Screen {
         warning.setOutlineColor(Color.black);
         warning.setOutlineThickness(4);
 
-        background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
 
         keyPressTimer = 0;

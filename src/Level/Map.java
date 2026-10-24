@@ -15,6 +15,7 @@ import EnhancedMapTiles.EndLevelBox;
 import EnhancedMapTiles.SingleAmmo;
 import EnhancedMapTiles.TwelveAmmo;
 import GameObject.PhysicsParticle;
+import Tilesets.CommonEntityTileset;
 import Utils.Direction;
 import Utils.Point;
 import java.awt.Color;
@@ -38,6 +39,7 @@ import java.util.Scanner;
 public abstract class Map {
     // the tile map (map tiles that make up the entire map image)
     protected MapTile[][] mapTiles;
+    protected MapTile[] entityMapTiles;
 
     // width and height of the map in terms of the number of tiles width-wise and height-wise
     protected int width;
@@ -66,9 +68,14 @@ public abstract class Map {
 
     // lists to hold map entities that are a part of the map
     protected ArrayList<Enemy> enemies;
+    protected ArrayList<Enemy> enemyQueue = new ArrayList<Enemy>();
     protected ArrayList<EnhancedMapTile> enhancedMapTiles;
     protected ArrayList<NPC> npcs;
     private ArrayList<PhysicsParticle> particles;
+
+    protected boolean hasEntities = false;
+
+    public boolean getHasEntities() { return hasEntities;}
 
     // if set to false, camera will not move as player moves
     protected boolean adjustCamera = true;
@@ -118,6 +125,7 @@ public abstract class Map {
         this.animatedMapTiles = new ArrayList<>();
         this.particles = new ArrayList<>();
 
+        this.enemyQueue = new ArrayList<Enemy>();
         loadMapFile();
 
         this.enemies = loadEnemies();
@@ -165,6 +173,7 @@ public abstract class Map {
 
         // define array size for map tiles, which is width * height (this is a standard array, NOT a 2D array)
         this.mapTiles = new MapTile[this.height * this.width][numLayers];
+        this.entityMapTiles = new MapTile[this.height * this.width];
         fileInput.nextLine();
 
         // read in each tile index from the map file, use the defined tileset to get the associated MapTile to that tileset, and place it in the array
@@ -173,10 +182,47 @@ public abstract class Map {
                 int tileIndex = fileInput.nextInt();
                 int xLocation = j * tileset.getScaledSpriteWidth();
                 int yLocation = (i%height) * tileset.getScaledSpriteHeight();
-                MapTile tile = tileset.getTile(tileIndex).build(xLocation, yLocation, (i/height));
+                MapTile tile = tileset.getTile(tileIndex).build(xLocation, yLocation, (i/height), currentGameplayLayer);
                 tile.setMap(this);
                 setMapTile(j, i%height, (i/height), tile);
+                if((fileInput.hasNext(":"))) {
+                    hasEntities = true;
+                    fileInput.next();
+                    int testint = fileInput.nextInt();
+                    MapTile testd = new CommonEntityTileset()
+                    .getTile(testint)
+                    .build(xLocation, yLocation);
 
+                    if(testint > 0){
+                        System.out.println("adding " +testd.getTileType() + testd.getTileIndex() +"\nat : ("+
+                        String.valueOf((testd.getX()/(Config.TILE_ART_SIZE*Config.TILE_SCALE)))+", "
+                    + String.valueOf((testd.getY()/(Config.TILE_ART_SIZE*Config.TILE_SCALE)))+")");
+                        entityMapTiles[((i*width) + j) % (height*width)] = testd;
+                        switch (testint) {
+                            case 1:
+                                enemyQueue.add(new GoblinEnemy(new Point(testd.getX(), testd.getY()),
+                                 getCurrentGameplayLayer(),
+                                 getCurrentGameplayLayer(),
+                                Direction.LEFT));
+                                break;
+                            case 2:
+                                enemyQueue.add(new BugEnemy(new Point(testd.getX(), testd.getY()),
+                                getCurrentGameplayLayer(),
+                                getCurrentGameplayLayer(),
+                                Direction.LEFT));
+                                break;
+                            case 3:
+                                enemyQueue.add(new Turret(new Point(testd.getX(), testd.getY()),
+                                getCurrentGameplayLayer(),
+                                getCurrentGameplayLayer(),
+                                Direction.LEFT));
+                                break;
+                            default:
+                                throw new AssertionError();
+                        }
+                    }
+                }
+                    
                 if (tile.isAnimated()) {
                     animatedMapTiles.add(tile);
                 }
@@ -263,7 +309,8 @@ public abstract class Map {
     }
     public MapTile[][] getAllMapTiles(){
         return mapTiles;
-    }
+    }   
+    public MapTile[] getEntityMapTiles() { return entityMapTiles; }
 
     
 
@@ -344,6 +391,9 @@ public abstract class Map {
 
     // list of enemies defined to be a part of the map, should be overridden in a subclass
     protected ArrayList<Enemy> loadEnemies() {
+        for (Enemy enem: enemyQueue) {
+            this.enemies.add(enem);
+        }
         return new ArrayList<>();
     }
 
@@ -379,25 +429,25 @@ public abstract class Map {
         
         Enemy enemyOut;
         if(enemyClassIN == GoblinEnemy.class) {
-            enemyOut = new GoblinEnemy(getMapTile(x, y).getLocation().subtractY(25), currentGameplayLayer, directionIN);
+            enemyOut = new GoblinEnemy(getMapTile(x, y).getLocation().subtractY(25), currentGameplayLayer, currentGameplayLayer, directionIN);
         }
         else if(enemyClassIN == BugEnemy.class){
-            enemyOut = new BugEnemy(getMapTile(x, y).getLocation().subtractY(25), currentGameplayLayer, directionIN);
+            enemyOut = new BugEnemy(getMapTile(x, y).getLocation().subtractY(25), currentGameplayLayer, currentGameplayLayer, directionIN);
         }
         else if(enemyClassIN == Turret.class){
-            enemyOut = new Turret(getMapTile(x, y).getLocation().addY(2), currentGameplayLayer, directionIN);
+            enemyOut = new Turret(getMapTile(x, y).getLocation().addY(2), currentGameplayLayer, currentGameplayLayer, directionIN);
         }
         else if(enemyClassIN == CoinMimicEnemy.class){
-            enemyOut = new CoinMimicEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, directionIN);
+            enemyOut = new CoinMimicEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, currentGameplayLayer, directionIN);
         }
         else if(enemyClassIN == GargoyleEnemy.class){
-            enemyOut = new GargoyleEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, directionIN);
+            enemyOut = new GargoyleEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, currentGameplayLayer, directionIN);
         }
         else if(enemyClassIN == HeroEnemy.class){
-            enemyOut = new HeroEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, directionIN);
+            enemyOut = new HeroEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, currentGameplayLayer, directionIN);
         }
         else {
-            enemyOut = new BugEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, directionIN);
+            enemyOut = new BugEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, currentGameplayLayer, directionIN);
         }
         return enemyOut;
     }

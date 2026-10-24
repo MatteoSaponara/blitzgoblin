@@ -17,8 +17,8 @@ public class Enemy extends MapEntity {
     private int damageFlashTimer;
     private boolean deathParticlesSpawned;
 
-    public Enemy(float x, float y, int layer, SpriteSheet spriteSheet, String startingAnimation) {
-        super(x, y, layer, spriteSheet, startingAnimation);
+    public Enemy(float x, float y, int layer,  int gameplayLayerIN, SpriteSheet spriteSheet, String startingAnimation) {
+        super(x, y, layer, gameplayLayerIN, spriteSheet, startingAnimation);
     }
     public Enemy(float x, float y, SpriteSheet spriteSheet, String startingAnimation) {
         super(x, y, spriteSheet, startingAnimation);

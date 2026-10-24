@@ -32,10 +32,10 @@ public class Turret extends Enemy implements IDamagable{
     // how many frames before firing that the turret switches to its charging pose
     protected final int CHARGE_DURATION = 20;
 
-    public Turret(Point startLocation, int numLayerIN, Direction facingDirection) {
+    public Turret(Point startLocation, int numLayerIN, int gamePlayLayerIN, Direction facingDirection) {
         // sprite is a single row of 2 frames, each 31x33 with 1px of padding between them
         // the art faces left by default, so the right-facing animations flip it
-        super(startLocation.x, startLocation.y, numLayerIN, new SpriteSheet(ImageLoader.load("Turret.png"), 31, 33), "TURRET_LEFT");
+        super(startLocation.x, startLocation.y, numLayerIN, gamePlayLayerIN, new SpriteSheet(ImageLoader.load("Turret.png"), 31, 33), "TURRET_LEFT");
         this.startLocation = startLocation;
         this.startFacingDirection = facingDirection;
         this.initialize();

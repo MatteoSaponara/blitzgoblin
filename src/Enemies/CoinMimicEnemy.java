@@ -29,8 +29,8 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
 
     protected CoinMimicState coinMimicState;
 
-    public CoinMimicEnemy(Point location, int numLayerIN, Direction facingDirection) {
-        super(location.x, location.y, numLayerIN, new SpriteSheet(ImageLoader.load("fakecoin.png"), 38, 43), "IDLE");
+    public CoinMimicEnemy(Point location, int numLayerIN, int gamePlayLayerIN, Direction facingDirection) {
+        super(location.x, location.y, numLayerIN, gamePlayLayerIN, new SpriteSheet(ImageLoader.load("fakecoin.png"), 38, 43), "IDLE");
         this.initialize();
     }
     public CoinMimicEnemy(Point location, Direction facingDirection) {
