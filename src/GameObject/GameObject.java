@@ -37,6 +37,7 @@ public class GameObject extends AnimatedSprite {
     // the map instance this game object "belongs" to.
     protected Map map;
     protected int numLayer = 0;
+    public int getNumLayer(){return numLayer;}
     public int distanceFromGameplayLayer = 0;
 
     // true for map tiles: stretch between grid positions of the edges so neighbours never gap or overlap
@@ -45,6 +46,7 @@ public class GameObject extends AnimatedSprite {
     protected SpriteSheet darkSpriteSheet;
     protected HashMap<String, Frame[]> animationsDark;
     float baseDarknessValue = 0.65f; //initial factor/value a tile layer behind the gameplay one is darkened by
+
     protected boolean hasTransparentPixels = false;
     public boolean getHasTransparentPixels(){ return hasTransparentPixels;}
     

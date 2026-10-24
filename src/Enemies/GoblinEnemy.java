@@ -52,7 +52,7 @@ public class GoblinEnemy extends Enemy implements IDamagable{
 
     @Override
     public void update(Player player) {
-        System.out.println("numgoblin: "+numgoblin);
+        //System.out.println("numgoblin: "+numgoblin);
         float moveAmountX = 0;
         float moveAmountY = 0;
 
