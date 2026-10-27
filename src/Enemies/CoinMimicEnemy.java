@@ -20,7 +20,7 @@ import Engine.GamePanel;
 import java.util.HashMap;
 
 public class CoinMimicEnemy extends Enemy implements IDamagable {
-    private float flySpeed = 10f; //Speed of the CoinMimic when the player is in its aggro range
+    private float flySpeed = 7.5f; //Speed of the CoinMimic when the player is in its aggro range
     private float aggroRadius = 150; // 35 x 35 pixels is the size of a tile, so 70 pixels is about 2 tiles away from the player
     private int health = 1;
     
