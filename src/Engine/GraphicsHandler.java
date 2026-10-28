@@ -150,6 +150,27 @@ public class GraphicsHandler {
         }
     }
 
+    public void drawPixelGridRectangle(float x, float y, float width, float height,
+                                       Color fillColor, Color borderColor) {
+        ensurePixelBuffer();
+        int x1 = toPixelGrid(x);
+        int y1 = toPixelGrid(y);
+        int x2 = toPixelGrid(x + width);
+        int y2 = toPixelGrid(y + height);
+        int pixelWidth = Math.max(x2 - x1, 1);
+        int pixelHeight = Math.max(y2 - y1, 1);
+
+        pixelLayerDirty = true;
+        if (fillColor != null) {
+            pixelGraphics.setColor(fillColor);
+            pixelGraphics.fillRect(x1, y1, pixelWidth, pixelHeight);
+        }
+        if (borderColor != null) {
+            pixelGraphics.setColor(borderColor);
+            pixelGraphics.drawRect(x1, y1, pixelWidth - 1, pixelHeight - 1);
+        }
+    }
+
     // draws the pixel grid to the window at device resolution and clears it
     public void flushPixelLayer() {
         if (!pixelLayerDirty || g == null) {

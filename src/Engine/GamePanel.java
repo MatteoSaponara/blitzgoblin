@@ -29,7 +29,27 @@ public class GamePanel extends JPanel {
 	private Key showFPSKey = Key.G;
 	private SpriteFont fpsDisplayLabel;
 	private boolean showFPS = false;
-	private int currentFPS;
+	private volatile int currentFPS;
+	private volatile long lastFrameIntervalMillis;
+	private volatile long maxFrameIntervalMillis;
+	private volatile long lastDrawDurationMillis;
+	private volatile long lastUpdateDurationMillis;
+	private volatile long maxUpdateDurationMillis;
+	private long lastPaintStartNanos;
+	private long paintStatsWindowStartNanos;
+	private int paintedFramesInWindow;
+	private long updateStatsWindowStartNanos;
+	private long maxUpdateDurationNanos;
+	private long lastPerformanceLabelUpdateNanos;
+	private long lastMemoryLabelUpdateNanos;
+	private String currentMemoryLabelText = "Memory: 0.0 MB";
+	private String lastSizedCounterText;
+	private static final int COUNTER_X = 4;
+	private static final int COUNTER_Y = 4;
+	private static final int COUNTER_RIGHT_MARGIN = 8;
+	private static final int COUNTER_MAX_HEIGHT = 28;
+	private static volatile boolean debugCountersEnabled = false;
+	private static volatile boolean hitboxesEnabled = false;
 	private boolean doPaint;
 	private static BufferedImage jumpscareImage;
 	private static int jumpscareTimer = 0;
@@ -57,7 +77,9 @@ public class GamePanel extends JPanel {
 		pauseLabel.setOutlineColor(Color.black);
 		pauseLabel.setOutlineThickness(2.0f);
 
-		fpsDisplayLabel = new SpriteFont("FPS", 4, 3, Engine.Config.DEFAULT_FONT, 12, Color.black);
+		fpsDisplayLabel = new SpriteFont("FPS", COUNTER_X, COUNTER_Y, Engine.Config.DEFAULT_FONT, 12, Color.white);
+		fpsDisplayLabel.setOutlineColor(Color.black);
+		fpsDisplayLabel.setOutlineThickness(0);
 
 		currentFPS = Config.TARGET_FPS;
 
@@ -96,8 +118,20 @@ public class GamePanel extends JPanel {
 		return screenManager;
 	}
 
-	public void setCurrentFPS(int currentFPS) {
-		this.currentFPS = currentFPS;
+	public static boolean isDebugCountersEnabled() {
+		return debugCountersEnabled;
+	}
+
+	public static void setDebugCountersEnabled(boolean enabled) {
+		debugCountersEnabled = enabled;
+	}
+
+	public static boolean isHitboxesEnabled() {
+		return hitboxesEnabled;
+	}
+
+	public static void setHitboxesEnabled(boolean enabled) {
+		hitboxesEnabled = enabled;
 	}
 
 	public void setDoPaint(boolean doPaint) {
@@ -105,6 +139,7 @@ public class GamePanel extends JPanel {
 	}
 
 	public void update() {
+		long updateStartNanos = System.nanoTime();
 		updatePauseState();
 		updateShowFPSState();
 
@@ -116,7 +151,8 @@ public class GamePanel extends JPanel {
 		
 		if (jumpscareTimer > 0) {
 			jumpscareTimer--;
-			}			
+		}
+		recordUpdateDuration(System.nanoTime() - updateStartNanos);
 	}
 
 	private void updatePauseState() {
@@ -140,7 +176,25 @@ public class GamePanel extends JPanel {
 			keyLocker.unlockKey(showFPSKey);
 		}
 
-		fpsDisplayLabel.setText("FPS: " + currentFPS);
+		if (showFPS || debugCountersEnabled) {
+			long now = System.nanoTime();
+			if (debugCountersEnabled && now - lastMemoryLabelUpdateNanos >= 1_000_000_000L) {
+				Runtime runtime = Runtime.getRuntime();
+				double usedMemoryMb = (runtime.totalMemory() - runtime.freeMemory())
+						/ (1024.0 * 1024.0);
+				currentMemoryLabelText = String.format(java.util.Locale.ROOT,
+						"Memory: %.1f MB", usedMemoryMb);
+				lastMemoryLabelUpdateNanos = now;
+			}
+			if (now - lastPerformanceLabelUpdateNanos >= 250_000_000L) {
+				String counterText = "FPS: " + currentFPS;
+				if (debugCountersEnabled) {
+					counterText += " | " + currentMemoryLabelText;
+				}
+				fpsDisplayLabel.setText(counterText);
+				lastPerformanceLabelUpdateNanos = now;
+			}
+		}
 	}
 
 	public void draw() {
@@ -152,15 +206,43 @@ public class GamePanel extends JPanel {
 			graphicsHandler.drawFilledRectangle(0, 0, ScreenManager.getScreenWidth(), ScreenManager.getScreenHeight(), new Color(0, 0, 0, 100));
 		}
 
-		if (showFPS) {
+		if (debugCountersEnabled) {
+			sizeCounterToFit();
+			fpsDisplayLabel.draw(graphicsHandler);
+		} else if (showFPS) {
+			sizeCounterToFit();
 			fpsDisplayLabel.draw(graphicsHandler);
 		}
 
 		graphicsHandler.flushPixelLayer();
 	}
 
+	private void sizeCounterToFit() {
+		String text = fpsDisplayLabel.getText();
+		if (text.equals(lastSizedCounterText)) {
+			return;
+		}
+
+		Graphics graphics = graphicsHandler.getGraphics();
+		int availableWidth = Config.GAME_WINDOW_WIDTH - COUNTER_X - COUNTER_RIGHT_MARGIN;
+		Font baseFont = new Font(Config.DEFAULT_FONT, Font.PLAIN, 1);
+		for (int size = COUNTER_MAX_HEIGHT; size >= 1; size--) {
+			Font candidate = baseFont.deriveFont((float) size);
+			FontMetrics metrics = graphics.getFontMetrics(candidate);
+			if (metrics.stringWidth(text) <= availableWidth
+					&& metrics.getHeight() <= COUNTER_MAX_HEIGHT) {
+				fpsDisplayLabel.setFont(candidate);
+				lastSizedCounterText = text;
+				return;
+			}
+		}
+
+		throw new IllegalStateException("Counter text does not fit in the available HUD space");
+	}
+
 	@Override
 	protected void paintComponent(Graphics g) {
+		long paintStartNanos = System.nanoTime();
 		super.paintComponent(g);	
 	
 		if (doPaint) {	
@@ -204,6 +286,7 @@ public class GamePanel extends JPanel {
 
 				gameGraphics.translate(drawX, drawY);
 				gameGraphics.scale(scale, scale);
+				gameGraphics.clipRect(0, 0, gameWidth, gameHeight);
 				graphicsHandler.setGraphics(gameGraphics);
 				draw();
 				gameGraphics.dispose();
@@ -228,6 +311,47 @@ public class GamePanel extends JPanel {
 			}
 
 			Toolkit.getDefaultToolkit().sync();
+			recordPaintFrame(paintStartNanos, System.nanoTime());
+		}
+	}
+
+	private void recordPaintFrame(long paintStartNanos, long paintEndNanos) {
+		long frameIntervalNanos = lastPaintStartNanos == 0
+				? 0 : paintStartNanos - lastPaintStartNanos;
+		lastPaintStartNanos = paintStartNanos;
+		lastDrawDurationMillis = (paintEndNanos - paintStartNanos) / 1_000_000;
+		lastFrameIntervalMillis = frameIntervalNanos / 1_000_000;
+
+		if (paintStatsWindowStartNanos == 0) {
+			paintStatsWindowStartNanos = paintStartNanos;
+			paintedFramesInWindow = 1;
+			return;
+		}
+
+		paintedFramesInWindow++;
+		long windowDurationNanos = paintStartNanos - paintStatsWindowStartNanos;
+		if (windowDurationNanos >= 1_000_000_000L) {
+			currentFPS = (int) Math.round(paintedFramesInWindow
+					* 1_000_000_000.0 / windowDurationNanos);
+			paintStatsWindowStartNanos = paintStartNanos;
+			paintedFramesInWindow = 0;
+			maxFrameIntervalMillis = frameIntervalNanos / 1_000_000;
+		} else if (frameIntervalNanos > maxFrameIntervalMillis * 1_000_000L) {
+			maxFrameIntervalMillis = frameIntervalNanos / 1_000_000;
+		}
+	}
+
+	private void recordUpdateDuration(long updateDurationNanos) {
+		lastUpdateDurationMillis = updateDurationNanos / 1_000_000;
+		long now = System.nanoTime();
+		if (updateStatsWindowStartNanos == 0
+				|| now - updateStatsWindowStartNanos >= 1_000_000_000L) {
+			updateStatsWindowStartNanos = now;
+			maxUpdateDurationNanos = updateDurationNanos;
+			maxUpdateDurationMillis = lastUpdateDurationMillis;
+		} else if (updateDurationNanos > maxUpdateDurationNanos) {
+			maxUpdateDurationNanos = updateDurationNanos;
+			maxUpdateDurationMillis = lastUpdateDurationMillis;
 		}
 	}
 

@@ -1,5 +1,9 @@
 package Level;
 
+import Enemies.Fireball;
+import Enemies.GunPCannonBall;
+import Enemies.GunPOne;
+import Enemies.GunPTwelveShot;
 import Engine.GraphicsHandler;
 import Engine.ScreenManager;
 import GameObject.GameObject;
@@ -62,9 +66,9 @@ public class Camera extends Rectangle {
     // update map entities currently a part of the update/draw cycle
     // active entities are calculated each frame using the loadActiveEntity methods below
     public void updateMapEntities(Player player) {
-        activeEnemies = loadActiveEnemies();
-        activeEnhancedMapTiles = loadActiveEnhancedMapTiles();
-        activeNPCs = loadActiveNPCs();
+        loadActiveEnemies();
+        loadActiveEnhancedMapTiles();
+        loadActiveNPCs();
 
         for (Enemy enemy : activeEnemies) {
             enemy.update(player);
@@ -80,8 +84,8 @@ public class Camera extends Rectangle {
     }
 
     // determine which enemies are active (exist and are within range of the camera)
-    private ArrayList<Enemy> loadActiveEnemies() {
-        ArrayList<Enemy> activeEnemies = new ArrayList<>();
+    private void loadActiveEnemies() {
+        activeEnemies.clear();
         for (int i = map.getEnemies().size() - 1; i >= 0; i--) {
             Enemy enemy = map.getEnemies().get(i);
 
@@ -96,12 +100,11 @@ public class Camera extends Rectangle {
                 map.getEnemies().remove(i);
             }
         }
-        return activeEnemies;
     }
 
     // determine which enhanced map tiles are active (exist and are within range of the camera)
-    private ArrayList<EnhancedMapTile> loadActiveEnhancedMapTiles() {
-        ArrayList<EnhancedMapTile> activeEnhancedMapTiles = new ArrayList<>();
+    private void loadActiveEnhancedMapTiles() {
+        activeEnhancedMapTiles.clear();
         for (int i = map.getEnhancedMapTiles().size() - 1; i >= 0; i--) {
             EnhancedMapTile enhancedMapTile = map.getEnhancedMapTiles().get(i);
 
@@ -116,12 +119,11 @@ public class Camera extends Rectangle {
                 map.getEnhancedMapTiles().remove(i);
             }
         }
-        return activeEnhancedMapTiles;
     }
 
     // determine which npcs are active (exist and are within range of the camera)
-    private ArrayList<NPC> loadActiveNPCs() {
-        ArrayList<NPC> activeNPCs = new ArrayList<>();
+    private void loadActiveNPCs() {
+        activeNPCs.clear();
         for (int i = map.getNPCs().size() - 1; i >= 0; i--) {
             NPC npc = map.getNPCs().get(i);
 
@@ -136,7 +138,6 @@ public class Camera extends Rectangle {
                 map.getNPCs().remove(i);
             }
         }
-        return activeNPCs;
     }
 
     /*
@@ -154,6 +155,89 @@ public class Camera extends Rectangle {
     public void draw(GraphicsHandler graphicsHandler) {
         drawMapTiles(graphicsHandler);
         drawMapEntities(graphicsHandler);
+    }
+
+    public void drawDebugHitboxes(GraphicsHandler graphicsHandler, Player player) {
+        Point tileIndex = getTileIndexByCameraPosition();
+        for (int i = tileIndex.y - 1; i <= tileIndex.y + height + 1; i++) {
+            for (int j = tileIndex.x - 1; j <= tileIndex.x + width + 1; j++) {
+                MapTile tile = map.getMapTile(j, i);
+                if (tile != null) {
+                    drawTileHitbox(graphicsHandler, tile);
+                }
+            }
+        }
+
+        for (Enemy enemy : activeEnemies) {
+            if (containsDraw(enemy)) {
+                Color color = isProjectile(enemy)
+                        ? new Color(255, 170, 0)
+                        : new Color(255, 45, 45);
+                drawWorldHitbox(graphicsHandler, enemy.getBounds(), color);
+            }
+        }
+        for (EnhancedMapTile tile : activeEnhancedMapTiles) {
+            if (containsDraw(tile)) {
+                drawWorldHitbox(graphicsHandler, tile.getBounds(), new Color(190, 80, 255));
+            }
+        }
+        for (NPC npc : activeNPCs) {
+            if (containsDraw(npc)) {
+                drawWorldHitbox(graphicsHandler, npc.getBounds(), new Color(255, 220, 40));
+            }
+        }
+
+        drawWorldHitbox(graphicsHandler, player.getBounds(), new Color(40, 255, 100));
+        Rectangle attackBox = player.getAttackBox();
+        if (attackBox != null) {
+            drawWorldHitbox(graphicsHandler, attackBox, new Color(255, 120, 20));
+        }
+    }
+
+    private void drawTileHitbox(GraphicsHandler graphicsHandler, MapTile tile) {
+        TileType type = tile.getTileType();
+        if (type == TileType.PASSABLE || type == TileType.WATER) {
+            return;
+        }
+
+        if (type == TileType.SPIKE_UP) {
+            drawWorldHitbox(graphicsHandler, new Rectangle(
+                    tile.getX() + tile.getWidth() / 4f,
+                    tile.getY() + tile.getHeight() / 2f,
+                    tile.getWidth() / 2,
+                    tile.getHeight() / 2), new Color(255, 0, 180));
+        } else if (type == TileType.SPIKE_DOWN) {
+            drawWorldHitbox(graphicsHandler, new Rectangle(
+                    tile.getX() + tile.getWidth() / 4f,
+                    tile.getY(),
+                    tile.getWidth() / 2,
+                    tile.getHeight() / 2), new Color(255, 0, 180));
+        } else if (type == TileType.HEALTH_PICKUP) {
+            drawWorldHitbox(graphicsHandler, new Rectangle(
+                    tile.getX() + tile.getWidth() / 4f,
+                    tile.getY(),
+                    tile.getWidth() / 2,
+                    tile.getHeight() / 2), new Color(60, 220, 255));
+        } else {
+            drawWorldHitbox(graphicsHandler, tile.getBounds(), new Color(60, 140, 255));
+        }
+    }
+
+    private void drawWorldHitbox(GraphicsHandler graphicsHandler, Rectangle bounds, Color color) {
+        graphicsHandler.drawPixelGridRectangle(
+                bounds.getX() - getX(),
+                bounds.getY() - getY(),
+                bounds.getWidth(),
+                bounds.getHeight(),
+                new Color(color.getRed(), color.getGreen(), color.getBlue(), 128),
+                new Color(color.getRed(), color.getGreen(), color.getBlue(), 210));
+    }
+
+    private boolean isProjectile(Enemy enemy) {
+        return enemy instanceof Fireball
+                || enemy instanceof GunPOne
+                || enemy instanceof GunPTwelveShot
+                || enemy instanceof GunPCannonBall;
     }
 
     // draws visible map tiles to the screen
