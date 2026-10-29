@@ -5,6 +5,7 @@ import Engine.ImageLoader;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
 import Interfaces.IDamagable;
+import Interfaces.IArmored;
 import Level.Enemy;
 import Level.MapEntity;
 import Level.MapEntityStatus;
@@ -59,7 +60,8 @@ public class GunPTwelveShot extends Enemy {
                     && !(enemy instanceof GunPTwelveShot)
                     && this.intersects(enemy)) {
 				
-                if (enemy instanceof IDamagable) {
+                if (enemy instanceof IDamagable && !(enemy instanceof IArmored)) {
+                    ((IDamagable) enemy).takeDamage(5);
                     ((IDamagable) enemy).takeDamage(1);
                     this.mapEntityStatus = MapEntityStatus.REMOVED;
                     return;
