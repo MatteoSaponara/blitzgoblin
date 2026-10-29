@@ -48,7 +48,7 @@ public class MatteosTestMap extends Map{
                 getMapTile(24, 6).getLocation(),
                 getMapTile(27, 6).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.RIGHT
         );

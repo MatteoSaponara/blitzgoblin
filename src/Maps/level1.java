@@ -66,7 +66,7 @@ public class level1 extends Map {
                 getMapTile(56, 17).getLocation(),
                 getMapTile(62, 17).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.LEFT
         );
@@ -75,7 +75,7 @@ public class level1 extends Map {
                 getMapTile(56, 14).getLocation(),
                 getMapTile(62, 14).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.RIGHT
         );
@@ -84,7 +84,7 @@ public class level1 extends Map {
                 getMapTile(56, 11).getLocation(),
                 getMapTile(62, 11).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.LEFT
         );
