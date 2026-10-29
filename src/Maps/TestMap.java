@@ -6,6 +6,7 @@ import Enemies.HeroEnemy;
 import Enemies.Turret;
 import Enemies.CoinMimicEnemy;
 import Enemies.GargoyleEnemy;
+import Enemies.BlockMimicEnemy;
 import Engine.ImageLoader;
 import EnhancedMapTiles.Coin;
 import EnhancedMapTiles.EndLevelBox;
@@ -61,8 +62,8 @@ public class TestMap extends Map {
         CoinMimicEnemy coinMimicEnemy2 = new CoinMimicEnemy(getMapTile(57, 18).getLocation(), Direction.LEFT);
         enemies.add(coinMimicEnemy2);
 
-       // GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(13, 20).getLocation(), Direction.LEFT);
-       // enemies.add(gargoyleEnemy);
+       BlockMimicEnemy blockMimicEnemy = new BlockMimicEnemy(getMapTile(12, 19).getLocation(), Direction.LEFT);
+       enemies.add(blockMimicEnemy);
 
         return enemies;
     }

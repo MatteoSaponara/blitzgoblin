@@ -77,7 +77,12 @@ public class GamePanel extends JPanel {
 		}
 	}
 	
-	
+	public static void triggerBlockMimicJumpscare() {
+    if (jumpscareTimer == 0) {
+        jumpscareImage = ImageLoader.load("MimicBlockJumpScare.png");
+        jumpscareTimer = JUMPSCARE_DURATION;
+		}
+	}
 	
 
 	// this is called later after instantiation, and will initialize screenManager
