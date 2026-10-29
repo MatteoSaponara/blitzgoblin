@@ -14,17 +14,23 @@ import java.io.IOException;
 public class MenuScreen extends Screen {
     protected ScreenCoordinator screenCoordinator;
     protected int currentMenuItemHovered = 0; // current menu item being "hovered" over
-    protected int menuItemSelected = -1;
     protected SpriteFont Title;
     protected SpriteFont playGame;
     protected SpriteFont credits;
     protected SpriteFont howToPlay;
 	protected SpriteFont levelSelect;
+    protected SpriteFont settings;
+    protected SpriteFont settingsTitle;
+    protected SpriteFont debugCountersOption;
+    protected SpriteFont showHitboxesOption;
+    protected SpriteFont backOption;
     protected SpriteFont warning;
     protected Map background;
     protected int keyPressTimer;
     protected int warningShakeFrame;
     protected int pointerLocationX, pointerLocationY;
+    protected int settingsMenuItemHovered;
+    protected boolean settingsMenuOpen;
     protected KeyLocker keyLocker = new KeyLocker();
 
     public MenuScreen(ScreenCoordinator screenCoordinator) {
@@ -67,8 +73,23 @@ public class MenuScreen extends Screen {
 		levelSelect.setOutlineColor(Color.black);
 		levelSelect.setOutlineThickness(3);
         credits = new SpriteFont("CREDITS", 200, 323, Config.DEFAULT_FONT, 30, new Color(255, 255, 255));     // new Color(49, 207, 240));
-        warning = new SpriteFont("warning: placeholder assets all over the place", 0, 8,
-                Config.DEFAULT_FONT, 28, new Color(255, 220, 80));
+		settings = new SpriteFont("SETTINGS", 200, 374, Config.DEFAULT_FONT, 30, Color.white);
+		settings.setOutlineColor(Color.black);
+		settings.setOutlineThickness(3);
+		settingsTitle = new SpriteFont("SETTINGS", 200, 170, Config.DEFAULT_FONT, 30, Color.white);
+		settingsTitle.setOutlineColor(Color.black);
+		settingsTitle.setOutlineThickness(3);
+		debugCountersOption = new SpriteFont("", 200, 221, Config.DEFAULT_FONT, 30, Color.white);
+		debugCountersOption.setOutlineColor(Color.black);
+		debugCountersOption.setOutlineThickness(3);
+		showHitboxesOption = new SpriteFont("", 200, 272, Config.DEFAULT_FONT, 30, Color.white);
+		showHitboxesOption.setOutlineColor(Color.black);
+		showHitboxesOption.setOutlineThickness(3);
+		backOption = new SpriteFont("BACK", 200, 323, Config.DEFAULT_FONT, 30, Color.white);
+		backOption.setOutlineColor(Color.black);
+		backOption.setOutlineThickness(3);
+		warning = new SpriteFont("warning: placeholder assets all over the place", 0, 8,
+		        Config.DEFAULT_FONT, 28, new Color(255, 220, 80));
         warning.setOutlineColor(Color.black);
         warning.setOutlineThickness(4);
 
@@ -76,7 +97,8 @@ public class MenuScreen extends Screen {
         background.setAdjustCamera(false);
         keyPressTimer = 0;
         warningShakeFrame = 0;
-        menuItemSelected = -1;
+        settingsMenuItemHovered = 0;
+        settingsMenuOpen = false;
         keyLocker.lockKey(Key.SPACE);
     }
 
@@ -85,75 +107,91 @@ public class MenuScreen extends Screen {
         background.update(null);
         warningShakeFrame++;
 
-        // if down or up is pressed, change menu item "hovered" over (blue square in front of text will move along with currentMenuItemHovered changing)
+        if (settingsMenuOpen) {
+            debugCountersOption.setText("DEBUG COUNTERS: "
+                    + (GamePanel.isDebugCountersEnabled() ? "ON" : "OFF"));
+            showHitboxesOption.setText("SHOW HITBOXES: "
+                    + (GamePanel.isHitboxesEnabled() ? "ON" : "OFF"));
+        }
+
+        // if down or up is pressed, change the highlighted menu item
         if (Keyboard.isKeyDown(Key.DOWN, Key.S) &&  keyPressTimer == 0) {
             keyPressTimer = 14;
-            currentMenuItemHovered++;
+            moveSelection(1);
         } else if (Keyboard.isKeyDown(Key.UP, Key.W) &&  keyPressTimer == 0) {
             keyPressTimer = 14;
-            currentMenuItemHovered--;
+            moveSelection(-1);
         } else {
             if (keyPressTimer > 0) {
                 keyPressTimer--;
             }
         }
 
-        // if down is pressed on last menu item or up is pressed on first menu item, "loop" the selection back around to the beginning/end
-        if (currentMenuItemHovered > 3) {
-            currentMenuItemHovered = 0;
-        } else if (currentMenuItemHovered < 0) {
-            currentMenuItemHovered = 3;
-        }
-
-        // sets location for blue square in front of text (pointerLocation) and also sets color of spritefont text based on which menu item is being hovered
-        if (currentMenuItemHovered == 0) {
-            playGame.setColor(new Color(255, 255, 255)); //new Color(255, 215, 0));
-            howToPlay.setColor(new Color(255, 255, 255));
-            levelSelect.setColor(new Color(255, 255, 255));
-            credits.setColor(new Color(255, 255, 255));  //new Color(49, 207, 240));
-            pointerLocationX = 170;
-            pointerLocationY = 177;
-        } else if (currentMenuItemHovered == 1) {
-            playGame.setColor(new Color(255, 255, 255)); //new Color(49, 207, 240));
-            howToPlay.setColor(new Color(255, 255, 255));
-            levelSelect.setColor(new Color(255, 255, 255));
-            credits.setColor(new Color(255, 255, 255)); //new Color(255, 215, 0));
-            pointerLocationX = 170;
-            pointerLocationY = 228;
-        } else if (currentMenuItemHovered == 2) {
-			playGame.setColor(new Color(255, 255, 255));
-			howToPlay.setColor(new Color(255, 255, 255));
-			levelSelect.setColor(new Color(255, 255, 255));
-			credits.setColor(new Color(255, 255, 255));
-			pointerLocationX = 170;
-			pointerLocationY = 279;
-		} else if (currentMenuItemHovered == 3) {
-			playGame.setColor(new Color(255, 255, 255));
-			howToPlay.setColor(new Color(255, 255, 255));
-			levelSelect.setColor(new Color(255, 255, 255));
-			credits.setColor(new Color(255, 255, 255));
-			pointerLocationX = 170;
-			pointerLocationY = 330;
-		}
-        
-
-        // if space is pressed on menu item, change to appropriate screen based on which menu item was chosen
         if (Keyboard.isKeyUp(Key.SPACE)) {
             keyLocker.unlockKey(Key.SPACE);
         }
+        if (Keyboard.isKeyUp(Key.ESC)) {
+            keyLocker.unlockKey(Key.ESC);
+        }
+
         if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
-            menuItemSelected = currentMenuItemHovered;
-            if (menuItemSelected == 0) {
-                screenCoordinator.setGameState(GameState.LEVEL);
-            } else if (menuItemSelected == 1) {
-                screenCoordinator.setGameState(GameState.HOW_TO_PLAY);
-            
-            } else if (menuItemSelected == 2) {
-                screenCoordinator.setGameState(GameState.LEVEL_SELECT);
-            
-            } else if (menuItemSelected == 3) {
-                screenCoordinator.setGameState(GameState.CREDITS);
+            keyLocker.lockKey(Key.SPACE);
+            selectMenuItem();
+        }
+
+        if (settingsMenuOpen && Keyboard.isKeyDown(Key.ESC)
+                && !keyLocker.isKeyLocked(Key.ESC)) {
+            keyLocker.lockKey(Key.ESC);
+            settingsMenuOpen = false;
+        }
+
+        updatePointerLocation();
+    }
+
+    private void moveSelection(int direction) {
+        if (settingsMenuOpen) {
+            settingsMenuItemHovered = (settingsMenuItemHovered + direction + 3) % 3;
+        } else {
+            currentMenuItemHovered = (currentMenuItemHovered + direction + 5) % 5;
+        }
+    }
+
+    private void selectMenuItem() {
+        if (settingsMenuOpen) {
+            if (settingsMenuItemHovered == 0) {
+                GamePanel.setDebugCountersEnabled(!GamePanel.isDebugCountersEnabled());
+                debugCountersOption.setText("DEBUG COUNTERS: "
+                        + (GamePanel.isDebugCountersEnabled() ? "ON" : "OFF"));
+            } else if (settingsMenuItemHovered == 1) {
+                GamePanel.setHitboxesEnabled(!GamePanel.isHitboxesEnabled());
+                showHitboxesOption.setText("SHOW HITBOXES: "
+                        + (GamePanel.isHitboxesEnabled() ? "ON" : "OFF"));
+            } else {
+                settingsMenuOpen = false;
             }
+            return;
+        }
+
+        if (currentMenuItemHovered == 0) {
+            screenCoordinator.setGameState(GameState.LEVEL);
+        } else if (currentMenuItemHovered == 1) {
+            screenCoordinator.setGameState(GameState.HOW_TO_PLAY);
+        } else if (currentMenuItemHovered == 2) {
+            screenCoordinator.setGameState(GameState.LEVEL_SELECT);
+        } else if (currentMenuItemHovered == 3) {
+            screenCoordinator.setGameState(GameState.CREDITS);
+        } else {
+            settingsMenuOpen = true;
+            settingsMenuItemHovered = 0;
+        }
+    }
+
+    private void updatePointerLocation() {
+        pointerLocationX = 170;
+        if (settingsMenuOpen) {
+            pointerLocationY = 228 + settingsMenuItemHovered * 51;
+        } else {
+            pointerLocationY = 177 + currentMenuItemHovered * 51;
         }
     }
 
@@ -164,11 +202,19 @@ public class MenuScreen extends Screen {
         int shakeY = (int) (Math.cos(warningShakeFrame * 1.3) * 2);
         warning.setLocation(Config.GAME_WINDOW_WIDTH - warningWidth - 10 + shakeX, 8 + shakeY);
         warning.draw(graphicsHandler);
-        Title.draw(graphicsHandler);
-        playGame.draw(graphicsHandler);
-        howToPlay.draw(graphicsHandler);
-		levelSelect.draw(graphicsHandler);
-        credits.draw(graphicsHandler);
+        if (settingsMenuOpen) {
+            settingsTitle.draw(graphicsHandler);
+            debugCountersOption.draw(graphicsHandler);
+            showHitboxesOption.draw(graphicsHandler);
+            backOption.draw(graphicsHandler);
+        } else {
+            Title.draw(graphicsHandler);
+            playGame.draw(graphicsHandler);
+            howToPlay.draw(graphicsHandler);
+            levelSelect.draw(graphicsHandler);
+            credits.draw(graphicsHandler);
+            settings.draw(graphicsHandler);
+        }
         graphicsHandler.drawFilledRectangleWithBorder(pointerLocationX, pointerLocationY, 20, 20, new Color(255, 255, 255), Color.black, 2); //new Color(49, 207, 240), Color.black, 2);
     }
 }

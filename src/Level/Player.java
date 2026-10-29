@@ -834,6 +834,11 @@ public abstract class Player extends GameObject
         return facingDirection;
     }
 
+    public Rectangle getAttackBox()
+    {
+        return attackBox;
+    }
+
     public void setFacingDirection(Direction facingDirection)
     {
         this.facingDirection = facingDirection;

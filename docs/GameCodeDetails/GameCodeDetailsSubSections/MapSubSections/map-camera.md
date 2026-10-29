@@ -75,4 +75,4 @@ Entities also have an `isUpdateOffScreen` instance variable that when toggled on
 While this game currently does not make use of this, there are certainly future enhancements where this toggle can come in handy.
 
 The `Camera` class's `loadActiveEnemies`, `loadActiveNPCs`, and `loadActiveEnhancedMapTiles` methods are called each game loop cycle (each frame)
-to determine which map entities are currently active and which ones are not.
+to determine which map entities are currently active and which ones are not. The active lists are reused between frames to avoid allocating new collections on every update.

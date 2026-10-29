@@ -179,19 +179,39 @@ public class Rectangle implements IntersectableRectangle {
 		return new Rectangle(x, y, getWidth(), getHeight());
 	}
 
+	@Override
+	public float getIntersectX1() {
+		return getX1();
+	}
+
+	@Override
+	public float getIntersectY1() {
+		return getY1();
+	}
+
+	@Override
+	public float getIntersectX2() {
+		return getX2();
+	}
+
+	@Override
+	public float getIntersectY2() {
+		return getY2();
+	}
+
 	// check if this intersects with another rectangle
 	public boolean intersects(IntersectableRectangle other) {
-		Rectangle intersectRectangle = getIntersectRectangle();
-		Rectangle otherIntersectRectangle = other.getIntersectRectangle();
-		return Math.round(intersectRectangle.getX1()) < Math.round(otherIntersectRectangle.getX2() + 1) && Math.round(intersectRectangle.getX2() + 1) > Math.round(otherIntersectRectangle.getX1()) &&
-				Math.round(intersectRectangle.getY1()) < Math.round(otherIntersectRectangle.getY2() + 1) && Math.round(intersectRectangle.getY2() + 1) > Math.round(otherIntersectRectangle.getY1());
+		return Math.round(getIntersectX1()) < Math.round(other.getIntersectX2() + 1)
+				&& Math.round(getIntersectX2() + 1) > Math.round(other.getIntersectX1())
+				&& Math.round(getIntersectY1()) < Math.round(other.getIntersectY2() + 1)
+				&& Math.round(getIntersectY2() + 1) > Math.round(other.getIntersectY1());
 	}
 
 	// check if this is touching (side by side) or overlapping with another rectangle
 	public boolean touching(IntersectableRectangle other) {
-		Rectangle intersectRectangle = getIntersectRectangle();
-		Rectangle otherIntersectRectangle = other.getIntersectRectangle();
-		return Math.round(intersectRectangle.getX1()) <= Math.round(otherIntersectRectangle.getX2() + 1) && Math.round(intersectRectangle.getX2() + 1) >= Math.round(otherIntersectRectangle.getX1()) &&
-				Math.round(intersectRectangle.getY1()) <= Math.round(otherIntersectRectangle.getY2() + 1) && Math.round(intersectRectangle.getY2() + 1) >= Math.round(otherIntersectRectangle.getY1());
+		return Math.round(getIntersectX1()) <= Math.round(other.getIntersectX2() + 1)
+				&& Math.round(getIntersectX2() + 1) >= Math.round(other.getIntersectX1())
+				&& Math.round(getIntersectY1()) <= Math.round(other.getIntersectY2() + 1)
+				&& Math.round(getIntersectY2() + 1) >= Math.round(other.getIntersectY1());
 	}
 }

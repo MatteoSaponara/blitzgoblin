@@ -79,9 +79,29 @@ public class Sprite extends Rectangle {
     }
 
     @Override
-	public void update() {
-		super.update();
-	}
+    public float getIntersectX1() {
+        return getX() + (bounds.getX1() * scale);
+    }
+
+    @Override
+    public float getIntersectY1() {
+        return getY() + (bounds.getY1() * scale);
+    }
+
+    @Override
+    public float getIntersectX2() {
+        return getIntersectX1() + Math.round(bounds.getWidth() * scale) - 1;
+    }
+
+    @Override
+    public float getIntersectY2() {
+        return getIntersectY1() + Math.round(bounds.getHeight() * scale) - 1;
+    }
+
+    @Override
+    public void update() {
+        super.update();
+    }
 	
 	@Override
 	public void draw(GraphicsHandler graphicsHandler) {
