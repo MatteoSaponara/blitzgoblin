@@ -18,12 +18,12 @@ import java.util.HashMap;
 public class GoblinEnemy extends Enemy implements IDamagable{
     private float gravity = .5f;
     private float movementSpeed;
-    private float walkSpeed = .5f;
-    private float chaseSpeed = 2f; // Speed of Goblin when the player is in its aggro range
+    private float walkSpeed = 2f;
+    private float chaseSpeed = 5f; // Speed of Goblin when the player is in its aggro range
     private Direction startFacingDirection;
     private Direction facingDirection;
     private AirGroundState airGroundState;
-    private float aggroRadius = 175f; // 35x35 pixels is the size of a tile, so 175 pixels is about 5 tiles away from the player
+    private float aggroRadius = 210f; // 35x35 pixels is the size of a tile, so 175 pixels is about 5 tiles away from the player
     private boolean chasing = false;
     private boolean moving = true;
     private int health = 8;
