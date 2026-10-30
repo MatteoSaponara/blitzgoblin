@@ -59,6 +59,58 @@ public class CommonEntityTileset extends Tileset {
 
         mapTiles.add(turretSpawnTile);
 
+        // block mimic spawn
+        Frame blockMimicSpawnFrame = new FrameBuilder(getSubImage(1, 0))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder blockMimicSpawnTile = new MapTileBuilder(blockMimicSpawnFrame)
+                .withTileType(TileType.PASSABLE);
+
+        mapTiles.add(blockMimicSpawnTile);
+
+        // moving platform entity spawn
+        Frame movingPlatformSpawnFrame = new FrameBuilder(getSubImage(1, 1))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder movingPlatformSpawnTile = new MapTileBuilder(movingPlatformSpawnFrame)
+                .withTileType(TileType.PASSABLE);
+
+        mapTiles.add(movingPlatformSpawnTile);
+
+        // moving platform end
+        Frame movingPlatformEndSpawnFrame = new FrameBuilder(getSubImage(1, 2))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder movingPlatformEndSpawnTile = new MapTileBuilder(movingPlatformEndSpawnFrame)
+                .withTileType(TileType.PASSABLE);
+
+        mapTiles.add(movingPlatformEndSpawnTile);
+
+        
+
+        // coin spawn
+        Frame coinSpawnFrame = new FrameBuilder(getSubImage(1, 3))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder coinSpawnTile = new MapTileBuilder(coinSpawnFrame)
+                .withTileType(TileType.PASSABLE);
+
+        mapTiles.add(coinSpawnTile);
+
+        // end box spawn
+        Frame endBoxSpawnFrame = new FrameBuilder(getSubImage(2, 0))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder endBoxSpawnTile = new MapTileBuilder(endBoxSpawnFrame)
+                .withTileType(TileType.PASSABLE);
+
+        mapTiles.add(endBoxSpawnTile);
+
         return mapTiles;
     }
 }

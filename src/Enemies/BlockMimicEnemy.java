@@ -22,7 +22,11 @@ public class BlockMimicEnemy extends Enemy implements IDamagable {
     private int health = 1;
     protected int transformTimer;
     protected BlockMimicState blockMimicState;
-
+    
+    public BlockMimicEnemy(Point location, int numLayerIN, int gamePlayLayerIN, Direction facingDirection) {
+        super(location.x, location.y, numLayerIN, gamePlayLayerIN, new SpriteSheet(ImageLoader.load("MimicBlockTest14.png"), 59, 59), "IDLE");
+        this.initialize();
+    }
     public BlockMimicEnemy(Point location, Direction facingDirection) {
         super(location.x, location.y, new SpriteSheet(ImageLoader.load("MimicBlockTest14.png"), 59, 59), "IDLE");
         this.initialize();

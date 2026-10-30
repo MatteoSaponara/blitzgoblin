@@ -132,7 +132,7 @@ public abstract class Player extends GameObject
         }
     }
     public boolean ifPlayerIsStandingOnTile(){
-        System.out.println(map.getTileByPosition(this.x, this.y+this.getHeight()-(Config.TILE_ART_SIZE*Config.TILE_SCALE) + 5f));
+        //System.out.println(map.getTileByPosition(this.x, this.y+this.getHeight()-(Config.TILE_ART_SIZE*Config.TILE_SCALE) + 5f));
         return (map.getTileByPosition(this.x+(this.getWidth()/2), this.y+this.getHeight()+(Config.TILE_ART_SIZE*Config.TILE_SCALE)).getTileType() == TileType.NOT_PASSABLE);
     }
     public void update()

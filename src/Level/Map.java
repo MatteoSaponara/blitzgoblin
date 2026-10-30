@@ -1,5 +1,6 @@
 package Level;
 
+import Enemies.BlockMimicEnemy;
 import Enemies.BugEnemy;
 import Enemies.CoinMimicEnemy;
 import Enemies.GargoyleEnemy;
@@ -8,12 +9,15 @@ import Enemies.HeroEnemy;
 import Enemies.Turret;
 import Engine.Config;
 import Engine.GraphicsHandler;
+import Engine.ImageLoader;
 import Engine.ScreenManager;
 import EnhancedMapTiles.CannonAmmo;
 import EnhancedMapTiles.Coin;
 import EnhancedMapTiles.EndLevelBox;
+import EnhancedMapTiles.HorizontalMovingPlatform;
 import EnhancedMapTiles.SingleAmmo;
 import EnhancedMapTiles.TwelveAmmo;
+import GameObject.Rectangle;
 import Tilesets.CommonEntityTileset;
 import Utils.Direction;
 import Utils.Point;
@@ -22,8 +26,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.swing.text.Position;
 
 /*
     This class is for defining a map that is used for a specific level
@@ -121,6 +127,10 @@ public abstract class Map {
     // and instantiates a Camera
     public void setupMap() {
         this.animatedMapTiles = new ArrayList<>();
+        this.enhancedMapTiles = new ArrayList<EnhancedMapTile>();
+        this.testNumOfPlatformsMapedit = 0;
+        this.enemies = new ArrayList<Enemy>();
+
         this.enemyQueue = new ArrayList<Enemy>();
         loadMapFile();
 
@@ -128,8 +138,10 @@ public abstract class Map {
         for (Enemy enemy: this.enemies) {
             enemy.setMap(this);
         }
-
+        ArrayList<EnhancedMapTile> testfds = new ArrayList<EnhancedMapTile>();
+        for (EnhancedMapTile elem : enhancedMapTiles) { testfds.add(elem); }
         this.enhancedMapTiles = loadEnhancedMapTiles();
+        for (EnhancedMapTile elem : testfds) { enhancedMapTiles.add(elem); }
         for (EnhancedMapTile enhancedMapTile: this.enhancedMapTiles) {
             enhancedMapTile.setMap(this);
         }
@@ -141,6 +153,7 @@ public abstract class Map {
 
         this.camera = new Camera(0, 0, tileset.getScaledSpriteWidth(), tileset.getScaledSpriteHeight(), this);
     }
+    int testNumOfPlatformsMapedit = 0;
 
     // reads in a map file to create the map's tilemap
     private void loadMapFile() {
@@ -174,6 +187,9 @@ public abstract class Map {
 
         // read in each tile index from the map file, use the defined tileset to get the associated MapTile to that tileset, and place it in the array
         for (int i = 0; i < (height*numLayers); i++) {
+            ArrayList<Point> horizontalMovingPlatformStarts = new ArrayList<Point>();
+            ArrayList<Point> horizontalMovingPlatformEnds = new ArrayList<Point>();
+            int currentPlatformIndex = 0;
             for (int j = 0; j < width; j++) {
                 int tileIndex = fileInput.nextInt();
                 int xLocation = j * tileset.getScaledSpriteWidth();
@@ -188,30 +204,80 @@ public abstract class Map {
                     MapTile testd = new CommonEntityTileset()
                     .getTile(testint)
                     .build(xLocation, yLocation);
-
                     if(testint > 0){
-                        System.out.println("adding " +testd.getTileType() + testd.getTileIndex() +"\nat : ("+
-                        String.valueOf((testd.getX()/(Config.TILE_ART_SIZE*Config.TILE_SCALE)))+", "
-                    + String.valueOf((testd.getY()/(Config.TILE_ART_SIZE*Config.TILE_SCALE)))+")");
+                        //System.out.println("adding " +testd.getTileType() + testd.getTileIndex() +"\nat : ("+
+                        //String.valueOf((testd.getX()/(Config.TILE_ART_SIZE*Config.TILE_SCALE)))+", "
+                    //+ String.valueOf((testd.getY()/(Config.TILE_ART_SIZE*Config.TILE_SCALE)))+")");
+
                         entityMapTiles[((i*width) + j) % (height*width)] = testd;
+
+                        //instructions for spawning specific enemies/entities based on the map file info.
                         switch (testint) {
-                            case 1:
+                            case 1: // Goblin Enemy
                                 enemyQueue.add(new GoblinEnemy(new Point(testd.getX(), testd.getY()),
                                  getCurrentGameplayLayer(),
                                  getCurrentGameplayLayer(),
                                 Direction.LEFT));
                                 break;
-                            case 2:
+                            case 2: // Bug Enemy
                                 enemyQueue.add(new BugEnemy(new Point(testd.getX(), testd.getY()),
                                 getCurrentGameplayLayer(),
                                 getCurrentGameplayLayer(),
                                 Direction.LEFT));
                                 break;
-                            case 3:
+                            case 3: // Turret Enemy
                                 enemyQueue.add(new Turret(new Point(testd.getX(), testd.getY()),
                                 getCurrentGameplayLayer(),
                                 getCurrentGameplayLayer(),
                                 Direction.LEFT));
+                                break;
+                            case 4: // Block Mimic Enemy
+                                enemyQueue.add(new BlockMimicEnemy(new Point(testd.getX(), testd.getY()),
+                                getCurrentGameplayLayer(),
+                                getCurrentGameplayLayer(),
+                                Direction.LEFT));
+                                break;
+                            case 5: // Horizontal moving platform
+                            horizontalMovingPlatformStarts.add(new Point(testd.getX(), testd.getY()));
+                                if(!horizontalMovingPlatformEnds.isEmpty()) {
+                                    this.enhancedMapTiles.add(new HorizontalMovingPlatform(ImageLoader.load("GreenPlatform.png"),
+                                    new Point(horizontalMovingPlatformStarts.getLast().x, horizontalMovingPlatformStarts.getLast().y),
+                                    new Point(horizontalMovingPlatformEnds.getLast().x, horizontalMovingPlatformEnds.getLast().y),
+                                    getCurrentGameplayLayer(),
+                                    TileType.JUMP_THROUGH_PLATFORM,
+                                    1.4f,
+                                    new Rectangle(0, 6,16,4),
+                                    Direction.RIGHT));
+                                    horizontalMovingPlatformEnds.removeLast();
+                                    horizontalMovingPlatformStarts.removeLast();
+                                    testNumOfPlatformsMapedit++;
+                                    currentPlatformIndex++;
+                                    
+                                }
+                                break;
+                            case 6: // Horizontal moving platform end
+                                horizontalMovingPlatformEnds.add(new Point(testd.getX(), testd.getY()));
+                                if(!horizontalMovingPlatformStarts.isEmpty()) {
+                                    this.enhancedMapTiles.add(new HorizontalMovingPlatform(ImageLoader.load("GreenPlatform.png"),
+                                    new Point(horizontalMovingPlatformStarts.getLast().x, horizontalMovingPlatformStarts.getLast().y),
+                                    new Point(horizontalMovingPlatformEnds.getLast().x, horizontalMovingPlatformEnds.getLast().y),
+                                    getCurrentGameplayLayer(),
+                                    TileType.JUMP_THROUGH_PLATFORM,
+                                    1.4f,
+                                    new Rectangle(0, 6,16,4),
+                                    Direction.LEFT));
+                                    horizontalMovingPlatformEnds.removeLast();
+                                    horizontalMovingPlatformStarts.removeLast();
+                                    testNumOfPlatformsMapedit++;
+                                    currentPlatformIndex++;
+                                }
+                                break;
+                            case 7: // Coin 
+                                this.enhancedMapTiles.add(new Coin(new Point(testd.getX(), testd.getY()),
+                                getCurrentGameplayLayer()));
+                                break;
+                            case 8: // EndBox 
+                                this.enhancedMapTiles.add(new EndLevelBox(new Point(testd.getX(), testd.getY())));
                                 break;
                             default:
                                 throw new AssertionError();
@@ -524,6 +590,7 @@ public abstract class Map {
             adjustMovementX(player);
         }
         camera.update(player);
+        //System.err.println("edit : " + testNumOfPlatformsMapedit);
     }
     
 

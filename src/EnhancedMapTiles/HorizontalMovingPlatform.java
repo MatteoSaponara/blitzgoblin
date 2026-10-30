@@ -21,6 +21,14 @@ public class HorizontalMovingPlatform extends EnhancedMapTile {
     private Direction startDirection;
     private Direction direction;
 
+    public HorizontalMovingPlatform(BufferedImage image, Point startLocation, Point endLocation, int numLayerIN, TileType tileType, float scale, Rectangle bounds, Direction startDirection) {
+        super(startLocation.x, startLocation.y, numLayerIN, new FrameBuilder(image).withBounds(bounds).withScale(scale).build(), tileType);
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
+        this.startDirection = startDirection;
+        this.numLayer = numLayerIN;
+        this.initialize();
+    }
     public HorizontalMovingPlatform(BufferedImage image, Point startLocation, Point endLocation, TileType tileType, float scale, Rectangle bounds, Direction startDirection) {
         super(startLocation.x, startLocation.y, new FrameBuilder(image).withBounds(bounds).withScale(scale).build(), tileType);
         this.startLocation = startLocation;
@@ -61,16 +69,36 @@ public class HorizontalMovingPlatform extends EnhancedMapTile {
         // if platform reaches the start or end location, it turns around
         // platform may end up going a bit past the start or end location depending on movement speed
         // this calculates the difference and pushes the platform back a bit so it ends up right on the start or end location
-        if (getX1() + getWidth() >= endBound) {
-            float difference = endBound - (getX1() + getWidth());
-            moveX(-difference);
-            moveAmountX -= difference;
-            direction = Direction.LEFT;
-        } else if (getX1() <= startBound) {
-            float difference = startBound - getX1();
-            moveX(difference);
-            moveAmountX += difference;
-            direction = Direction.RIGHT;
+        if(startBound < endBound){
+            //System.err.println("my startbound is smaller than my end bound: startBound= "
+            //+startBound+". endBound= "+endBound);
+            if (getX1() + getWidth() >= endBound) {
+                float difference = (getX1() + getWidth())-endBound;
+                moveX(-difference);
+                moveAmountX -= difference;
+                direction = Direction.LEFT;
+            } else if (getX1() <= startBound) {
+                float difference = startBound - getX1();
+                moveX(difference);
+                moveAmountX += difference;
+                direction = Direction.RIGHT;
+            }
+        }
+        else{
+            //System.err.println("my startbound is larger than my end bound: startBound= "
+            //+startBound+". endBound= "+endBound);
+            if (getX1() + getWidth() >= startBound) {
+                float difference = (getX1() + getWidth()) - startBound;
+                moveX(-difference);
+                moveAmountX -= difference;
+                direction = Direction.LEFT;
+            }
+                else if (getX1() <= endBound) {
+                float difference =  endBound - (getX1());
+                moveX(difference);
+                moveAmountX += difference;
+                direction = Direction.RIGHT;
+            }
         }
 
         // if tile type is NOT PASSABLE, if the platform is moving and hits into the player (x axis), it will push the player
