@@ -17,6 +17,7 @@ public class MapTile extends MapEntity {
         sharedEdgeDraw = true;
     }
 
+
     public MapTile(float x, float y, HashMap<String, Frame[]> animations, TileType tileType, int tileIndex) {
         super(x, y, animations, "DEFAULT");
         this.tileType = tileType;
@@ -36,12 +37,20 @@ public class MapTile extends MapEntity {
         super(x, y, spriteSheet, "DEFAULT");
         this.tileType = tileType;
     }
-
+     public MapTile(float x, float y, int numLayerIN, HashMap<String, Frame[]> animations, TileType tileType) {
+        super(x, y, numLayerIN, numLayerIN, animations, "DEFAULT");
+        this.tileType = tileType;
+        this.tileIndex = tileIndex;
+    }
     public MapTile(float x, float y, Frame[] frames, TileType tileType) {
         super(x, y, frames);
         this.tileType = tileType;
     }
-
+    public MapTile(float x, float y, int numLayerIN, Frame frame, TileType tileType) {
+        super(x, y, frame);
+        numLayer = numLayerIN;
+        this.tileType = tileType;
+    }
     public MapTile(float x, float y, Frame frame, TileType tileType) {
         super(x, y, frame);
         this.tileType = tileType;

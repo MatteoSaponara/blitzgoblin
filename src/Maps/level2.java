@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 
 public class level2 extends Map {
+    public static int startingGameplayLayer = 0; //set to layer you want gameplay to start in on load
 
     public level2() {
         super("level2.txt", new CommonTileset());
@@ -53,18 +54,10 @@ public class level2 extends Map {
         Turret turretEnemy4 = new Turret(getMapTile(56, 8).getLocation().addY(2), Direction.RIGHT);
         enemies.add(turretEnemy4);
 
-
-        GoblinEnemy goblinEnemy0 = new GoblinEnemy(getMapTile(13, 16).getLocation().addY(2), Direction.RIGHT);
-        enemies.add(goblinEnemy0);  
-
-        GoblinEnemy goblinEnemy1 = new GoblinEnemy(getMapTile(17, 24).getLocation().addY(2), Direction.RIGHT);
-        enemies.add(goblinEnemy1);
-
-        GoblinEnemy goblinEnemy2 = new GoblinEnemy(getMapTile(47, 4).getLocation().addY(2), Direction.LEFT);
-        enemies.add(goblinEnemy2);
-        
-        GoblinEnemy goblinEnemy3 = new GoblinEnemy(getMapTile(28, 16).getLocation().addY(2), Direction.LEFT);
-        enemies.add(goblinEnemy3);
+        enemies.add(spawnEnemy(GoblinEnemy.class, 13, 16, Direction.RIGHT));
+        enemies.add(spawnEnemy(GoblinEnemy.class, 17, 24, Direction.RIGHT));
+        enemies.add(spawnEnemy(GoblinEnemy.class, 47, 4, Direction.LEFT));
+        enemies.add(spawnEnemy(GoblinEnemy.class, 28, 16, Direction.LEFT));
 
         
         CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(59, 9).getLocation(), Direction.LEFT);

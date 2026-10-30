@@ -8,6 +8,9 @@ import java.util.HashMap;
 // This class is a base class for all enhanced map tiles in the game -- all enhanced map tiles should extend from it
 public class EnhancedMapTile extends MapTile {
 
+    public EnhancedMapTile(float x, float y, int numLayerIN, HashMap<String, Frame[]> animations, TileType tileType) {
+        super(x, y, numLayerIN, animations, tileType);
+    }
     public EnhancedMapTile(float x, float y, HashMap<String, Frame[]> animations, TileType tileType) {
         super(x, y, animations, tileType);
     }
@@ -19,7 +22,9 @@ public class EnhancedMapTile extends MapTile {
     public EnhancedMapTile(float x, float y, Frame[] frames, TileType tileType) {
         super(x, y, frames, tileType);
     }
-
+    public EnhancedMapTile(float x, float y, int numLayerIN, Frame frame, TileType tileType) {
+        super(x, y, numLayerIN, frame, tileType);
+    }
     public EnhancedMapTile(float x, float y, Frame frame, TileType tileType) {
         super(x, y, frame, tileType);
     }
