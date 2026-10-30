@@ -42,6 +42,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         // setup player
         this.heartImage = ImageLoader.load("HeartGB2.png");
         this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y, false);
+        this.player.setCoins(screenCoordinator.getCoinsCollected());
         this.player.setMap(map);
         map.centerCameraOnPlayer(player);
         this.player.addListener(this);
@@ -73,7 +74,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     levelClearedScreen.update();
                     screenTimer--;
                     if (screenTimer <= 0) {
-                        screenCoordinator.advanceLevel();
+                        screenCoordinator.advanceLevel(player.getCoins());
 					}
 				}
                     
@@ -104,7 +105,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 }
 
                 for (int i = 0; i < player.getHealth(); i++) {
-                    graphicsHandler.drawImage(heartImage, 10 + (i * 40), 10, 60, 60);
+                    graphicsHandler.drawImage(heartImage, 10 + (i * 40), 10, 42, 42);
                 }
 
                 graphicsHandler.drawString("Coins: " + player.getCoins(), 160, 55, new Font(Engine.Config.DEFAULT_FONT, Font.PLAIN, 40), Color.WHITE);

@@ -24,12 +24,24 @@ public class ScreenCoordinator extends Screen {
 	protected GameState gameState;
 	protected GameState previousGameState;
 	protected int currentLevel = 0;
+	protected int coinsCollected = 0;
 
 	public GameState getGameState() {
 		return gameState;
 	}
 	
-	public void advanceLevel() {
+	public int getCoinsCollected() {
+		return coinsCollected;
+	}
+
+	public void startNewGame(GameState gameState) {
+		currentLevel = 0;
+		coinsCollected = 0;
+		setGameState(gameState);
+	}
+
+	public void advanceLevel(int coinsCollected) {
+		this.coinsCollected = coinsCollected;
 		currentLevel++;
 		if (currentLevel == 1) {
 			setGameState(GameState.LEVEL1);

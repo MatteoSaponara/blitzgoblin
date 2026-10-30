@@ -812,6 +812,11 @@ public abstract class Player extends GameObject
 		return coins;
 	}
 
+    public void setCoins(int coins)
+    {
+        this.coins = coins;
+    }
+
 
 
     public PlayerState getPlayerState()
