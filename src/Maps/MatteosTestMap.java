@@ -1,6 +1,5 @@
 package Maps;
 
-import Enemies.GoblinEnemy;
 import Enemies.Turret;
 import Engine.ImageLoader;
 import EnhancedMapTiles.EndLevelBox;
@@ -29,8 +28,8 @@ public class MatteosTestMap extends Map{
         //BugEnemy bugEnemy = new BugEnemy(getMapTile(16, 10).getLocation().subtractY(25), Direction.LEFT);
         //enemies.add(bugEnemy);
 
-        GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(16, 10).getLocation().subtractY(25), this.getCurrentGameplayLayer(), Direction.LEFT);
-        enemies.add(goblinEnemy);
+        //GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(16, 10).getLocation().subtractY(25), this.getCurrentGameplayLayer(), Direction.LEFT);
+        //enemies.add(goblinEnemy);
 
         //DinosaurEnemy dinosaurEnemy = new DinosaurEnemy(getMapTile(19, 1).getLocation().addY(2), getMapTile(22, 1).getLocation().addY(2), Direction.RIGHT);
         //enemies.add(dinosaurEnemy);
@@ -49,7 +48,7 @@ public class MatteosTestMap extends Map{
                 getMapTile(24, 6).getLocation(),
                 getMapTile(27, 6).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.RIGHT
         );

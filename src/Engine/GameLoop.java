@@ -1,5 +1,7 @@
 package Engine;
 
+import java.util.concurrent.locks.LockSupport;
+
 public class GameLoop {
     private GamePanel gamePanel;
 
@@ -30,8 +32,6 @@ public class GameLoop {
 
                 long previousTime = System.nanoTime();
                 double delta = 0;
-                int frames = 0;
-                double lastCycleTime = System.currentTimeMillis();
                 boolean running = true;
 
                 while (running) {
@@ -43,14 +43,7 @@ public class GameLoop {
                         gamePanel.update();
                         gamePanel.setDoPaint(true);
                         gamePanel.repaint();
-                        frames++;
                         delta--;
-
-                        if (System.currentTimeMillis() - lastCycleTime >= 1000) {
-                            gamePanel.setCurrentFPS(frames);
-                            lastCycleTime += 1000;
-                            frames = 0;
-                        }
                     }
                 }
             }
@@ -64,58 +57,37 @@ public class GameLoop {
             @Override
             public void run() {
                 // UPS and FPS are tied together for engine simplicity
-                final double TIME_BETWEEN_UPDATES = 1000000000 / (double)Config.TARGET_FPS;
-                final double TARGET_TIME_BETWEEN_RENDERS = 1000000000 / (double)Config.TARGET_FPS;
+                final long TIME_BETWEEN_UPDATES = 1000000000L / Config.TARGET_FPS;
 
                 final int MAX_UPDATES_BEFORE_RENDER = 5;
-                double lastUpdateTime = System.nanoTime();
-                double lastRenderTime = System.nanoTime();
+                long nextUpdateTime = System.nanoTime();
 
-                int lastSecondTime = (int)(lastUpdateTime / 1000000000);
-
-                boolean running = true;
-                int frames = 0;
-
-                while (running)
+                while (!Thread.currentThread().isInterrupted())
                 {
-                    double now = System.nanoTime();
+                    long now = System.nanoTime();
                     int updateCount = 0;
 
                     //Do as many game updates as we need to, potentially playing catchup.
-                    while(now - lastUpdateTime > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_RENDER) {
+                    while(now >= nextUpdateTime && updateCount < MAX_UPDATES_BEFORE_RENDER) {
                         gamePanel.update();
                         gamePanel.setDoPaint(true);
-                        lastUpdateTime += TIME_BETWEEN_UPDATES;
+                        nextUpdateTime += TIME_BETWEEN_UPDATES;
                         updateCount++;
+                        now = System.nanoTime();
                     }
 
                     // If for some reason an update takes forever, this prevents it from running insane number of catch-ups.
-                    if (now - lastUpdateTime > TIME_BETWEEN_UPDATES) {
-                        lastUpdateTime = now - TIME_BETWEEN_UPDATES;
+                    if (now >= nextUpdateTime) {
+                        nextUpdateTime = now;
                     }
 
-                    frames++;
                     gamePanel.repaint();
-                    lastRenderTime = now;
 
-                    int thisSecond = (int) (lastUpdateTime / 1000000000);
-                    if (thisSecond > lastSecondTime) {
-                        gamePanel.setCurrentFPS(frames);
-                        frames = 0;
-                        lastSecondTime = thisSecond;
-                    }
-
-                    // Yield until it has been at least the target time between renders. This saves the CPU from hogging.
-                    while (now - lastRenderTime < TARGET_TIME_BETWEEN_RENDERS && now - lastUpdateTime < TIME_BETWEEN_UPDATES) {
-                        Thread.yield();
-
-                        // This stops the app from consuming a ton of CPU/using a ton of power.
-                        // Can potentially cause stuttering if the game is trying to do too many things for the computer running this app to handle
-                        try {
-                            Thread.sleep(1);
-                        } catch(Exception e) {}
-
-                        now = System.nanoTime();
+                    // Sleep to the next tick deadline without repeated 1 ms sleeps adding frame-time jitter.
+                    long timeUntilNextUpdate;
+                    while (!Thread.currentThread().isInterrupted()
+                            && (timeUntilNextUpdate = nextUpdateTime - System.nanoTime()) > 0) {
+                        LockSupport.parkNanos(timeUntilNextUpdate);
                     }
                 }
             }

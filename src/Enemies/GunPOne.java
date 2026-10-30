@@ -6,6 +6,7 @@ import Engine.Mouse;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
 import Interfaces.IDamagable;
+import Interfaces.IArmored;
 import Level.Enemy;
 import Level.MapEntity;
 import Level.MapEntityStatus;
@@ -59,7 +60,7 @@ public class GunPOne extends Enemy {
             if (enemy != this &&
                     enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE && this.intersects(enemy)) {
 				
-                if (enemy instanceof IDamagable) {
+                if (enemy instanceof IDamagable && !(enemy instanceof IArmored)) {
                     ((IDamagable) enemy).takeDamage(5);
                     this.mapEntityStatus = MapEntityStatus.REMOVED;
                     return;

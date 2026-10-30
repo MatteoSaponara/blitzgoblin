@@ -6,6 +6,7 @@ import Enemies.GargoyleEnemy;
 import Enemies.GoblinEnemy;
 import Enemies.HeroEnemy;
 import Enemies.Turret;
+import Enemies.BlockMimicEnemy;
 import Engine.ImageLoader;
 import EnhancedMapTiles.*;
 import GameObject.Rectangle;
@@ -45,6 +46,9 @@ public class TestMap extends Map {
         enemies.add(spawnEnemy(CoinMimicEnemy.class, 20, 23, Direction.LEFT));
         enemies.add(spawnEnemy(GargoyleEnemy.class, 13, 20, Direction.LEFT));
         
+
+       BlockMimicEnemy blockMimicEnemy = new BlockMimicEnemy(getMapTile(12, 19).getLocation(), Direction.LEFT);
+       enemies.add(blockMimicEnemy);
         return enemies;
     }
 
@@ -57,7 +61,7 @@ public class TestMap extends Map {
                 getMapTile(30, 5).getLocation(),
                 getMapTile(33, 5).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3, 
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.LEFT
         );
@@ -66,7 +70,7 @@ public class TestMap extends Map {
                 getMapTile(34, 5).getLocation(),
                 getMapTile(37, 5).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.LEFT
         );
@@ -75,7 +79,7 @@ public class TestMap extends Map {
                 getMapTile(42, 3).getLocation(),
                 getMapTile(46, 3).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.LEFT
         );
@@ -85,7 +89,7 @@ public class TestMap extends Map {
                 getMapTile(47, 9).getLocation(),
                 2f,
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.RIGHT
         );
@@ -94,7 +98,7 @@ public class TestMap extends Map {
                 getMapTile(49, 20).getLocation(),
                 getMapTile(54, 20).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.RIGHT
         );
@@ -104,7 +108,7 @@ public class TestMap extends Map {
                 getMapTile(49, 17).getLocation(),
                 getMapTile(54, 17).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.LEFT
         );

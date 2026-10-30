@@ -3,6 +3,7 @@ package Screens;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
 import Engine.Screen;
+import Engine.GamePanel;
 import Game.GameState;
 import Game.ScreenCoordinator;
 import Level.Map;
@@ -40,6 +41,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.heartImage = ImageLoader.load("HeartGB2.png");
         this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y, false);
         this.player.setMap(map);
+        map.centerCameraOnPlayer(player);
         this.player.addListener(this);
 
         levelClearedScreen = new LevelClearedScreen();
@@ -95,6 +97,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                         graphicsHandler.drawImage(ImageLoader.load("gunuireload.png"), 27, 80, 55, 25);
                 }
                 map.draw(graphicsHandler, true);
+
+                if (GamePanel.isHitboxesEnabled()) {
+                    map.drawDebugHitboxes(graphicsHandler, player);
+                }
 
                 for (int i = 0; i < player.getHealth(); i++) {
                     graphicsHandler.drawImage(heartImage, 10 + (i * 40), 10, 60, 60);

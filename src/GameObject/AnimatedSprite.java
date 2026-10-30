@@ -238,9 +238,29 @@ public class AnimatedSprite implements IntersectableRectangle {
 	    return currentFrame.getIntersectRectangle();
     }
 
-    public boolean intersects(IntersectableRectangle other) {
-        return currentFrame.intersects(other);
-    }
+	@Override
+	public float getIntersectX1() {
+	    return currentFrame.getIntersectX1();
+	}
+
+	@Override
+	public float getIntersectY1() {
+	    return currentFrame.getIntersectY1();
+	}
+
+	@Override
+	public float getIntersectX2() {
+	    return currentFrame.getIntersectX2();
+	}
+
+	@Override
+	public float getIntersectY2() {
+	    return currentFrame.getIntersectY2();
+	}
+
+	public boolean intersects(IntersectableRectangle other) {
+	    return currentFrame.intersects(other);
+	}
 
 	public boolean touching(IntersectableRectangle other) { return currentFrame.touching(other); }
 

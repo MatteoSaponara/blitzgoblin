@@ -85,6 +85,8 @@ public abstract class Map {
     protected int currentGameplayLayer = 0;
 
     public Color mapBackgroundColor = new Color(44, 17, 61);
+    
+    private static final float CAMERA_FOLLOW_SMOOTHING = 0.2f;
     // map tiles in map that are animated
     protected ArrayList<MapTile> animatedMapTiles;
 
@@ -505,6 +507,17 @@ public abstract class Map {
         this.adjustCamera = adjustCamera;
     }
 
+    public void centerCameraOnPlayer(Player player) {
+        float cameraX = player.getX() + player.getWidth() / 2f - xMidPoint;
+        float cameraY = player.getY() + player.getHeight() / 2f - yMidPoint;
+        float maxCameraX = Math.max(startBoundX, endBoundX - camera.getEndBoundX());
+        float maxCameraY = Math.max(startBoundY, endBoundY - camera.getEndBoundY());
+
+        camera.setLocation(
+                Math.max(startBoundX, Math.min(cameraX, maxCameraX)),
+                Math.max(startBoundY, Math.min(cameraY, maxCameraY)));
+    }
+
     public void update(Player player) {
         if (adjustCamera) {
             adjustMovementY(player);
@@ -520,7 +533,7 @@ public abstract class Map {
         // if player goes past center screen (on the right side) and there is more map to show on the right side, push player back to center and move camera forward
         if ((player.getCalibratedXLocation() + (player.getWidth() / 2)) > xMidPoint && camera.getEndBoundX() < endBoundX) {
             float xMidPointDifference = xMidPoint - (player.getCalibratedXLocation() + (player.getWidth() / 2));
-            camera.moveX(-xMidPointDifference);
+            camera.moveX(-xMidPointDifference * CAMERA_FOLLOW_SMOOTHING);
 
             // if camera moved past the right edge of the map as a result from the move above, move camera back and push player forward
             if (camera.getEndBoundX() > endBoundX) {
@@ -531,7 +544,7 @@ public abstract class Map {
         // if player goes past center screen (on the left side) and there is more map to show on the left side, push player back to center and move camera backwards
         else if ((player.getCalibratedXLocation() + (player.getWidth() / 2)) < xMidPoint && camera.getX() > startBoundX) {
             float xMidPointDifference = xMidPoint - (player.getCalibratedXLocation() + (player.getWidth() / 2));
-            camera.moveX(-xMidPointDifference);
+            camera.moveX(-xMidPointDifference * CAMERA_FOLLOW_SMOOTHING);
 
             // if camera moved past the left edge of the map as a result from the move above, move camera back and push player backward
             if (camera.getX() < startBoundX) {
@@ -547,7 +560,7 @@ public abstract class Map {
         // if player goes past center screen (below) and there is more map to show below, push player back to center and move camera upward
         if ((player.getCalibratedYLocation() + (player.getHeight() / 2)) > yMidPoint && camera.getEndBoundY() < endBoundY) {
             float yMidPointDifference = yMidPoint - (player.getCalibratedYLocation() + (player.getHeight() / 2));
-            camera.moveY(-yMidPointDifference);
+            camera.moveY(-yMidPointDifference * CAMERA_FOLLOW_SMOOTHING);
 
             // if camera moved past the bottom of the map as a result from the move above, move camera upwards and push player downwards
             if (camera.getEndBoundY() > endBoundY) {
@@ -558,7 +571,7 @@ public abstract class Map {
         // if player goes past center screen (above) and there is more map to show above, push player back to center and move camera upwards
         else if ((player.getCalibratedYLocation() + (player.getHeight() / 2)) < yMidPoint && camera.getY() > startBoundY) {
             float yMidPointDifference = yMidPoint - (player.getCalibratedYLocation() + (player.getHeight() / 2));
-            camera.moveY(-yMidPointDifference);
+            camera.moveY(-yMidPointDifference * CAMERA_FOLLOW_SMOOTHING);
 
             // if camera moved past the top of the map as a result from the move above, move camera downwards and push player upwards
             if (camera.getY() < startBoundY) {
@@ -577,6 +590,10 @@ public abstract class Map {
     }
     public void draw(GraphicsHandler graphicsHandler, boolean renderAboveGameplay) {
         camera.draw(graphicsHandler, renderAboveGameplay);
+    }
+
+    public void drawDebugHitboxes(GraphicsHandler graphicsHandler, Player player) {
+        camera.drawDebugHitboxes(graphicsHandler, player);
     }
 
     public int getEndBoundX() { return endBoundX; }

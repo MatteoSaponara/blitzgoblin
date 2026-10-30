@@ -47,6 +47,7 @@ public class Cat extends Player {
         walkSpeed = 2.61f; //Top speed (units per frame); raise this to walk faster
         drag = 0.81f; //Acceleration decrease calculation factor.
         airDrag = 0.92f;
+
         acceleration = walkSpeed * (1 - drag) / drag; //Rate of acceleration per frame, derived so walkSpeed is actually reached
 
 
