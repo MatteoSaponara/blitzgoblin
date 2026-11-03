@@ -22,7 +22,7 @@ public class Cat extends Player {
     public static float SPRITE_SCALE = 1.4f;
 
     // hurtbox used for every animation frame, in unscaled spritesheet pixel coordinates
-    private static final int BOUNDS_X = 12;
+    private static final int BOUNDS_X = 19;
     private static final int BOUNDS_Y = 6;
     private static final int BOUNDS_WIDTH = 33;
     private static final int BOUNDS_HEIGHT = 44;
