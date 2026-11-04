@@ -51,6 +51,10 @@ public class MapTile extends MapEntity {
         return tileIndex;
     }
 
+    public void setTileType(TileType tileType) {
+        this.tileType = tileType;
+    }
+
     // determines if tile is animated or not
     public boolean isAnimated() {
         return getCurrentAnimation().length > 1;
