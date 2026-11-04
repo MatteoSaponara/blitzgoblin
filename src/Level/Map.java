@@ -3,6 +3,7 @@ package Level;
 import Engine.Config;
 import Engine.GraphicsHandler;
 import Engine.ScreenManager;
+import GameObject.PhysicsParticle;
 import Utils.Point;
 
 import java.io.File;
@@ -55,6 +56,7 @@ public abstract class Map {
     protected ArrayList<Enemy> enemies;
     protected ArrayList<EnhancedMapTile> enhancedMapTiles;
     protected ArrayList<NPC> npcs;
+    private ArrayList<PhysicsParticle> particles;
 
     // if set to false, camera will not move as player moves
     protected boolean adjustCamera = true;
@@ -82,6 +84,7 @@ public abstract class Map {
     // and instantiates a Camera
     public void setupMap() {
         this.animatedMapTiles = new ArrayList<>();
+        this.particles = new ArrayList<>();
 
         loadMapFile();
 
@@ -313,6 +316,10 @@ public abstract class Map {
         this.enemies.add(enemy);
     }
 
+    public void addParticle(PhysicsParticle particle) {
+        particles.add(particle);
+    }
+
     // add an enhanced map tile to the map's list of enhanced map tiles
     public void addEnhancedMapTile(EnhancedMapTile enhancedMapTile) {
         enhancedMapTile.setMap(this);
@@ -346,6 +353,10 @@ public abstract class Map {
             adjustMovementX(player);
         }
         camera.update(player);
+        for (PhysicsParticle particle : particles) {
+            particle.update();
+        }
+        particles.removeIf(particle -> !particle.isAlive());
     }
     
 
@@ -409,6 +420,9 @@ public abstract class Map {
 
     public void draw(GraphicsHandler graphicsHandler) {
         camera.draw(graphicsHandler);
+        for (PhysicsParticle particle : particles) {
+            particle.draw(graphicsHandler, camera.getX(), camera.getY());
+        }
     }
 
     public void drawDebugHitboxes(GraphicsHandler graphicsHandler, Player player) {

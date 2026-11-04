@@ -173,7 +173,7 @@ public class MenuScreen extends Screen {
         }
 
         if (currentMenuItemHovered == 0) {
-            screenCoordinator.setGameState(GameState.LEVEL);
+            screenCoordinator.startNewGame(GameState.LEVEL);
         } else if (currentMenuItemHovered == 1) {
             screenCoordinator.setGameState(GameState.HOW_TO_PLAY);
         } else if (currentMenuItemHovered == 2) {

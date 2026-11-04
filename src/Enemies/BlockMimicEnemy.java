@@ -118,6 +118,7 @@ public class BlockMimicEnemy extends Enemy implements IDamagable {
     }
 
     public void die() {
+        spawnDeathParticles();
         this.mapEntityStatus = MapEntityStatus.REMOVED;
         getMap().addEnemy(new DeathAnimEnemies(new Point(getX(), getY()), "DeathAnimationEnemies.png", 32, 32, 4, 8, 1.4f));
     }

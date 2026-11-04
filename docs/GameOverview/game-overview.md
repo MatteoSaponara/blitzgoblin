@@ -44,6 +44,7 @@ The menu screen can be navigated using the arrow keys, and an option can be sele
 
 The player character (cat) can walk left and right using the left and right arrow keys.
 Pressing the up arrow key causes the player to jump, and pressing the down arrow key causes the player to duck. 
+For debugging, press V to toggle noclip flight. While enabled, use A/D or the left/right arrows to fly horizontally, and W/S or the up/down arrows to fly vertically.
 Note that depending on the type of keyboard your computer has, you may be limited to how many keys you can press at the same time.
 If you find yourself being unable to jump when multiple other arrow keys are pressed at once, it is likely a keyboard problem, not a coding/Java problem.
 
@@ -91,6 +92,5 @@ In Game Screens (the player character is the adorable cat!)
 
 Example of traversing through level.
 ![playing-level.gif](../assets/images/playing-level.gif)
-
 
 

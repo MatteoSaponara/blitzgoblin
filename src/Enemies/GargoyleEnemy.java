@@ -17,10 +17,10 @@ import Utils.Point;
 import java.util.HashMap;
 
 public class GargoyleEnemy extends Enemy implements IDamagable {
-    private float flySpeed = 1.5f; //Speed of the Gargoyle when the player is in its aggro range
+    private float flySpeed = 3f; //Speed of the Gargoyle when the player is in its aggro range
     private Direction startFacingDirection;
     private Direction facingDirection;
-    private float aggroRadius = 280f; // 35 x 35 pixels is the size of a tile, so 280 pixels is about 8 tiles away from the player
+    private float aggroRadius = 315f; // 35 x 35 pixels is the size of a tile, so 280 pixels is about 8 tiles away from the player
     private boolean chasing = false;
     private int health = 3;
 
@@ -71,9 +71,10 @@ public class GargoyleEnemy extends Enemy implements IDamagable {
             }
         }
 
-        // move bug
-        moveYHandleCollision(moveAmountY);
-        moveXHandleCollision(moveAmountX);
+        //moveYHandleCollision(moveAmountY);
+        //moveXHandleCollision(moveAmountX);
+        moveX(moveAmountX);
+        moveY(moveAmountY);
 
         super.update(player);
     }
@@ -112,6 +113,7 @@ public class GargoyleEnemy extends Enemy implements IDamagable {
     }
 
     public void die() {
+        spawnDeathParticles();
         this.mapEntityStatus = MapEntityStatus.REMOVED;
         getMap().addEnemy(new DeathAnimEnemies(new Point(getX(), getY()), "DeathAnimationEnemies.png", 32, 32, 4, 8, 1.4f));
     }

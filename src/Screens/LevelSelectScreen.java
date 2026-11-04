@@ -104,9 +104,9 @@ public class LevelSelectScreen extends Screen {
             if (menuItemSelected == 0) {
                 screenCoordinator.setGameState(GameState.MENU);
             } else if (menuItemSelected == 1) {
-                screenCoordinator.setGameState(GameState.LEVEL);
+                screenCoordinator.startNewGame(GameState.LEVEL);
 			} else if (menuItemSelected == 2) {
-                screenCoordinator.setGameState(GameState.LEVEL1);
+                screenCoordinator.startNewGame(GameState.LEVEL1);
 			}
 		}
                 

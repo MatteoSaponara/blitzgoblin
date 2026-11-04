@@ -75,7 +75,7 @@ public class TestMap extends Map {
                 getMapTile(30, 5).getLocation(),
                 getMapTile(33, 5).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3, 
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.LEFT
         );
@@ -84,7 +84,7 @@ public class TestMap extends Map {
                 getMapTile(34, 5).getLocation(),
                 getMapTile(37, 5).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.LEFT
         );
@@ -93,7 +93,7 @@ public class TestMap extends Map {
                 getMapTile(42, 3).getLocation(),
                 getMapTile(46, 3).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.LEFT
         );
@@ -103,7 +103,7 @@ public class TestMap extends Map {
                 getMapTile(47, 9).getLocation(),
                 2f,
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.RIGHT
         );
@@ -112,7 +112,7 @@ public class TestMap extends Map {
                 getMapTile(49, 20).getLocation(),
                 getMapTile(54, 20).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.RIGHT
         );
@@ -122,7 +122,7 @@ public class TestMap extends Map {
                 getMapTile(49, 17).getLocation(),
                 getMapTile(54, 17).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
-                3,
+                1.4f,
                 new Rectangle(0, 6,16,4),
                 Direction.LEFT
         );

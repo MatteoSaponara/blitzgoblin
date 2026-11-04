@@ -19,10 +19,27 @@ import java.awt.image.BufferedImage;
 
 // This class is for when the platformer game is actually being played
 public class PlayLevelScreen extends Screen implements PlayerListener {
+    private static final int HEART_FRAME_SIZE = 30;
+    private static final int HEART_FRAME_COUNT = 3;
+    private static final float HEART_SCALE = 1.4f;
+    private static final int HEART_DISPLAY_SIZE = Math.round(HEART_FRAME_SIZE * HEART_SCALE);
+    private static final int HEART_FRAME_DURATION = 8;
+    private static final int HEART_LAST_FRAME_PAUSE = 30;
+    private static final int HEART_STAGGER_DELAY = 4;
+    private static final int COIN_FRAME_SIZE = 26;
+    private static final int COIN_FRAME_HEIGHT = 30;
+    private static final int COIN_FRAME_COUNT = 8;
+    private static final int COIN_FRAME_DURATION = 11;
+    private static final int COIN_DISPLAY_WIDTH = Math.round(COIN_FRAME_SIZE * HEART_SCALE);
+    private static final int COIN_DISPLAY_HEIGHT = Math.round(COIN_FRAME_HEIGHT * HEART_SCALE);
+
     protected ScreenCoordinator screenCoordinator;
     protected Map map;
     protected Player player;
-    protected BufferedImage heartImage;
+    protected BufferedImage[] heartFrames;
+    private BufferedImage[] coinFrames;
+    private long heartAnimationTicks;
+    private long coinAnimationTicks;
     protected BufferedImage testImage;
     protected PlayLevelScreenState playLevelScreenState;
     protected int screenTimer;
@@ -40,8 +57,20 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         //this.map = new TestMap();
 
         // setup player
-        this.heartImage = ImageLoader.load("HeartGB2.png");
+        this.heartFrames = new BufferedImage[HEART_FRAME_COUNT];
+        for (int frame = 0; frame < HEART_FRAME_COUNT; frame++) {
+            this.heartFrames[frame] = ImageLoader.loadSubImage(
+                    "heart.png", frame * (HEART_FRAME_SIZE + 1), 0, HEART_FRAME_SIZE, HEART_FRAME_SIZE);
+        }
+        this.coinFrames = new BufferedImage[COIN_FRAME_COUNT];
+        for (int frame = 0; frame < COIN_FRAME_COUNT; frame++) {
+            this.coinFrames[frame] = ImageLoader.loadSubImage(
+                    "hudcoin.png", frame * (COIN_FRAME_SIZE + 1), 0, COIN_FRAME_SIZE, COIN_FRAME_HEIGHT);
+        }
+        this.heartAnimationTicks = 0;
+        this.coinAnimationTicks = 0;
         this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y, false);
+        this.player.setCoins(screenCoordinator.getCoinsCollected());
         this.player.setMap(map);
         map.centerCameraOnPlayer(player);
         this.player.addListener(this);
@@ -57,6 +86,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         switch (playLevelScreenState) {
             // if level is "running" update player and map to keep game logic for the platformer level going
             case RUNNING:
+                updateHudAnimations();
                 player.update();
                 map.update(player);
                 if(player.hasShotgun())
@@ -73,7 +103,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     levelClearedScreen.update();
                     screenTimer--;
                     if (screenTimer <= 0) {
-                        screenCoordinator.advanceLevel();
+                        screenCoordinator.advanceLevel(player.getCoins());
 					}
 				}
                     
@@ -85,6 +115,30 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         }
     }
 
+    private void updateHudAnimations() {
+        heartAnimationTicks++;
+        coinAnimationTicks++;
+    }
+
+    private int getHeartAnimationFrame(int heartIndex) {
+        long heartAge = Math.max(0L, heartAnimationTicks - (long) heartIndex * HEART_STAGGER_DELAY);
+        int cycleDuration = HEART_FRAME_DURATION * (HEART_FRAME_COUNT - 1) + HEART_LAST_FRAME_PAUSE
+                + HEART_FRAME_DURATION;
+        int cyclePosition = (int) (heartAge % cycleDuration);
+
+        if (cyclePosition < HEART_FRAME_DURATION) {
+            return 0;
+        }
+        if (cyclePosition < HEART_FRAME_DURATION * 2) {
+            return 1;
+        }
+        return HEART_FRAME_COUNT - 1;
+    }
+
+    private int getCoinAnimationFrame() {
+        return (int) ((coinAnimationTicks / COIN_FRAME_DURATION) % COIN_FRAME_COUNT);
+    }
+
     public void draw(GraphicsHandler graphicsHandler) {
         // based on screen state, draw appropriate graphics
         switch (playLevelScreenState) {
@@ -94,9 +148,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 if(player.getShotgun() != null) { 
                     player.getShotgun().draw(graphicsHandler);
                     if(player.playerCanShootShotgun())
-                        graphicsHandler.drawImage(ImageLoader.load("gunui.png"), 27, 80, 55, 25);
+                        graphicsHandler.drawImage(ImageLoader.load("gunui.png"), 27, 100, 55, 25);
                     else
-                        graphicsHandler.drawImage(ImageLoader.load("gunuireload.png"), 27, 80, 55, 25);
+                        graphicsHandler.drawImage(ImageLoader.load("gunuireload.png"), 27, 100, 55, 25);
                 }
 
                 if (GamePanel.isHitboxesEnabled()) {
@@ -104,10 +158,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 }
 
                 for (int i = 0; i < player.getHealth(); i++) {
-                    graphicsHandler.drawImage(heartImage, 10 + (i * 40), 10, 60, 60);
+                    graphicsHandler.drawImage(heartFrames[getHeartAnimationFrame(i)], 10 + (i * 40), 10,
+                            HEART_DISPLAY_SIZE, HEART_DISPLAY_SIZE);
                 }
 
-                graphicsHandler.drawString("Coins: " + player.getCoins(), 160, 55, new Font(Engine.Config.DEFAULT_FONT, Font.PLAIN, 40), Color.WHITE);
+                graphicsHandler.drawImage(coinFrames[getCoinAnimationFrame()], 10, 56,
+                        COIN_DISPLAY_WIDTH, COIN_DISPLAY_HEIGHT);
+                graphicsHandler.drawString(Integer.toString(player.getCoins()), 52, 83,
+                        new Font(Engine.Config.DEFAULT_FONT, Font.PLAIN, 32), Color.WHITE);
 
                 break;
             case LEVEL_COMPLETED:
