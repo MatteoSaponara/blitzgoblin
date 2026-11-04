@@ -1,0 +1,69 @@
+import Builders.FrameBuilder;
+import Engine.ImageLoader;
+import GameObject.Frame;
+import GameObject.SpriteSheet;
+import Level.Enemy;
+import Level.MapEntity;
+import Level.MapEntityStatus;
+import Level.Player;
+import Utils.Direction;
+import Utils.Point;
+import Interfaces.IDamagable;
+
+public class Statlactite extends Enemy{
+    private Point startLocation;
+    private boolean falling = false;
+    private float fallSpeed += 1f;
+
+    public Statlactite(Point startLocation) {
+        // sprite is a single row of 2 frames, each 31x33 with 1px of padding between them
+        // the art faces left by default, so the right-facing animations flip it
+        super(startLocation.x, startLocation.y, new SpriteSheet(ImageLoader.load("Statlactite.png"), 31, 33), "DEFAULT");
+        this.startLocation = startLocation;
+        this.initialize();
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+    }
+
+    //PICKUP FROM CHANGING FALL LOGIC
+    private void update(Player player) {
+        if (player.getLocation().x > this.startLocation.x - 20 && player.getLocation().x < this.startLocation.x + 20 && player.getLocation().y > this.startLocation.y - 20){
+            falling = true;
+        }
+        if (falling)
+        {
+            moveYHandleCollision(fallSpeed);
+        }
+        super.update(player);
+    }
+
+    @Override
+    public void onEndCollisionCheckY(boolean hasCollided, Direction direction, MapEntity entityCollidedWith) {
+        // if the stalactite collides with anything solid on the y axis, it is removed
+        if (hasCollided) {
+            this.mapEntityStatus = MapEntityStatus.REMOVED;
+        }
+    }
+
+    @Override
+    public void touchedPlayer(Player player) {
+        // if fireball touches player, it disappears
+        super.touchedPlayer(player);
+        this.mapEntityStatus = MapEntityStatus.REMOVED;
+    }
+
+    @Override
+    public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
+        return new HashMap<String, Frame[]>() {{
+            put("DEFAULT", new Frame[]{
+                    new FrameBuilder(spriteSheet.getSprite(0, 0))
+                            .withScale(3)
+                            .withBounds(1, 1, 5, 5)
+                            .build()
+            });
+        }};
+    }
+}
