@@ -68,9 +68,12 @@ public abstract class Player extends GameObject
     protected Key CROUCH_KEY = Key.S;
     protected Key DAMAGE_KEY = Key.X;
     protected final Key INVINCIBILITY_KEY = Key.I;
+    protected final Key NOCLIP_KEY = Key.V;
+    private static final float NOCLIP_SPEED_MULTIPLIER = 2f;
 
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
+    protected boolean isNoclipEnabled = false;
     protected final int INVINCIBILITY_DURATION = 120;
 	protected int invincibilityTimer = 0;
     protected int health = 3;
@@ -136,56 +139,74 @@ public abstract class Player extends GameObject
         // if player is currently playing through level (has not won or lost)
         if (levelState == LevelState.RUNNING)
         {
-			
+            handleNoclipToggle();
+
 			if (invincibilityTimer > 0)
 			{
 				invincibilityTimer--;
 			}
 			
-            if (Keyboard.isKeyDown(CROUCH_KEY))
+            if (!isNoclipEnabled)
             {
-                platformDropTimer = PLATFORM_DROP_TICKS;
-            }
-            else if (platformDropTimer > 0)
-            {
-                platformDropTimer--;
-            }
-
-            applyGravity();
-
-
-
-            //Adds horizontal AND vertical recoil/velocity to frame movement
-            moveAmountX += velocityX;
-            moveAmountY += velocityY;
-
-            // Apply drag to both axes consistently
-            velocityX *= drag;
-            velocityY *= drag;
-
-            //Prevents infinite sub-pixel slides when velocity nears zero
-            if (Math.abs(velocityX) < 0.01f)
-            {
-                velocityX = 0;
+                if (Keyboard.isKeyDown(CROUCH_KEY))
+                {
+                    platformDropTimer = PLATFORM_DROP_TICKS;
+                }
+                else if (platformDropTimer > 0)
+                {
+                    platformDropTimer--;
+                }
             }
 
-            // facing direction follows which side of the player the mouse is on, not the movement direction
             updateFacingFromMouse();
 
-            // update player's state and current actions, which includes things like determining how much it should move each frame and if its walking or jumping
-            do
+            if (isNoclipEnabled)
             {
-                previousPlayerState = playerState;
-                handlePlayerState();
-            } while (previousPlayerState != playerState);
+                handleNoclipMovement();
+            }
+            else
+            {
+                applyGravity();
+
+                // Adds horizontal AND vertical recoil/velocity to frame movement
+                moveAmountX += velocityX;
+                moveAmountY += velocityY;
+
+                // Apply drag to both axes consistently
+                velocityX *= drag;
+                velocityY *= drag;
+
+                // Prevents infinite sub-pixel slides when velocity nears zero
+                if (Math.abs(velocityX) < 0.01f)
+                {
+                    velocityX = 0;
+                }
+
+                // update player's state and current actions, which includes things like determining how much it should move each frame and if its walking or jumping
+                do
+                {
+                    previousPlayerState = playerState;
+                    handlePlayerState();
+                } while (previousPlayerState != playerState);
+            }
 
             previousAirGroundState = airGroundState;
 
             updateAttack();
 
-            // move player with respect to map collisions based on how much player needs to move this frame
-            lastAmountMovedX = super.moveXHandleCollision(moveAmountX);
-            lastAmountMovedY = super.moveYHandleCollision(moveAmountY);
+            if (isNoclipEnabled)
+            {
+                moveX(moveAmountX);
+                moveY(moveAmountY);
+                lastAmountMovedX = moveAmountX;
+                lastAmountMovedY = moveAmountY;
+            }
+            else
+            {
+                // move player with respect to map collisions based on how much player needs to move this frame
+                lastAmountMovedX = super.moveXHandleCollision(moveAmountX);
+                lastAmountMovedY = super.moveYHandleCollision(moveAmountY);
+            }
 
             // Updates mouse aim angle and curser position coordinates.
             updateAiming();
@@ -210,6 +231,61 @@ public abstract class Player extends GameObject
         else if (levelState == LevelState.PLAYER_DEAD)
         {
             updatePlayerDead();
+        }
+    }
+
+    private void handleNoclipToggle()
+    {
+        if (Keyboard.isKeyDown(NOCLIP_KEY) && !keyLocker.isKeyLocked(NOCLIP_KEY))
+        {
+            keyLocker.lockKey(NOCLIP_KEY);
+            isNoclipEnabled = !isNoclipEnabled;
+            velocityX = 0;
+            velocityY = 0;
+            momentumY = 0;
+            jumpForce = 0;
+            jumpControlled = false;
+            airGroundState = AirGroundState.AIR;
+            previousAirGroundState = AirGroundState.AIR;
+            playerState = isNoclipEnabled ? PlayerState.STANDING : PlayerState.JUMPING;
+            if (isNoclipEnabled)
+            {
+                platformDropTimer = 0;
+            }
+        }
+    }
+
+    private void handleNoclipMovement()
+    {
+        float horizontal = (Keyboard.isKeyDown(MOVE_RIGHT_KEY, Key.RIGHT) ? 1 : 0)
+                - (Keyboard.isKeyDown(MOVE_LEFT_KEY, Key.LEFT) ? 1 : 0);
+        float vertical = (Keyboard.isKeyDown(CROUCH_KEY, Key.DOWN) ? 1 : 0)
+                - (Keyboard.isKeyDown(JUMP_KEYS) || Keyboard.isKeyDown(Key.UP) ? 1 : 0);
+        float speed = walkSpeed * NOCLIP_SPEED_MULTIPLIER;
+
+        if (horizontal != 0 && vertical != 0)
+        {
+            speed *= (float) (1 / Math.sqrt(2));
+        }
+
+        moveAmountX = horizontal * speed;
+        moveAmountY = vertical * speed;
+        velocityX = 0;
+        velocityY = 0;
+        momentumY = 0;
+        airGroundState = AirGroundState.AIR;
+
+        if (vertical != 0)
+        {
+            playerState = PlayerState.JUMPING;
+        }
+        else if (horizontal != 0)
+        {
+            playerState = PlayerState.WALKING;
+        }
+        else
+        {
+            playerState = PlayerState.STANDING;
         }
     }
 
@@ -435,6 +511,11 @@ public abstract class Player extends GameObject
 			
 		keyLocker.unlockKey(INVINCIBILITY_KEY);
 		}
+
+        if (Keyboard.isKeyUp(NOCLIP_KEY))
+        {
+            keyLocker.unlockKey(NOCLIP_KEY);
+        }
         
     }
 
