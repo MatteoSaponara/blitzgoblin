@@ -4,6 +4,8 @@ import GameObject.ImageEffect;
 import java.awt.*;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.stream.IntStream;
@@ -274,6 +276,71 @@ public class GraphicsHandler {
         g.fillRect(x, y, width, height);
 
         g.setColor(oldColor);
+    }
+
+    public void drawParticle(float x, float y, float width, float height, float rotationDegrees,
+                             Color color, boolean circular) {
+        if (pixelGridEnabled) {
+            ensurePixelBuffer();
+            int pixelX = toPixelGrid(x);
+            int pixelY = toPixelGrid(y);
+            int pixelWidth = Math.max(toPixelGrid(x + width) - pixelX, 1);
+            int pixelHeight = Math.max(toPixelGrid(y + height) - pixelY, 1);
+            Graphics2D particleGraphics = (Graphics2D) pixelGraphics.create();
+            particleGraphics.rotate(Math.toRadians(rotationDegrees),
+                    pixelX + pixelWidth / 2.0, pixelY + pixelHeight / 2.0);
+            particleGraphics.setColor(color);
+            if (circular) {
+                particleGraphics.fill(new Ellipse2D.Float(pixelX, pixelY, pixelWidth, pixelHeight));
+            } else {
+                particleGraphics.fill(new Rectangle2D.Float(pixelX, pixelY, pixelWidth, pixelHeight));
+            }
+            particleGraphics.dispose();
+            pixelLayerDirty = true;
+            return;
+        }
+
+        flushPixelLayer();
+        Graphics2D particleGraphics = (Graphics2D) g.create();
+        particleGraphics.rotate(Math.toRadians(rotationDegrees), x + width / 2.0, y + height / 2.0);
+        particleGraphics.setColor(color);
+        if (circular) {
+            particleGraphics.fill(new Ellipse2D.Float(x, y, width, height));
+        } else {
+            particleGraphics.fill(new Rectangle2D.Float(x, y, width, height));
+        }
+        particleGraphics.dispose();
+    }
+
+    public void drawParticleImage(BufferedImage image, float x, float y, float width, float height,
+                                  float rotationDegrees, float alpha) {
+        if (pixelGridEnabled) {
+            ensurePixelBuffer();
+            int pixelX = toPixelGrid(x);
+            int pixelY = toPixelGrid(y);
+            int pixelWidth = Math.max(toPixelGrid(width), 1);
+            int pixelHeight = Math.max(toPixelGrid(height), 1);
+            Graphics2D particleGraphics = (Graphics2D) pixelGraphics.create();
+            particleGraphics.rotate(Math.toRadians(rotationDegrees),
+                    pixelX + pixelWidth / 2.0, pixelY + pixelHeight / 2.0);
+            if (alpha < 1) {
+                particleGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+            }
+            particleGraphics.drawImage(image, pixelX, pixelY, pixelWidth, pixelHeight, null);
+            particleGraphics.dispose();
+            pixelLayerDirty = true;
+            return;
+        }
+
+        flushPixelLayer();
+        Graphics2D particleGraphics = (Graphics2D) g.create();
+        particleGraphics.rotate(Math.toRadians(rotationDegrees), x + width / 2.0, y + height / 2.0);
+        if (alpha < 1) {
+            particleGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        }
+        particleGraphics.drawImage(image, Math.round(x), Math.round(y),
+                Math.round(width), Math.round(height), null);
+        particleGraphics.dispose();
     }
 
     public void drawFilledRectangleWithBorder(int x, int y, int width, int height, Color fillColor, Color borderColor, int borderThickness) {

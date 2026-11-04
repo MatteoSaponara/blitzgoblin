@@ -221,6 +221,7 @@ public class HeroEnemy extends Enemy implements IDamagable {
             return;
         }
 
+        spawnDeathParticles();
         health = 0;
         heroState = HeroState.HIT;
         hitTimer = HIT_DURATION;
