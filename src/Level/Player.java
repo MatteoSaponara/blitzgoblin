@@ -1107,6 +1107,10 @@ public abstract class Player extends GameObject
                         System.out.println("Firing cannon ammo");
     }
 
+    public String getAmmoMode() {
+        return ammoMode;
+    }
+
     // Uncomment this to have game draw player's bounds to make it easier to visualize
     /*
     public void drawBoundsForDebug(GraphicsHandler graphicsHandler) {

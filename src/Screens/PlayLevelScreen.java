@@ -151,6 +151,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                         graphicsHandler.drawImage(ImageLoader.load("gunui.png"), 27, 100, 55, 25);
                     else
                         graphicsHandler.drawImage(ImageLoader.load("gunuireload.png"), 27, 100, 55, 25);
+                    String ammoMode = player.getAmmoMode();
+                    if (ammoMode.equals("single")) {
+                        graphicsHandler.drawString("Single", 90, 120, new Font(Engine.Config.DEFAULT_FONT, Font.PLAIN, 20), Color.RED);
+                    } else if (ammoMode.equals("twelve")) {
+                        graphicsHandler.drawString("Twelve", 90, 120, new Font(Engine.Config.DEFAULT_FONT, Font.PLAIN, 20), Color.GREEN);
+                    } else if (ammoMode.equals("cannon")) {
+                        graphicsHandler.drawString("Cannon", 90, 120, new Font(Engine.Config.DEFAULT_FONT, Font.PLAIN, 20), Color.BLUE);
+                    }
                 }
 
                 if (GamePanel.isHitboxesEnabled()) {
