@@ -4,6 +4,7 @@ import Engine.DefaultScreen;
 import Engine.GraphicsHandler;
 import Engine.Screen;
 import Maps.level1;
+import Maps.level3;
 import Screens.CreditsScreen;
 import Screens.MenuScreen;
 import Screens.PlayLevelScreen;
@@ -61,7 +62,8 @@ public class ScreenCoordinator extends Screen {
 						currentScreen = new MenuScreen(this);
 						break;
 					case LEVEL:
-						currentScreen = new PlayLevelScreen(this, new TestMap());
+						//currentScreen = new PlayLevelScreen(this, new TestMap());
+						currentScreen = new PlayLevelScreen(this, new level3());
 						break;
 						// Level 1 (when you create it)
 					case LEVEL1:

@@ -1,4 +1,3 @@
-
 package Enemies;
 
 import Builders.FrameBuilder;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 
 public class BlockMimicEnemy extends Enemy implements IDamagable {
     private float flySpeed = 10f;
-    private float aggroRadius = 280;
+    private float aggroRadius = 250;
     private int health = 1;
     protected int transformTimer;
     protected BlockMimicState blockMimicState;

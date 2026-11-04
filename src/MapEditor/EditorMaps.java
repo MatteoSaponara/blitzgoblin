@@ -7,6 +7,7 @@ import Maps.TestMapBackup;
 import Maps.TitleScreenMap;
 import Maps.TitleScreenMapNewVersion;
 import Maps.level1;
+import Maps.level3;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ public class EditorMaps {
             add("TestMapBackup");
             add("TitleScreenMapNewVersion");
             add("level1");
+            add("level3");
         }};
     }
 
@@ -36,6 +38,8 @@ public class EditorMaps {
                 return new TitleScreenMapNewVersion();
             case "level1":
                 return new level1();
+            case "level3":
+                return new level3();
                 
             default:
                 throw new RuntimeException("Unrecognized map name");

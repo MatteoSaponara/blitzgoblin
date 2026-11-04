@@ -1,0 +1,228 @@
+package Maps;
+
+import Enemies.BugEnemy;
+import Enemies.GoblinEnemy;
+import Enemies.HeroEnemy;
+import Enemies.Turret;
+import Enemies.CoinMimicEnemy;
+import Enemies.BlockMimicEnemy;
+import Enemies.GargoyleEnemy;
+import Engine.ImageLoader;
+import EnhancedMapTiles.Coin;
+import EnhancedMapTiles.EndLevelBox;
+import EnhancedMapTiles.HorizontalMovingPlatform;
+// Ammo pickup imports
+import EnhancedMapTiles.SingleAmmo;
+import EnhancedMapTiles.TwelveAmmo;
+import EnhancedMapTiles.CannonAmmo;
+import GameObject.Rectangle;
+import Level.*;
+import NPCs.Walrus;
+import Tilesets.CommonTileset;
+import Utils.Direction;
+import java.util.ArrayList;
+
+
+
+
+public class level3 extends Map {
+
+    public level3() {
+        super("level3.txt", new CommonTileset());
+        this.playerStartPosition = getMapTile(2, 5).getLocation();
+        //this.playerStartPosition = getMapTile(40, 24).getLocation(); //test spawn
+    }
+
+    @Override
+    public ArrayList<Enemy> loadEnemies() {
+        ArrayList<Enemy> enemies = new ArrayList<>();
+
+        Turret turretEnemy2 = new Turret(getMapTile(3, 13).getLocation().addY(2), Direction.RIGHT);
+        enemies.add(turretEnemy2);
+        
+        Turret turretEnemy3 = new Turret(getMapTile(3, 14).getLocation().addY(2), Direction.RIGHT);
+        enemies.add(turretEnemy3);
+
+        Turret turretEnemy4 = new Turret(getMapTile(3, 15).getLocation().addY(2), Direction.RIGHT);
+        enemies.add(turretEnemy4);     
+
+        GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(17, 17).getLocation().addY(2), Direction.RIGHT);
+        enemies.add(goblinEnemy);
+
+        GoblinEnemy goblinEnemy2 = new GoblinEnemy(getMapTile(30, 25).getLocation().addY(2), Direction.LEFT);
+        enemies.add(goblinEnemy2);
+        
+        GoblinEnemy goblinEnemy3 = new GoblinEnemy(getMapTile(32, 25).getLocation().addY(2), Direction.LEFT);
+        enemies.add(goblinEnemy3);
+        
+        GoblinEnemy goblinEnemy4 = new GoblinEnemy(getMapTile(28, 25).getLocation().addY(2), Direction.LEFT);
+        enemies.add(goblinEnemy4);
+             
+        GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(23, 15).getLocation().addY(2), Direction.RIGHT);
+        enemies.add(gargoyleEnemy);
+
+        GargoyleEnemy gargoyleEnemy2 = new GargoyleEnemy(getMapTile(62, 10).getLocation().addY(2), Direction.LEFT);
+        enemies.add(gargoyleEnemy2);
+        
+        CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(59, 13).getLocation(), Direction.LEFT);
+        enemies.add(coinMimicEnemy);
+        
+        //CoinMimicEnemy coinMimicEnemy2 = new CoinMimicEnemy(getMapTile(58, 17).getLocation(), Direction.LEFT);
+        //enemies.add(coinMimicEnemy2);
+        
+        BlockMimicEnemy blockMimicEnemy = new BlockMimicEnemy(getMapTile(14, 2).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy);
+        
+        BlockMimicEnemy blockMimicEnemy1 = new BlockMimicEnemy(getMapTile(19, 1).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy1);
+        
+        BlockMimicEnemy blockMimicEnemy2 = new BlockMimicEnemy(getMapTile(26, 9).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy2);
+        
+        BlockMimicEnemy blockMimicEnemy3 = new BlockMimicEnemy(getMapTile(21, 8).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy3);
+        
+        BlockMimicEnemy blockMimicEnemy4 = new BlockMimicEnemy(getMapTile(26, 2).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy4);
+        
+        BlockMimicEnemy blockMimicEnemy5 = new BlockMimicEnemy(getMapTile(29, 2).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy5);
+        
+        BlockMimicEnemy blockMimicEnemy6 = new BlockMimicEnemy(getMapTile(36, 8).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy6);
+        
+        BlockMimicEnemy blockMimicEnemy7 = new BlockMimicEnemy(getMapTile(39, 2).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy7);
+        
+        BlockMimicEnemy blockMimicEnemy8 = new BlockMimicEnemy(getMapTile(42, 2).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy8);
+        
+        BlockMimicEnemy blockMimicEnemy9 = new BlockMimicEnemy(getMapTile(31, 8).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy9);
+        
+        BlockMimicEnemy blockMimicEnemy10 = new BlockMimicEnemy(getMapTile(50, 1).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy10);
+        
+        BlockMimicEnemy blockMimicEnemy11 = new BlockMimicEnemy(getMapTile(46, 16).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy11);
+        
+        BlockMimicEnemy blockMimicEnemy12 = new BlockMimicEnemy(getMapTile(27, 13).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy12);
+        
+        BlockMimicEnemy blockMimicEnemy13 = new BlockMimicEnemy(getMapTile(34, 15).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy13);
+        
+        BlockMimicEnemy blockMimicEnemy14 = new BlockMimicEnemy(getMapTile(15, 28).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy14);
+        
+        BlockMimicEnemy blockMimicEnemy15 = new BlockMimicEnemy(getMapTile(68, 8).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy15);
+        
+        BlockMimicEnemy blockMimicEnemy16 = new BlockMimicEnemy(getMapTile(26, 26).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy16);
+        
+        
+
+        return enemies;
+    }
+
+    @Override
+    public ArrayList<EnhancedMapTile> loadEnhancedMapTiles() {
+        ArrayList<EnhancedMapTile> enhancedMapTiles = new ArrayList<>();
+//        HorizontalMovingPlatform hmp3 = new HorizontalMovingPlatform(
+//                ImageLoader.load("GreenPlatform.png"),
+//                getMapTile(42, 9).getLocation(),
+//                getMapTile(47, 9).getLocation(),
+//                2f,
+//                TileType.JUMP_THROUGH_PLATFORM,
+//                3,
+//                new Rectangle(0, 6,16,4),
+//                Direction.RIGHT
+//        );
+//        HorizontalMovingPlatform hmp4 = new HorizontalMovingPlatform(
+//                ImageLoader.load("GreenPlatform.png"),
+//                getMapTile(49, 20).getLocation(),
+//                getMapTile(54, 20).getLocation(),
+//                TileType.JUMP_THROUGH_PLATFORM,
+//                3,
+//                new Rectangle(0, 6,16,4),
+//                Direction.RIGHT
+//        );
+//
+//        HorizontalMovingPlatform hmp5 = new HorizontalMovingPlatform(
+//                ImageLoader.load("GreenPlatform.png"),
+//                getMapTile(49, 17).getLocation(),
+//                getMapTile(54, 17).getLocation(),
+//                TileType.JUMP_THROUGH_PLATFORM,
+//                3,
+//                new Rectangle(0, 6,16,4),
+//                Direction.LEFT
+//        );
+
+        //enhancedMapTiles.add(hmp3);
+        //enhancedMapTiles.add(hmp4);
+        //enhancedMapTiles.add(hmp5);
+       // EndLevelBox endLevelBox = new EndLevelBox(getMapTile(68, 8).getLocation());
+       // enhancedMapTiles.add(endLevelBox);
+       // EndLevelBox endLevelBox1 = new EndLevelBox(getMapTile(68, 7).getLocation());
+        //enhancedMapTiles.add(endLevelBox1);
+        //EndLevelBox endLevelBox2 = new EndLevelBox(getMapTile(68, 6).getLocation());
+        //enhancedMapTiles.add(endLevelBox2);
+
+        //ammo boxes
+        SingleAmmo singleAmmo = new SingleAmmo(getMapTile(2, 5).getLocation());
+        enhancedMapTiles.add(singleAmmo);
+        TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(2, 5).getLocation());
+        enhancedMapTiles.add(twelveAmmo);
+        CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(2, 5).getLocation());
+        enhancedMapTiles.add(cannonAmmo);
+
+        Coin coin1 = new Coin(getMapTile(18, 23).getLocation());
+        enhancedMapTiles.add(coin1);
+
+        Coin coin2 = new Coin(getMapTile(18, 14).getLocation());
+        enhancedMapTiles.add(coin2);
+
+        Coin coin3 = new Coin(getMapTile(33, 13).getLocation());
+        enhancedMapTiles.add(coin3);
+        
+        Coin coin4 = new Coin(getMapTile(7, 6).getLocation());
+        enhancedMapTiles.add(coin4);
+        
+        Coin coin5 = new Coin(getMapTile(45, 14).getLocation());
+        enhancedMapTiles.add(coin5);
+        
+        Coin coin6 = new Coin(getMapTile(37, 18).getLocation());
+        enhancedMapTiles.add(coin6);
+        
+        Coin coin7 = new Coin(getMapTile(5, 20).getLocation());
+        enhancedMapTiles.add(coin7);
+        
+        Coin coin8 = new Coin(getMapTile(16, 15).getLocation());
+        enhancedMapTiles.add(coin8);
+        
+        Coin coin9 = new Coin(getMapTile(13, 25).getLocation());
+        enhancedMapTiles.add(coin9);
+        
+        Coin coin10 = new Coin(getMapTile(53, 26).getLocation());
+        enhancedMapTiles.add(coin10);
+        
+        Coin coin11 = new Coin(getMapTile(58, 17).getLocation());
+        enhancedMapTiles.add(coin11);
+
+
+
+        return enhancedMapTiles;
+    }
+
+
+    @Override
+    public ArrayList<NPC> loadNPCs() {
+        ArrayList<NPC> npcs = new ArrayList<>();
+
+        //Walrus walrus = new Walrus(getMapTile(23, 14).getLocation().subtractY(13));
+        //npcs.add(walrus);
+
+        return npcs;
+    }
+}

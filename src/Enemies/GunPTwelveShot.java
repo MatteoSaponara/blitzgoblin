@@ -61,7 +61,7 @@ public class GunPTwelveShot extends Enemy {
                     && this.intersects(enemy)) {
 				
                 if (enemy instanceof IDamagable && !(enemy instanceof IArmored)) {
-                    ((IDamagable) enemy).takeDamage(5);
+                   // ((IDamagable) enemy).takeDamage(5);
                     ((IDamagable) enemy).takeDamage(1);
                     this.mapEntityStatus = MapEntityStatus.REMOVED;
                     return;
