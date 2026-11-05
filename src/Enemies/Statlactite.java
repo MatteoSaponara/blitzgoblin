@@ -1,3 +1,5 @@
+package Enemies;
+
 import Builders.FrameBuilder;
 import Engine.ImageLoader;
 import GameObject.Frame;
@@ -19,7 +21,7 @@ public class Statlactite extends Enemy{
     public Statlactite(Point startLocation) {
         // sprite is a single row of 2 frames, each 31x33 with 1px of padding between them
         // the art faces left by default, so the right-facing animations flip it
-        super(startLocation.x, startLocation.y, new SpriteSheet(ImageLoader.load("Statlactite.png"), 31, 33), "DEFAULT");
+        super(startLocation.x, startLocation.y, new SpriteSheet(ImageLoader.load("Stalactite.png"), 35, 35), "DEFAULT");
         this.startLocation = startLocation;
         this.initialize();
     }

@@ -8,6 +8,7 @@ import Enemies.CoinMimicEnemy;
 import Enemies.BlockMimicEnemy;
 import Enemies.GargoyleEnemy;
 import Enemies.ArmoredEnemy;
+import Enemies.Statlactite;
 import Engine.ImageLoader;
 import EnhancedMapTiles.Coin;
 import EnhancedMapTiles.EndLevelBox;
@@ -71,6 +72,9 @@ public class level3 extends Map {
         CoinMimicEnemy coinMimicEnemy2 = new CoinMimicEnemy(getMapTile(18, 23).getLocation(), Direction.LEFT);
         enemies.add(coinMimicEnemy2);
         
+        Statlactite statlactite = new Statlactite(getMapTile(11, 3).getLocation());
+        enemies.add(statlactite);
+        
         BlockMimicEnemy blockMimicEnemy = new BlockMimicEnemy(getMapTile(14, 2).getLocation(), Direction.LEFT);
         enemies.add(blockMimicEnemy);
         
@@ -121,6 +125,8 @@ public class level3 extends Map {
         
         BlockMimicEnemy blockMimicEnemy16 = new BlockMimicEnemy(getMapTile(29, 26).getLocation(), Direction.LEFT);
         enemies.add(blockMimicEnemy16);
+        
+        
         
         
 
