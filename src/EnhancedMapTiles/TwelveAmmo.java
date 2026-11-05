@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class TwelveAmmo extends Ammo {
 
     public TwelveAmmo(Point location) {
-        super(location, "TwelveAmmo.png");
+        super(location, "ammo12shot.png", 1.4f);
     }
     
     @Override
