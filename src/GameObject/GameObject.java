@@ -96,8 +96,8 @@ public class GameObject extends AnimatedSprite {
     }
 
     public void move() {
-        if(Math.abs(currentVelocity[0]) >= 0.01f) moveXHandleCollision((float)(currentVelocity[0]));
-        if(Math.abs(currentVelocity[1]) >= 0.01f) moveYHandleCollision((float)(currentVelocity[1]));
+        if(Math.abs(currentVelocity[0]) >= 0.01f) moveXHandleCollision((currentVelocity[0]));
+        if(Math.abs(currentVelocity[1]) >= 0.01f) moveYHandleCollision((currentVelocity[1]));
     }
 
     public void applyDrag(float dragIN){

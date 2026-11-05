@@ -1,7 +1,6 @@
 package Engine;
 
-import java.awt.GraphicsConfiguration;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
@@ -19,6 +18,19 @@ public class GameWindow {
 
 	public GameWindow() {
 		gameWindow = new JFrame("Blitzgoblin");
+
+        // loading custom cursor image
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Image cursorImage = toolkit.getImage(Config.RESOURCES_PATH+"crosshair.png");
+
+        Cursor customCursor = toolkit.createCustomCursor(
+            cursorImage,
+            new java.awt.Point(4, 4),  // sets where clicks registers at the center of the crosshair image 
+            "Crosshair"
+        );
+
+        gameWindow.setCursor(customCursor);
+
 		gamePanel = new GamePanel();
 		gamePanel.addKeyListener(new KeyAdapter() {
 			@Override
