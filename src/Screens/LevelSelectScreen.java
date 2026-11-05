@@ -19,6 +19,7 @@ public class LevelSelectScreen extends Screen {
 	protected SpriteFont Level1;
 	protected SpriteFont Level2;
 	protected SpriteFont Level3;
+	protected SpriteFont GamblingRoom;
     protected SpriteFont ReturnMenu;
     protected SpriteFont returnInstructionsLabel;
     protected Map background;
@@ -50,6 +51,9 @@ public class LevelSelectScreen extends Screen {
 		Level3 = new SpriteFont("Level 3", 200, 374, Config.DEFAULT_FONT, 30, Color.white);
 		Level3.setOutlineColor(Color.black);
 		Level3.setOutlineThickness(3);
+		GamblingRoom = new SpriteFont("Gambling Room", 200, 425, Config.DEFAULT_FONT, 30, Color.white);
+		GamblingRoom.setOutlineColor(Color.black);
+		GamblingRoom.setOutlineThickness(3);
         background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
         keyPressTimer = 0;
@@ -75,10 +79,10 @@ public class LevelSelectScreen extends Screen {
         }
 
         // if down is pressed on last menu item or up is pressed on first menu item, "loop" the selection back around to the beginning/end
-        if (currentMenuItemHovered > 4) {
+        if (currentMenuItemHovered > 5) {
             currentMenuItemHovered = 0;
         } else if (currentMenuItemHovered < 0) {
-            currentMenuItemHovered = 4;
+            currentMenuItemHovered = 5;
         }
 
         // sets location for blue square in front of text (pointerLocation) and also sets color of spritefont text based on which menu item is being hovered
@@ -97,6 +101,9 @@ public class LevelSelectScreen extends Screen {
 		} else if (currentMenuItemHovered == 4) {
 			pointerLocationX = 170;
 			pointerLocationY = 381;
+		} else if (currentMenuItemHovered == 5) {
+			pointerLocationX = 170;
+			pointerLocationY = 432;
 		}
 
         // if space is pressed on menu item, change to appropriate screen based on which menu item was chosen
@@ -115,6 +122,8 @@ public class LevelSelectScreen extends Screen {
 				screenCoordinator.startNewGame(GameState.LEVEL2);
 			} else if (menuItemSelected == 4) {
 				screenCoordinator.startNewGame(GameState.LEVEL3);
+			} else if (menuItemSelected == 5) {
+				screenCoordinator.startNewGame(GameState.GAMBLING_ROOM);
 			}
 		}
                 
@@ -127,6 +136,7 @@ public class LevelSelectScreen extends Screen {
         Level1.draw(graphicsHandler);
         Level2.draw(graphicsHandler);
 		Level3.draw(graphicsHandler);
+		GamblingRoom.draw(graphicsHandler);
         returnInstructionsLabel.draw(graphicsHandler);
         graphicsHandler.drawFilledRectangleWithBorder(pointerLocationX, pointerLocationY, 20, 20, new Color(255, 255, 255), Color.black, 2); //new Color(49, 207, 240), Color.black, 2);
     }

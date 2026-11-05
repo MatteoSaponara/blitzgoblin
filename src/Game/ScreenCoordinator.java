@@ -3,6 +3,7 @@ package Game;
 import Engine.DefaultScreen;
 import Engine.GraphicsHandler;
 import Engine.Screen;
+import Level.Player;
 import Maps.GamblingRoom;
 import Maps.TestMap;
 import Maps.level1;
@@ -28,6 +29,7 @@ public class ScreenCoordinator extends Screen {
 	protected GameState previousGameState;
 	protected int currentLevel = 0;
 	protected int coinsCollected = 0;
+	protected int bonusHearts = 0;
 
 	public GameState getGameState() {
 		return gameState;
@@ -35,6 +37,10 @@ public class ScreenCoordinator extends Screen {
 	
 	public int getCoinsCollected() {
 		return coinsCollected;
+	}
+
+	public int getBonusHearts() {
+		return bonusHearts;
 	}
 
 	public void startNewGame(GameState gameState) {
@@ -56,12 +62,14 @@ public class ScreenCoordinator extends Screen {
 				break;
 		}
 		coinsCollected = 0;
+		bonusHearts = 0;
 		setGameState(gameState);
 	}
 
-	public void advanceLevel(int coinsCollected) {
+	public void advanceLevel(int coinsCollected, int playerMaxHealth) {
 		
 		this.coinsCollected = coinsCollected;
+		bonusHearts = Math.max(0, playerMaxHealth - Player.DEFAULT_MAX_HEALTH);
 		currentLevel++;
 
 		switch (currentLevel) {

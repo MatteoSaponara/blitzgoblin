@@ -69,8 +69,12 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.heartAnimationTicks = 0;
         this.coinAnimationTicks = 0;
         this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y, false);
+        int maxHealth = Player.DEFAULT_MAX_HEALTH + screenCoordinator.getBonusHearts();
+        player.setMaxHealth(maxHealth);
+        player.setPlayerHealth(maxHealth);
         if (map instanceof GamblingRoom) {
             player.pickupShotgun();
+            player.unlockSingleAmmo();
         }
         this.player.setCoins(screenCoordinator.getCoinsCollected());
         this.player.setMap(map);
@@ -105,7 +109,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     levelClearedScreen.update();
                     screenTimer--;
                     if (screenTimer <= 0) {
-                        screenCoordinator.advanceLevel(player.getCoins());
+                        screenCoordinator.advanceLevel(player.getCoins(), player.getMaxHealth());
 					}
 				}
                     
