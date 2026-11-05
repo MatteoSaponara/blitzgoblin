@@ -69,17 +69,17 @@ public class Turret extends Enemy implements IDamagable{
             float movementSpeed;
             if (facingDirection == Direction.RIGHT) {
                 fireballX = Math.round(getX()) + getWidth();
-                movementSpeed = 1.5f;
+                movementSpeed = 1.8f;
             } else {
                 fireballX = Math.round(getX());
-                movementSpeed = -1.5f;
+                movementSpeed = -1.8f;
             }
 
             // define where fireball will spawn on the map (y location) relative to dinosaur enemy's location
-            int fireballY = Math.round(getY()) + 18;
+            int fireballY = Math.round(getY()) + 9;
 
             // create Fireball enemy
-            Fireball fireball = new Fireball(new Point(fireballX, fireballY), movementSpeed);
+            Fireball fireball = new Fireball(new Point(fireballX, fireballY), facingDirection, movementSpeed);
 
             // add fireball enemy to the map for it to spawn in the level
             map.addEnemy(fireball);

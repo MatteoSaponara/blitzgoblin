@@ -122,10 +122,10 @@ public class DinosaurEnemy extends Enemy {
             float movementSpeed;
             if (facingDirection == Direction.RIGHT) {
                 fireballX = Math.round(getX()) + getWidth();
-                movementSpeed = 1.5f;
+                movementSpeed = 1.8f;
             } else {
                 fireballX = Math.round(getX() - 21);
-                movementSpeed = -1.5f;
+                movementSpeed = -1.8f;
             }
 
             // define where fireball will spawn on the map (y location) relative to dinosaur enemy's location

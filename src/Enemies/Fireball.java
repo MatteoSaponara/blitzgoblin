@@ -3,6 +3,7 @@ package Enemies;
 import Builders.FrameBuilder;
 import Engine.ImageLoader;
 import GameObject.Frame;
+import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
 import Level.Enemy;
 import Level.MapEntity;
@@ -20,23 +21,37 @@ public class Fireball extends Enemy implements IDamagable {
     private float movementSpeed;
     private int existenceFrames;
     private final boolean hasExistenceLimit;
+    private final Direction direction;
     private int health = 1;
 
     public Fireball(Point location, float movementSpeed, int existenceFrames) {
-        this(location, movementSpeed, existenceFrames, true);
+        this(location, movementSpeed, existenceFrames, true, getDirection(movementSpeed));
     }
 
     public Fireball(Point location, float movementSpeed) {
-        this(location, movementSpeed, 0, false);
+        this(location, movementSpeed, 0, false, getDirection(movementSpeed));
     }
 
-    private Fireball(Point location, float movementSpeed, int existenceFrames, boolean hasExistenceLimit) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("Fireball.png"), 7, 7), "DEFAULT");
-        this.movementSpeed = movementSpeed;
+    public Fireball(Point location, Direction direction, float movementSpeed) {
+        this(location, movementSpeed, 0, false, direction);
+    }
+
+    private Fireball(Point location, float movementSpeed, int existenceFrames, boolean hasExistenceLimit, Direction direction) {
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("Fireball.png"), 30, 30), "DEFAULT");
+        this.direction = direction;
+        this.movementSpeed = direction == Direction.RIGHT ? Math.abs(movementSpeed) : -Math.abs(movementSpeed);
         this.existenceFrames = existenceFrames;
         this.hasExistenceLimit = hasExistenceLimit;
+        ImageEffect imageEffect = direction == Direction.RIGHT ? ImageEffect.FLIP_HORIZONTAL : ImageEffect.NONE;
+        for (Frame frame : animations.get("DEFAULT")) {
+            frame.setImageEffect(imageEffect);
+        }
 
         initialize();
+    }
+
+    private static Direction getDirection(float movementSpeed) {
+        return movementSpeed < 0 ? Direction.LEFT : Direction.RIGHT;
     }
 
     @Override
@@ -70,13 +85,22 @@ public class Fireball extends Enemy implements IDamagable {
 
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
+        Frame[] frames = new Frame[3];
+        for (int frameIndex = 0; frameIndex < frames.length; frameIndex++) {
+            frames[frameIndex] = new FrameBuilder(
+                    spriteSheet.getImage().getSubimage(
+                            frameIndex * spriteSheet.getSpriteWidth(),
+                            0,
+                            spriteSheet.getSpriteWidth(),
+                            spriteSheet.getSpriteHeight()),
+                            10)
+                            .withScale(1.4f)
+                            .withBounds(10, 10, 10, 10)
+                            .build();
+        }
+
         return new HashMap<String, Frame[]>() {{
-            put("DEFAULT", new Frame[]{
-                    new FrameBuilder(spriteSheet.getSprite(0, 0))
-                            .withScale(3)
-                            .withBounds(1, 1, 5, 5)
-                            .build()
-            });
+            put("DEFAULT", frames);
         }};
     }
     
