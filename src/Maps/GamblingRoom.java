@@ -24,7 +24,7 @@ public class GamblingRoom extends Map {
     @Override
     public ArrayList<EnhancedMapTile> loadEnhancedMapTiles() {
         ArrayList<EnhancedMapTile> enhancedMapTiles = new ArrayList<>();
-        enhancedMapTiles.add(new SlotMachine(getMapTile(7, 8).getLocation()));
+        enhancedMapTiles.add(new SlotMachine(getMapTile(7, 8).getLocation().subtractY(63)));
         enhancedMapTiles.add(new EndLevelBox(getMapTile(15, 9).getLocation()));
         enhancedMapTiles.add(new EndLevelBox(getMapTile(15, 10).getLocation()));
         enhancedMapTiles.add(new EndLevelBox(getMapTile(15, 11).getLocation()));

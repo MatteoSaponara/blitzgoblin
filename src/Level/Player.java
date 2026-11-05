@@ -20,6 +20,8 @@ import java.util.ArrayList;
 
 public abstract class Player extends GameObject
 {
+    public static final int DEFAULT_MAX_HEALTH = 3;
+
     // values that affect player movement
     // these should be set in a subclass
     protected float walkSpeed = 0;
@@ -68,6 +70,7 @@ public abstract class Player extends GameObject
     protected Key MOVE_RIGHT_KEY = Key.D;
     protected Key CROUCH_KEY = Key.S;
     protected Key DAMAGE_KEY = Key.X;
+    protected final Key DEBUG_COIN_KEY = Key.C;
     protected final Key INVINCIBILITY_KEY = Key.I;
     protected final Key NOCLIP_KEY = Key.V;
     private static final float NOCLIP_SPEED_MULTIPLIER = 2f;
@@ -78,7 +81,7 @@ public abstract class Player extends GameObject
     protected final int INVINCIBILITY_DURATION = 120;
 	protected int invincibilityTimer = 0;
     protected int health = 3;
-    protected int maxHealth = 3;
+    protected int maxHealth = DEFAULT_MAX_HEALTH;
     protected int coins = 0;
 
     // melee attack values
@@ -219,6 +222,7 @@ public abstract class Player extends GameObject
 
             updateLockedKeys();
             handleDebugDamage();
+            handleDebugCoin();
             handleInvincibility();
 
             // update player's animation
@@ -509,6 +513,11 @@ public abstract class Player extends GameObject
         {
             keyLocker.unlockKey(DAMAGE_KEY);
         }
+
+        if (Keyboard.isKeyUp(DEBUG_COIN_KEY))
+        {
+            keyLocker.unlockKey(DEBUG_COIN_KEY);
+        }
         
         if (Keyboard.isKeyUp(INVINCIBILITY_KEY))
 		{
@@ -535,7 +544,15 @@ public abstract class Player extends GameObject
                 health = 0;
                 levelState = LevelState.PLAYER_DEAD;
             }
-         
+        }
+    }
+
+    protected void handleDebugCoin()
+    {
+        if (Keyboard.isKeyDown(DEBUG_COIN_KEY) && !keyLocker.isKeyLocked(DEBUG_COIN_KEY))
+        {
+            keyLocker.lockKey(DEBUG_COIN_KEY);
+            coins++;
         }
     }
 
