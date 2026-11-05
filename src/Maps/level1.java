@@ -1,26 +1,20 @@
 package Maps;
 
-import Enemies.BugEnemy;
-import Enemies.GoblinEnemy;
-import Enemies.HeroEnemy;
-import Enemies.Turret;
+import Enemies.BlockMimicEnemy;
 import Enemies.CoinMimicEnemy;
 import Enemies.GargoyleEnemy;
+import Enemies.GoblinEnemy;
+import Enemies.Turret;
 import Engine.ImageLoader;
 import EnhancedMapTiles.Coin;
 import EnhancedMapTiles.EndLevelBox;
 import EnhancedMapTiles.HorizontalMovingPlatform;
-// Ammo pickup imports
 import EnhancedMapTiles.SingleAmmo;
-import EnhancedMapTiles.TwelveAmmo;
-import EnhancedMapTiles.CannonAmmo;
 import GameObject.Rectangle;
 import Level.*;
-import NPCs.Walrus;
 import Tilesets.CommonTileset;
 import Utils.Direction;
 import java.util.ArrayList;
-import Enemies.BlockMimicEnemy;
 
 
 
@@ -169,6 +163,7 @@ public class level1 extends Map {
 //        enhancedMapTiles.add(twelveAmmo);
 //        CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(2, 24).getLocation());
 //        enhancedMapTiles.add(cannonAmmo);
+
 
         Coin coin1 = new Coin(getMapTile(18, 23).getLocation());
         enhancedMapTiles.add(coin1);

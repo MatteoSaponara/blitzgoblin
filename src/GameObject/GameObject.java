@@ -39,7 +39,7 @@ public class GameObject extends AnimatedSprite {
     protected float[] currentVelocity = new float[2];
     public float[] getCurrentVelocity() { return currentVelocity;}
     
-    protected float dragValue = 0.9f; // value to decrease velocity by
+    protected float dragValue = 0.8f; // value to decrease velocity by
 
     public void setDragValue(float inputDragValue){ dragValue = inputDragValue; }
 

@@ -3,16 +3,13 @@ package EnhancedMapTiles;
 import Builders.FrameBuilder;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
-import GameObject.Rectangle;
+import GameObject.Frame;
 import GameObject.SpriteSheet;
 import Level.EnhancedMapTile;
 import Level.Player;
 import Level.TileType;
-import Utils.AirGroundState;
-import Utils.Direction;
 import Utils.Point;
-import java.awt.image.BufferedImage;
-import Level.MapTile;
+import java.util.HashMap;
 
 public class DoorBlock extends EnhancedMapTile {
     
@@ -29,7 +26,17 @@ public class DoorBlock extends EnhancedMapTile {
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
     }
-
+    @Override
+        public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
+            return new HashMap<String, Frame[]>() {{
+                put("DEFAULT", new Frame[] {
+                    new FrameBuilder(spriteSheet.getSprite(0, 0), 40)
+                            .withScale(1.4f)
+                            .withBounds(1, 1, 35, 35)
+                            .build()
+                });
+            }};
+        }
     public void switchDoorState() {
         if (this.getTileType() == TileType.NOT_PASSABLE) {
             this.setTileType(TileType.PASSABLE);

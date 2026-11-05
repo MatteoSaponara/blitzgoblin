@@ -67,7 +67,7 @@ public class GunPCannonBall extends Enemy {
                         ((IDamagable) enemy).takeDamage(50);
                         this.mapEntityStatus = MapEntityStatus.REMOVED;
                     }
-                    if(player.hasShotgun() && !(enemy instanceof Turret)){ //applying projectile force to enemy
+                    if(player.hasShotgun() && !(enemy instanceof Turret || enemy instanceof Lever)){ //applying projectile force to enemy
                         float amountMovedXIN, amountMovedYIN;
                         amountMovedXIN = (float)(player.getCurrentAmmoModeRecoilValue() * (Math.cos(player.getShotgun().getLastFiredGunAimAngle())));
                         amountMovedYIN = (float)(player.getCurrentAmmoModeRecoilValue() * (Math.sin(player.getShotgun().getLastFiredGunAimAngle())));

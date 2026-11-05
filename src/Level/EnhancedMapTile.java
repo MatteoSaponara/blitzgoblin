@@ -3,7 +3,6 @@ package Level;
 import Engine.GraphicsHandler;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
-
 import java.util.HashMap;
 
 // This class is a base class for all enhanced map tiles in the game -- all enhanced map tiles should extend from it

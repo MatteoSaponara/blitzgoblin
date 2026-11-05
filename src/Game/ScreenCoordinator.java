@@ -4,14 +4,15 @@ import Engine.DefaultScreen;
 import Engine.GraphicsHandler;
 import Engine.Screen;
 import Maps.GamblingRoom;
+import Maps.TestMap;
 import Maps.level1;
+import Maps.level2;
 import Maps.level3;
 import Screens.CreditsScreen;
-import Screens.MenuScreen;
-import Screens.PlayLevelScreen;
 import Screens.HowToPlayScreen;
 import Screens.LevelSelectScreen;
-import Maps.TestMap;
+import Screens.MenuScreen;
+import Screens.PlayLevelScreen;
 //import Maps.Level1Map;
 
 /*
@@ -118,7 +119,7 @@ public class ScreenCoordinator extends Screen {
 						break;
 						
 					case LEVEL2:
-						currentScreen =new PlayLevelScreen(this, new level1());
+						currentScreen =new PlayLevelScreen(this, new level2());
 						break;
 						
 					case LEVEL3:

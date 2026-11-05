@@ -21,7 +21,7 @@ public class BlockMimicEnemy extends Enemy implements IDamagable {
     private int health = 1;
     protected int transformTimer;
     protected BlockMimicState blockMimicState;
-
+    
     public BlockMimicEnemy(Point location, Direction facingDirection) {
         super(location.x, location.y, new SpriteSheet(ImageLoader.load("MimicBlockTest14.png"), 59, 59), "IDLE");
         this.initialize();
@@ -138,12 +138,14 @@ public class BlockMimicEnemy extends Enemy implements IDamagable {
         return Math.pow((pX - this.getX()), 2) + Math.pow((pY - this.getY()), 2) <= Math.pow(aggroRadius, 2);
     }
 
+    public void setAggroRadius(float inputValue) {aggroRadius = inputValue;}
+    
     @Override
     public void touchedPlayer(Player player) {
         GamePanel.triggerBlockMimicJumpscare();
         player.killPlayer();
         this.mapEntityStatus = MapEntityStatus.REMOVED;
     }
-
+    
     public enum BlockMimicState { IDLE, TRANSFORM, CHASE }
 }
