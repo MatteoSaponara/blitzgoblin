@@ -1,7 +1,7 @@
 package Maps;
 
-import EnhancedMapTiles.Coin;
 import EnhancedMapTiles.EndLevelBox;
+import EnhancedMapTiles.SlotMachine;
 import Level.Enemy;
 import Level.EnhancedMapTile;
 import Level.Map;
@@ -24,12 +24,7 @@ public class GamblingRoom extends Map {
     @Override
     public ArrayList<EnhancedMapTile> loadEnhancedMapTiles() {
         ArrayList<EnhancedMapTile> enhancedMapTiles = new ArrayList<>();
-        int[][] coinLocations = {
-            {4, 10}, {7, 10}, {10, 10}, {13, 10}
-        };
-        for (int[] location : coinLocations) {
-            enhancedMapTiles.add(new Coin(getMapTile(location[0], location[1]).getLocation()));
-        }
+        enhancedMapTiles.add(new SlotMachine(getMapTile(7, 8).getLocation()));
         enhancedMapTiles.add(new EndLevelBox(getMapTile(15, 9).getLocation()));
         enhancedMapTiles.add(new EndLevelBox(getMapTile(15, 10).getLocation()));
         enhancedMapTiles.add(new EndLevelBox(getMapTile(15, 11).getLocation()));

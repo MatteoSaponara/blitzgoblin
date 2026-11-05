@@ -9,6 +9,7 @@ import Game.ScreenCoordinator;
 import Level.Map;
 import Level.Player;
 import Level.PlayerListener;
+import Maps.GamblingRoom;
 import Players.Cat;
 import java.awt.Color;
 import java.awt.Font;
@@ -68,6 +69,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.heartAnimationTicks = 0;
         this.coinAnimationTicks = 0;
         this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y, false);
+        if (map instanceof GamblingRoom) {
+            player.pickupShotgun();
+        }
         this.player.setCoins(screenCoordinator.getCoinsCollected());
         this.player.setMap(map);
         map.centerCameraOnPlayer(player);
