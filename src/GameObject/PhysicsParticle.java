@@ -33,6 +33,7 @@ public class PhysicsParticle {
     private int lifetimeFrames = INFINITE_LIFETIME;
     private int ageFrames;
     private boolean fadesOut;
+    private boolean shrinksToNothing;
     private Color color;
     private Shape shape = Shape.CIRCLE;
     private BufferedImage image;
@@ -83,10 +84,23 @@ public class PhysicsParticle {
             opacity = Math.max(0, (lifetimeFrames - ageFrames) / (float) lifetimeFrames);
         }
 
-        float drawX = x - width / 2 - cameraOffsetX;
-        float drawY = y - height / 2 - cameraOffsetY;
+        float shrinkScale = shrinksToNothing && lifetimeFrames != INFINITE_LIFETIME
+                ? (lifetimeFrames - ageFrames) / (float) lifetimeFrames
+                : 1;
+        float drawWidth = shrinksToNothing
+                ? snapShrinkingSizeToPixelGrid(width, shrinkScale)
+                : snapSizeToPixelGrid(width);
+        float drawHeight = shrinksToNothing
+                ? snapShrinkingSizeToPixelGrid(height, shrinkScale)
+                : snapSizeToPixelGrid(height);
+        if (drawWidth == 0 || drawHeight == 0) {
+            return;
+        }
+
+        float drawX = snapToPixelGrid(x - drawWidth / 2 - cameraOffsetX);
+        float drawY = snapToPixelGrid(y - drawHeight / 2 - cameraOffsetY);
         if (image != null) {
-            graphicsHandler.drawParticleImage(image, drawX, drawY, width, height, rotationDegrees, opacity);
+            graphicsHandler.drawParticleImage(image, drawX, drawY, drawWidth, drawHeight, rotationDegrees, opacity);
             return;
         }
 
@@ -99,11 +113,24 @@ public class PhysicsParticle {
         graphicsHandler.drawParticle(
                 drawX,
                 drawY,
-                width,
-                height,
+                drawWidth,
+                drawHeight,
                 rotationDegrees,
                 renderColor,
                 shape == Shape.CIRCLE);
+    }
+
+    private static float snapToPixelGrid(float value) {
+        return Math.round(value / Config.PIXEL_SCALE) * Config.PIXEL_SCALE;
+    }
+
+    private static float snapSizeToPixelGrid(float size) {
+        return Math.max(Config.PIXEL_SCALE,
+                Math.round(size / Config.PIXEL_SCALE) * Config.PIXEL_SCALE);
+    }
+
+    private static float snapShrinkingSizeToPixelGrid(float size, float shrinkScale) {
+        return Math.max(0, Math.round(size * shrinkScale / Config.PIXEL_SCALE)) * Config.PIXEL_SCALE;
     }
 
     public boolean isAlive() {
@@ -237,6 +264,14 @@ public class PhysicsParticle {
 
     public boolean isFadesOut() {
         return fadesOut;
+    }
+
+    public void setShrinksToNothing(boolean shrinksToNothing) {
+        this.shrinksToNothing = shrinksToNothing;
+    }
+
+    public boolean isShrinksToNothing() {
+        return shrinksToNothing;
     }
 
     public void setColor(Color color) {

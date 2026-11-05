@@ -72,7 +72,7 @@ public class Enemy extends MapEntity {
             PhysicsParticle particle = new PhysicsParticle(
                     centerX + (float) random.nextDouble(-2, 2),
                     centerY + (float) random.nextDouble(-2, 2),
-                    (float) random.nextDouble(Config.PIXEL_SCALE, 4.5),
+                    (float) random.nextDouble(4, 7.5),
                     bloodColor);
             particle.setVelocity((float) random.nextDouble(-3.2, 3.2), (float) random.nextDouble(-5.8, -2.6));
             particle.setGravity(0, 0.18f);

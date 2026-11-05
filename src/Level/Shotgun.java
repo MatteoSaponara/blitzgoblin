@@ -9,12 +9,15 @@ import Engine.Mouse;
 import GameObject.Frame;
 import GameObject.GameObject;
 import GameObject.ImageEffect;
+import GameObject.PhysicsParticle;
 import GameObject.SpriteSheet;
 import Utils.Point;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.HashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Shotgun extends GameObject {
     
@@ -129,6 +132,44 @@ public class Shotgun extends GameObject {
             currentAngle += angleBetweenShotgunProjectiles; //angle degrees of angles between diverging projectiles
         }
         return output;
+    }
+
+    public void spawnShotSmoke() {
+        if (map == null) {
+            return;
+        }
+
+        float[] muzzlePosition = getCurrentGunBarrelEndPixelPosition();
+        float targetX = Mouse.getGameMouseX() + map.getCamera().getX();
+        float targetY = Mouse.getGameMouseY() + map.getCamera().getY();
+        float directionX = targetX - muzzlePosition[0];
+        float directionY = targetY - muzzlePosition[1];
+        float directionLength = (float) Math.hypot(directionX, directionY);
+        if (directionLength == 0) {
+            return;
+        }
+        directionX /= directionLength;
+        directionY /= directionLength;
+
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int particleCount = random.nextInt(4, 7);
+        for (int i = 0; i < particleCount; i++) {
+            float spread = (float) random.nextDouble(-0.9, 0.9);
+            float speed = (float) random.nextDouble(0.7, 1.8);
+            PhysicsParticle particle = new PhysicsParticle(
+                    muzzlePosition[0],
+                    muzzlePosition[1],
+                    (float) random.nextDouble(4, 7.5),
+                    new Color(210, 210, 210, 220));
+            particle.setVelocity(
+                    directionX * speed - directionY * spread,
+                    directionY * speed + directionX * spread);
+            particle.setGravity(0, -0.015f);
+            particle.setDrag(0.025f);
+            particle.setLifetimeFrames(random.nextInt(18, 31));
+            particle.setFadesOut(true);
+            map.addParticle(particle);
+        }
     }
 
     // call when a shot is fired; restarts the animation from its first frame

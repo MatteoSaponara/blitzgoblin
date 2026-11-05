@@ -567,6 +567,7 @@ public abstract class Player extends GameObject
 			float mouseY = Mouse.getGameMouseY() + cameraY;
 	
 			float spawnX;
+			boolean shotFired = false;
 
 			if (facingDirection == Direction.RIGHT)
 			{
@@ -580,6 +581,7 @@ public abstract class Player extends GameObject
                     case "single":
                         if (hasSingleAmmo) {
                             shootSingleShot(mouseX, mouseY);
+                            shotFired = true;
                         }
                         
                         break;
@@ -589,6 +591,7 @@ public abstract class Player extends GameObject
                         for (Enemy bullet : getShotgun().shootTwelveShot()) {
                             map.addEnemy(bullet);
                         }
+                        shotFired = true;
                         // Applies recoil to the character
                         applyRecoil(twelveAmmoRecoil, mouseX, mouseY);
                         }
@@ -596,9 +599,13 @@ public abstract class Player extends GameObject
                     case "cannon":
                         if (hasCannonAmmo) {
                             shootCannonBall(mouseX, mouseY);
+                            shotFired = true;
                         }
                         break;
                 }
+            if (shotFired) {
+                getShotgun().spawnShotSmoke();
+            }
             shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
             getShotgun().playShootAnimation();
             }    
