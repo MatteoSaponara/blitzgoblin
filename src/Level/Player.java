@@ -3,6 +3,7 @@ package Level;
 import Enemies.GunPCannonBall;
 import Enemies.GunPOne;
 import Enemies.GunPTwelveShot;
+import Enemies.Turret;
 import Engine.GraphicsHandler;
 import Engine.Key;
 import Engine.KeyLocker;
@@ -89,8 +90,9 @@ public abstract class Player extends GameObject
     protected int shotgunAttackTimer = 0;
     protected final int SHOTGUN_ATTACK_COOLDOWN = 25;
     protected final int ATTACK_DURATION = 15;
-    protected final int ATTACK_WIDTH = 45;
+    protected final int ATTACK_WIDTH = 15;
     protected final int ATTACK_OVERLAP = 6; // how far the attack box pushes into the player's sprite bounds
+    protected final float ATTACK_PUSHBACK_FORCE = 8.0f; // how far the melee attack pushes back an enemy/game object
     protected Rectangle attackBox;
 
     // shotgun values
@@ -111,6 +113,8 @@ public abstract class Player extends GameObject
     protected float singleAmmoRecoil = 0.3f;
     protected float twelveAmmoRecoil = 7.0f;
     protected float cannonAmmoRecoil = 15.0f;
+
+    public float getCurrentAmmoRecoil(){return singleAmmoRecoil;}
 
     // Ammo Mode
     String ammoMode = "single"; // Default ammo mode is single
@@ -571,6 +575,7 @@ public abstract class Player extends GameObject
 			spawnX = getX() - 70;
 		    }
             if(playerCanShootShotgun()) {
+                getShotgun().updateLastFiredGunAimAngle();
                 switch (ammoMode) {
                     case "single":
                         if (hasSingleAmmo) {
@@ -632,6 +637,26 @@ public abstract class Player extends GameObject
             ammoMode = "cannon";
         }
     }
+    public float getCurrentAmmoModeRecoilValue() {
+        switch (ammoMode) {
+            case "single":
+                if (hasSingleAmmo) {
+                    return singleAmmoRecoil;
+                }
+                break;
+            case "twelve":
+                if (hasTwelveAmmo) {
+                    return twelveAmmoRecoil;
+                }
+                break;
+            case "cannon":
+                if (hasCannonAmmo) {
+                    return cannonAmmoRecoil;
+                }
+                break;
+        }
+        return 0;
+    }
 
     public boolean playerCanShootShotgun() {
         return (hasShotgun && getShotgun() != null && shotgunAttackTimer <= 0);
@@ -679,6 +704,10 @@ public abstract class Player extends GameObject
                 if (enemy instanceof IDamagable) {
 					((IDamagable) enemy).takeDamage(3);
 					HasHitEnemy = true;
+                    if(!(enemy instanceof Turret)){
+                        float amountMovedXIN = (this.getFacingDirection() == Direction.RIGHT) ? ATTACK_PUSHBACK_FORCE : -ATTACK_PUSHBACK_FORCE;
+                        enemy.PushObjectX(amountMovedXIN);
+                    }
 					return;
 					}
             }
@@ -888,7 +917,7 @@ public abstract class Player extends GameObject
 		coins++;
 	}
 
-		public int getCoins()
+    public int getCoins()
 	{
 		return coins;
 	}
@@ -1105,6 +1134,10 @@ public abstract class Player extends GameObject
                         map.addEnemy(gunPCannonBall);
                         applyRecoil(cannonAmmoRecoil, mouseX, mouseY);
                         System.out.println("Firing cannon ammo");
+    }
+
+    public String getAmmoMode() {
+        return ammoMode;
     }
 
     // Uncomment this to have game draw player's bounds to make it easier to visualize

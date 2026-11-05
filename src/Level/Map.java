@@ -5,7 +5,6 @@ import Engine.GraphicsHandler;
 import Engine.ScreenManager;
 import GameObject.PhysicsParticle;
 import Utils.Point;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;

@@ -5,6 +5,7 @@ import Engine.ImageLoader;
 import Engine.Mouse;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
+import Interfaces.IArmored;
 import Interfaces.IDamagable;
 import Level.Enemy;
 import Level.MapEntity;
@@ -25,7 +26,7 @@ public class GunPCannonBall extends Enemy {
     private float moveY;
 
     public GunPCannonBall(Point spawnPoint, float targetX, float targetY) {
-        super(spawnPoint.x-(3*30), spawnPoint.y-(3*35),
+        super(spawnPoint.x-(3*4), spawnPoint.y-(3*4),
                 new SpriteSheet(ImageLoader.load("Bullet1.png"), 15, 15),"DEFAULT");
 
         movementSpeed = 4f;
@@ -62,8 +63,16 @@ public class GunPCannonBall extends Enemy {
                     enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE && this.intersects(enemy)) {
 				
                 if (enemy instanceof IDamagable) {
-                    ((IDamagable) enemy).takeDamage(50);
-                    //this.mapEntityStatus = MapEntityStatus.REMOVED;
+                    if(!(enemy instanceof IArmored)) {
+                        ((IDamagable) enemy).takeDamage(50);
+                        this.mapEntityStatus = MapEntityStatus.REMOVED;
+                    }
+                    if(player.hasShotgun() && !(enemy instanceof Turret)){ //applying projectile force to enemy
+                        float amountMovedXIN, amountMovedYIN;
+                        amountMovedXIN = (float)(player.getCurrentAmmoModeRecoilValue() * (Math.cos(player.getShotgun().getLastFiredGunAimAngle())));
+                        amountMovedYIN = (float)(player.getCurrentAmmoModeRecoilValue() * (Math.sin(player.getShotgun().getLastFiredGunAimAngle())));
+                        enemy.PushObject(amountMovedXIN, -amountMovedYIN);
+                    }
                     return;
                 }
                 
@@ -104,7 +113,7 @@ public class GunPCannonBall extends Enemy {
             put("DEFAULT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(0, 0))
                     .withScale(10)
-                    .withBounds(1, 1, 13, 13)
+                    .withBounds(1, 1, 5, 5)
                     .build()
             });
         }};

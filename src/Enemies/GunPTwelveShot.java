@@ -59,18 +59,20 @@ public class GunPTwelveShot extends Enemy {
                     enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE 
                     && !(enemy instanceof GunPTwelveShot)
                     && this.intersects(enemy)) {
-				
-                if (enemy instanceof IDamagable && !(enemy instanceof IArmored)) {
-                   // ((IDamagable) enemy).takeDamage(5);
-                    ((IDamagable) enemy).takeDamage(1);
-                    this.mapEntityStatus = MapEntityStatus.REMOVED;
+                if (enemy instanceof IDamagable) {
+                    if(!(enemy instanceof IArmored)) {
+                        ((IDamagable) enemy).takeDamage(1);
+                        this.mapEntityStatus = MapEntityStatus.REMOVED;
+                    }
+                    if(player.hasShotgun() && !(enemy instanceof Turret)){ //applying projectile force to enemy
+                        float amountMovedXIN, amountMovedYIN;
+                        //recoil is divided by 12 because there are 12 separate projectiles
+                        amountMovedXIN = (float)((player.getCurrentAmmoModeRecoilValue()/12) * (Math.cos(player.getShotgun().getLastFiredGunAimAngle())));
+                        amountMovedYIN = (float)((player.getCurrentAmmoModeRecoilValue()/12) * (Math.sin(player.getShotgun().getLastFiredGunAimAngle())));
+                        enemy.PushObject(amountMovedXIN, -amountMovedYIN);
+                    }
                     return;
-                    
-                } else if (enemy instanceof IArmored) {
-					this.mapEntityStatus = MapEntityStatus.REMOVED;
-					return;
-                }
-                
+                }    
                 /*
                 this.mapEntityStatus = MapEntityStatus.REMOVED;
 				enemy.setMapEntityStatus(MapEntityStatus.REMOVED);
