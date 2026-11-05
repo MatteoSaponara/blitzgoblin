@@ -89,7 +89,7 @@ public abstract class Player extends GameObject
     protected int shotgunAttackTimer = 0;
     protected final int SHOTGUN_ATTACK_COOLDOWN = 25;
     protected final int ATTACK_DURATION = 15;
-    protected final int ATTACK_WIDTH = 45;
+    protected final int ATTACK_WIDTH = 15;
     protected final int ATTACK_OVERLAP = 6; // how far the attack box pushes into the player's sprite bounds
     protected Rectangle attackBox;
 
