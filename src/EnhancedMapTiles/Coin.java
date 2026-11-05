@@ -69,35 +69,35 @@ public class Coin extends EnhancedMapTile {
 			put("DEFAULT", new Frame[] {
 					new FrameBuilder(spriteSheet.getSprite(0, 0), 12)
 						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
+						.withBounds(1, 1, 25, 25)
 						.build(),
 					new FrameBuilder(spriteSheet.getSprite(0, 1), 12)
 						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
+                            .withBounds(1, 1, 25, 25)
 						.build(),
 					new FrameBuilder(spriteSheet.getSprite(0, 2), 12)
 						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
+                            .withBounds(1, 1, 25, 25)
 						.build(),
 					new FrameBuilder(spriteSheet.getSprite(0, 3), 12)
 						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
+                            .withBounds(1, 1, 25, 25)
 						.build(),
 				new FrameBuilder(spriteSheet.getSprite(0, 4), 12)
 						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
+						.withBounds(1, 1, 25, 25)
 					.build(),
 				new FrameBuilder(spriteSheet.getSprite(0, 5), 12)
 						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
+                        .withBounds(1, 1, 25, 25)
 						.build(),
 				new FrameBuilder(spriteSheet.getSprite(0, 6), 12)
 						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
+                        .withBounds(1, 1, 25, 25)
 						.build(),
 				new FrameBuilder(spriteSheet.getSprite(0, 7), 12)
 						.withScale(1.4f)
-						.withBounds(1, 1, 10, 10)
+                        .withBounds(1, 1, 25, 25)
 						.build()
 				});
         }};
