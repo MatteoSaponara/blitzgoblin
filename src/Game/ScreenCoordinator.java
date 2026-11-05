@@ -3,6 +3,7 @@ package Game;
 import Engine.DefaultScreen;
 import Engine.GraphicsHandler;
 import Engine.Screen;
+import Maps.GamblingRoom;
 import Maps.level1;
 import Maps.level3;
 import Screens.CreditsScreen;
@@ -36,7 +37,23 @@ public class ScreenCoordinator extends Screen {
 	}
 
 	public void startNewGame(GameState gameState) {
-		currentLevel = 0;
+		switch (gameState) {
+			case LEVEL:
+				currentLevel = -1;
+				break;
+			case LEVEL1:
+				currentLevel = 1;
+				break;
+			case LEVEL2:
+				currentLevel = 3;
+				break;
+			case LEVEL3:
+				currentLevel = 5;
+				break;
+			default:
+				currentLevel = 0;
+				break;
+		}
 		coinsCollected = 0;
 		setGameState(gameState);
 	}
@@ -46,16 +63,28 @@ public class ScreenCoordinator extends Screen {
 		this.coinsCollected = coinsCollected;
 		currentLevel++;
 
-		if (currentLevel == 1) {
-			
-			setGameState(GameState.LEVEL1);
-		} else if (currentLevel == 2) {
-			setGameState(GameState.LEVEL2);
-		} else if (currentLevel == 3) {
-			setGameState(GameState.LEVEL3);
-		} else {
-			currentLevel = 0;
-			setGameState(GameState.MENU);
+		switch (currentLevel) {
+			case 0:
+				setGameState(GameState.GAMBLING_ROOM);
+				break;
+			case 1:
+				setGameState(GameState.LEVEL1);
+				break;
+			case 2:
+			case 4:
+			case 6:
+				setGameState(GameState.GAMBLING_ROOM);
+				break;
+			case 3:
+				setGameState(GameState.LEVEL2);
+				break;
+			case 5:
+				setGameState(GameState.LEVEL3);
+				break;
+			default:
+				currentLevel = 0;
+				setGameState(GameState.MENU);
+				break;
 		}
 	}
 
@@ -94,6 +123,9 @@ public class ScreenCoordinator extends Screen {
 						
 					case LEVEL3:
 						currentScreen =new PlayLevelScreen(this, new level3());
+						break;
+					case GAMBLING_ROOM:
+						currentScreen = new PlayLevelScreen(this, new GamblingRoom());
 						break;
 					
 					case HOW_TO_PLAY:
