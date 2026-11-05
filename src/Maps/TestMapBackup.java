@@ -44,7 +44,7 @@ public class TestMapBackup extends Map {
                 getMapTile(27, 6).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 3,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,32,4),
                 Direction.RIGHT
         );
         enhancedMapTiles.add(hmp);

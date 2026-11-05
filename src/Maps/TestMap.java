@@ -76,7 +76,7 @@ public class TestMap extends Map {
                 getMapTile(33, 5).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,32,4),
                 Direction.LEFT
         );
         HorizontalMovingPlatform hmp1 = new HorizontalMovingPlatform(
@@ -85,7 +85,7 @@ public class TestMap extends Map {
                 getMapTile(37, 5).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,32,4),
                 Direction.LEFT
         );
         HorizontalMovingPlatform hmp2 = new HorizontalMovingPlatform(
@@ -94,7 +94,7 @@ public class TestMap extends Map {
                 getMapTile(46, 3).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,32,4),
                 Direction.LEFT
         );
         HorizontalMovingPlatform hmp3 = new HorizontalMovingPlatform(
@@ -104,7 +104,7 @@ public class TestMap extends Map {
                 2f,
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,32,4),
                 Direction.RIGHT
         );
         HorizontalMovingPlatform hmp4 = new HorizontalMovingPlatform(
@@ -113,7 +113,7 @@ public class TestMap extends Map {
                 getMapTile(54, 20).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,32,4),
                 Direction.RIGHT
         );
 
@@ -123,7 +123,7 @@ public class TestMap extends Map {
                 getMapTile(54, 17).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,32,4),
                 Direction.LEFT
         );
         

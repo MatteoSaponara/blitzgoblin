@@ -98,7 +98,7 @@ public class level1 extends Map {
                 getMapTile(62, 17).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,32,4),
                 Direction.LEFT
         );
         HorizontalMovingPlatform hmp1 = new HorizontalMovingPlatform(
@@ -107,7 +107,7 @@ public class level1 extends Map {
                 getMapTile(62, 14).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,32,4),
                 Direction.RIGHT
         );
         HorizontalMovingPlatform hmp2 = new HorizontalMovingPlatform(
@@ -116,7 +116,7 @@ public class level1 extends Map {
                 getMapTile(62, 11).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,32,4),
                 Direction.LEFT
         );
 //        HorizontalMovingPlatform hmp3 = new HorizontalMovingPlatform(

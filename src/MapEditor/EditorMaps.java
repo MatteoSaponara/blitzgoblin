@@ -1,6 +1,7 @@
 package MapEditor;
 
 import Level.Map;
+import Maps.GamblingRoom;
 import Maps.MatteosTestMap;
 import Maps.TestMap;
 import Maps.TestMapBackup;
@@ -21,6 +22,7 @@ public class EditorMaps {
             add("TitleScreenMapNewVersion");
             add("level1");
             add("level3");
+            add("GamblingRoom");
         }};
     }
 
@@ -40,6 +42,8 @@ public class EditorMaps {
                 return new level1();
             case "level3":
                 return new level3();
+            case "GamblingRoom":
+                return new GamblingRoom();
                 
             default:
                 throw new RuntimeException("Unrecognized map name");
