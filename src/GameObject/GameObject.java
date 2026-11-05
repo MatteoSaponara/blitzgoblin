@@ -36,6 +36,12 @@ public class GameObject extends AnimatedSprite {
     // true for map tiles: stretch between grid positions of the edges so neighbours never gap or overlap
     protected boolean sharedEdgeDraw = false;
 
+    protected float[] currentVelocity = new float[2];
+    public float[] getCurrentVelocity() { return currentVelocity;}
+    
+    protected float dragValue = 0.9f; // value to decrease velocity by
+
+    public void setDragValue(float inputDragValue){ dragValue = inputDragValue; }
 
     public GameObject(SpriteSheet spriteSheet, float x, float y, String startingAnimation) {
         super(spriteSheet, x, y, startingAnimation);
@@ -77,12 +83,41 @@ public class GameObject extends AnimatedSprite {
         this.previousY = y;
     }
 
+    // logic for applying a decreasing motion to this gameobject
+    public void PushObject(float xValue, float yValue) {
+        PushObjectX(xValue);
+        PushObjectY(yValue);
+    }
+    public void PushObjectX(float xValue) {
+        currentVelocity[0] += xValue;
+    }
+    public void PushObjectY(float yValue) {
+        currentVelocity[1] += yValue;
+    }
+
+    public void move() {
+        if(Math.abs(currentVelocity[0]) >= 0.01f) moveXHandleCollision((float)(currentVelocity[0]));
+        if(Math.abs(currentVelocity[1]) >= 0.01f) moveYHandleCollision((float)(currentVelocity[1]));
+    }
+
+    public void applyDrag(float dragIN){
+        currentVelocity[0] *= dragIN;
+        currentVelocity[1] *= dragIN;
+        
+        if (Math.abs(currentVelocity[0]) < 0.01f) { currentVelocity[0] = 0; }
+        if (Math.abs(currentVelocity[1]) < 0.01f) { currentVelocity[1] = 0; }
+    }
+    
     @Override
     public void update() {
         // update previous position to be the current position
         previousX = x;
         previousY = y;
 
+        // apply this game object's movement behavior
+        move();
+        applyDrag(dragValue);
+        
         // call to animation logic
         super.update();
     }

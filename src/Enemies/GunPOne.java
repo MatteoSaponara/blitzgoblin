@@ -60,9 +60,17 @@ public class GunPOne extends Enemy {
             if (enemy != this &&
                     enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE && this.intersects(enemy)) {
 				
-                if (enemy instanceof IDamagable && !(enemy instanceof IArmored)) {
-                    ((IDamagable) enemy).takeDamage(5);
-                    this.mapEntityStatus = MapEntityStatus.REMOVED;
+                if (enemy instanceof IDamagable) {
+                    if(!(enemy instanceof IArmored)) {
+                        ((IDamagable) enemy).takeDamage(5);
+                        this.mapEntityStatus = MapEntityStatus.REMOVED;
+                    }
+                    if(player.hasShotgun() && !(enemy instanceof Turret)){ //applying projectile force to enemy
+                        float amountMovedXIN, amountMovedYIN;
+                        amountMovedXIN = (float)(player.getCurrentAmmoModeRecoilValue() * (Math.cos(player.getShotgun().getLastFiredGunAimAngle())));
+                        amountMovedYIN = (float)(player.getCurrentAmmoModeRecoilValue() * (Math.sin(player.getShotgun().getLastFiredGunAimAngle())));
+                        enemy.PushObject(amountMovedXIN, -amountMovedYIN);
+                    }
                     return;
                 }
                 

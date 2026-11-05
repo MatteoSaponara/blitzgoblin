@@ -26,6 +26,7 @@ public class Shotgun extends GameObject {
     //
     private double previousAimAngle = -1;
     private double previousGunAimAngle = -1;
+    private double lastFiredGunAimAngle = -1;
     
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private int[] originalGunSpriteBarrelEndPixel = {65, 34}; // must be manually set !!
@@ -172,10 +173,14 @@ public class Shotgun extends GameObject {
     // currentFrame is essentially a sprite, so each game loop cycle the sprite
 	// needs to have its current state updated based on animation logic,
 	// and location updated to match any changes to the animated sprite class
-    double currentDegreeTest = 140D;
     
     private double calibratedCircularMouseAngle() {return (Math.PI)-previousAimAngle;}
-    
+
+    public double getPreviousGunAimAngle() {return previousGunAimAngle;}
+
+    public void updateLastFiredGunAimAngle() {lastFiredGunAimAngle = previousGunAimAngle;}
+    public double getLastFiredGunAimAngle() {return lastFiredGunAimAngle;}
+
     private boolean mouseAngleHasChanged() {
         return (weaponOwner != null) && (Math.abs(previousAimAngle-((Math.PI)-weaponOwner.aimAngle)) > 0.01f);
     }

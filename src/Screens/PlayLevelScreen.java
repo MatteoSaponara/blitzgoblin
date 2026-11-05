@@ -1,16 +1,14 @@
 package Screens;
 
+import Engine.GamePanel;
 import Engine.GraphicsHandler;
 import Engine.ImageLoader;
 import Engine.Screen;
-import Engine.GamePanel;
 import Game.GameState;
 import Game.ScreenCoordinator;
 import Level.Map;
 import Level.Player;
 import Level.PlayerListener;
-import Maps.TestMap;
-import Maps.level1;
 import Players.Cat;
 import java.awt.Color;
 import java.awt.Font;

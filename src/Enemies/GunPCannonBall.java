@@ -5,6 +5,7 @@ import Engine.ImageLoader;
 import Engine.Mouse;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
+import Interfaces.IArmored;
 import Interfaces.IDamagable;
 import Level.Enemy;
 import Level.MapEntity;
@@ -62,8 +63,16 @@ public class GunPCannonBall extends Enemy {
                     enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE && this.intersects(enemy)) {
 				
                 if (enemy instanceof IDamagable) {
-                    ((IDamagable) enemy).takeDamage(50);
-                    this.mapEntityStatus = MapEntityStatus.REMOVED;
+                    if(!(enemy instanceof IArmored)) {
+                        ((IDamagable) enemy).takeDamage(50);
+                        this.mapEntityStatus = MapEntityStatus.REMOVED;
+                    }
+                    if(player.hasShotgun() && !(enemy instanceof Turret)){ //applying projectile force to enemy
+                        float amountMovedXIN, amountMovedYIN;
+                        amountMovedXIN = (float)(player.getCurrentAmmoModeRecoilValue() * (Math.cos(player.getShotgun().getLastFiredGunAimAngle())));
+                        amountMovedYIN = (float)(player.getCurrentAmmoModeRecoilValue() * (Math.sin(player.getShotgun().getLastFiredGunAimAngle())));
+                        enemy.PushObject(amountMovedXIN, -amountMovedYIN);
+                    }
                     return;
                 }
                 
