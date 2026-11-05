@@ -30,7 +30,7 @@ public class level1 extends Map {
     public level1() {
         super("level1.txt", new CommonTileset());
         this.playerStartPosition = getMapTile(2, 24).getLocation();
-        //this.playerStartPosition = getMapTile(40, 24).getLocation(); //test spawn
+        //this.playerStartPosition = getMapTile(51, 17).getLocation(); //test spawn
     }
 
     @Override
@@ -52,7 +52,7 @@ public class level1 extends Map {
         Turret turretEnemy5 = new Turret(getMapTile(49, 1).getLocation().addY(2), Direction.LEFT);
         enemies.add(turretEnemy5);
 
-        Turret turretEnemy6 = new Turret(getMapTile(3, 12).getLocation().addY(2), Direction.LEFT);
+        Turret turretEnemy6 = new Turret(getMapTile(3, 12).getLocation().addY(2), Direction.RIGHT);
         enemies.add(turretEnemy6);
 
         GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(17, 17).getLocation().addY(2), Direction.RIGHT);
@@ -98,7 +98,7 @@ public class level1 extends Map {
                 getMapTile(62, 17).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,33,4),
                 Direction.LEFT
         );
         HorizontalMovingPlatform hmp1 = new HorizontalMovingPlatform(
@@ -107,7 +107,7 @@ public class level1 extends Map {
                 getMapTile(62, 14).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,33,4),
                 Direction.RIGHT
         );
         HorizontalMovingPlatform hmp2 = new HorizontalMovingPlatform(
@@ -116,7 +116,7 @@ public class level1 extends Map {
                 getMapTile(62, 11).getLocation(),
                 TileType.JUMP_THROUGH_PLATFORM,
                 1.4f,
-                new Rectangle(0, 6,16,4),
+                new Rectangle(0, 6,33,4),
                 Direction.LEFT
         );
 //        HorizontalMovingPlatform hmp3 = new HorizontalMovingPlatform(
@@ -165,17 +165,15 @@ public class level1 extends Map {
         //ammo boxes
         SingleAmmo singleAmmo = new SingleAmmo(getMapTile(2, 24).getLocation());
         enhancedMapTiles.add(singleAmmo);
-        TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(2, 24).getLocation());
-        enhancedMapTiles.add(twelveAmmo);
-        CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(2, 24).getLocation());
-        enhancedMapTiles.add(cannonAmmo);
+//        TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(2, 24).getLocation());
+//        enhancedMapTiles.add(twelveAmmo);
+//        CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(2, 24).getLocation());
+//        enhancedMapTiles.add(cannonAmmo);
 
         Coin coin1 = new Coin(getMapTile(18, 23).getLocation());
         enhancedMapTiles.add(coin1);
-
         Coin coin2 = new Coin(getMapTile(18, 14).getLocation());
         enhancedMapTiles.add(coin2);
-
         Coin coin3 = new Coin(getMapTile(33, 14).getLocation());
         enhancedMapTiles.add(coin3);
         Coin coin4 = new Coin(getMapTile(51, 16).getLocation());
