@@ -8,12 +8,13 @@ import Level.MapEntityStatus;
 import Level.Player;
 import Utils.Direction;
 import Utils.Point;
+import java.util.HashMap;
 import Interfaces.IDamagable;
 
 public class Statlactite extends Enemy{
     private Point startLocation;
     private boolean falling = false;
-    private float fallSpeed += 1f;
+    private float fallSpeed = 1f;
 
     public Statlactite(Point startLocation) {
         // sprite is a single row of 2 frames, each 31x33 with 1px of padding between them
@@ -29,7 +30,7 @@ public class Statlactite extends Enemy{
     }
 
     //PICKUP FROM CHANGING FALL LOGIC
-    private void update(Player player) {
+    private void Update(Player player) {
         if (player.getLocation().x > this.startLocation.x - 20 && player.getLocation().x < this.startLocation.x + 20 && player.getLocation().y > this.startLocation.y - 20){
             falling = true;
         }
