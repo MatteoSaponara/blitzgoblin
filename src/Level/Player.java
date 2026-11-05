@@ -888,7 +888,7 @@ public abstract class Player extends GameObject
 		coins++;
 	}
 
-		public int getCoins()
+    public int getCoins()
 	{
 		return coins;
 	}
