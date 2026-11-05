@@ -64,7 +64,7 @@ public class GunPTwelveShot extends Enemy {
                         ((IDamagable) enemy).takeDamage(1);
                         this.mapEntityStatus = MapEntityStatus.REMOVED;
                     }
-                    if(player.hasShotgun() && !(enemy instanceof Turret)){ //applying projectile force to enemy
+                    if(player.hasShotgun() && !(enemy instanceof Turret || enemy instanceof Lever)){ //applying projectile force to enemy
                         float amountMovedXIN, amountMovedYIN;
                         //recoil is divided by 12 because there are 12 separate projectiles
                         amountMovedXIN = (float)((player.getCurrentAmmoModeRecoilValue()/12) * (Math.cos(player.getShotgun().getLastFiredGunAimAngle())));

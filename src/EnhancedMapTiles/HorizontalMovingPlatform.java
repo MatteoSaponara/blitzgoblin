@@ -20,7 +20,7 @@ public class HorizontalMovingPlatform extends EnhancedMapTile {
     private float movementSpeed = 1f;
     private Direction startDirection;
     private Direction direction;
-
+    
     public HorizontalMovingPlatform(BufferedImage image, Point startLocation, Point endLocation, TileType tileType, float scale, Rectangle bounds, Direction startDirection) {
         super(startLocation.x, startLocation.y, new FrameBuilder(image).withBounds(bounds).withScale(scale).build(), tileType);
         this.startLocation = startLocation;
