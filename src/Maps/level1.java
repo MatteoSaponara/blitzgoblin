@@ -52,17 +52,26 @@ public class level1 extends Map {
         Turret turretEnemy5 = new Turret(getMapTile(49, 1).getLocation().addY(2), Direction.LEFT);
         enemies.add(turretEnemy5);
 
+        Turret turretEnemy6 = new Turret(getMapTile(3, 12).getLocation().addY(2), Direction.LEFT);
+        enemies.add(turretEnemy6);
+
         GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(17, 17).getLocation().addY(2), Direction.RIGHT);
         enemies.add(goblinEnemy);
 
         GoblinEnemy goblinEnemy2 = new GoblinEnemy(getMapTile(38, 17).getLocation().addY(2), Direction.LEFT);
         enemies.add(goblinEnemy2);
 
+        GoblinEnemy goblinEnemy3 = new GoblinEnemy(getMapTile(10, 15).getLocation().addY(2), Direction.RIGHT);
+        enemies.add(goblinEnemy3);
+
         GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(62, 10).getLocation().addY(2), Direction.LEFT);
         enemies.add(gargoyleEnemy);
         
         CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(59, 13).getLocation(), Direction.LEFT);
         enemies.add(coinMimicEnemy);
+
+        CoinMimicEnemy coinMimicEnemy2 = new CoinMimicEnemy(getMapTile(5, 13).getLocation(), Direction.LEFT);
+        enemies.add(coinMimicEnemy2);
 
         BlockMimicEnemy blockMimicEnemy = new BlockMimicEnemy(getMapTile(36, 1).getLocation(), Direction.LEFT);
         enemies.add(blockMimicEnemy);
@@ -72,6 +81,9 @@ public class level1 extends Map {
 
         BlockMimicEnemy blockMimicEnemy3 = new BlockMimicEnemy(getMapTile(44, 0).getLocation(), Direction.LEFT);
         enemies.add(blockMimicEnemy3);
+
+        BlockMimicEnemy blockMimicEnemy4 = new BlockMimicEnemy(getMapTile(13, 4).getLocation(), Direction.LEFT);
+        enemies.add(blockMimicEnemy4);
 
         return enemies;
     }
@@ -174,12 +186,12 @@ public class level1 extends Map {
         enhancedMapTiles.add(coin6);
         Coin coin7 = new Coin(getMapTile(47, 6).getLocation());
         enhancedMapTiles.add(coin7);
-//        Coin coin8 = new Coin(getMapTile(26, 3).getLocation());
-//        enhancedMapTiles.add(coin8);
-//        Coin coin9 = new Coin(getMapTile(43, 7).getLocation());
-//        enhancedMapTiles.add(coin9);
-//        Coin coin10 = new Coin(getMapTile(42, 20).getLocation());
-//        enhancedMapTiles.add(coin10);
+        Coin coin8 = new Coin(getMapTile(11, 18).getLocation());
+        enhancedMapTiles.add(coin8);
+        Coin coin9 = new Coin(getMapTile(13, 7).getLocation());
+        enhancedMapTiles.add(coin9);
+        Coin coin10 = new Coin(getMapTile(42, 2).getLocation());
+        enhancedMapTiles.add(coin10);
 //        Coin coin11 = new Coin(getMapTile(51, 18).getLocation());
 //        enhancedMapTiles.add(coin11);
 //        Coin coin12 = new Coin(getMapTile(51, 11).getLocation());
