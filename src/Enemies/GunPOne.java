@@ -64,6 +64,10 @@ public class GunPOne extends Enemy {
                     ((IDamagable) enemy).takeDamage(5);
                     this.mapEntityStatus = MapEntityStatus.REMOVED;
                     return;
+                    
+                } else if (enemy instanceof IArmored) {
+					this.mapEntityStatus = MapEntityStatus.REMOVED;
+					return;
                 }
                 
                 /*

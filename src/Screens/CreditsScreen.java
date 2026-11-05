@@ -26,9 +26,9 @@ public class CreditsScreen extends Screen {
         // setup graphics on screen (background map, spritefont text)
         background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
-        creditsLabel = new SpriteFont("Credits", 15, 7, "Copperplate Gothic Light", 30, Color.white);
-        createdByLabel = new SpriteFont("Created by Alex Thimineur", 130, 121, "Copperplate Gothic Light", 20, Color.white);
-        returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 532, "Copperplate Gothic Light", 30, Color.white);
+        creditsLabel = new SpriteFont("Credits", 15, 7, Config.DEFAULT_FONT, 30, Color.white);
+        createdByLabel = new SpriteFont("Created by Alex Thimineur", 130, 121, Config.DEFAULT_FONT, 20, Color.white);
+        returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 532, Config.DEFAULT_FONT, 30, Color.white);
         keyLocker.lockKey(Key.SPACE);
     }
 

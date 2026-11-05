@@ -17,6 +17,8 @@ public class LevelSelectScreen extends Screen {
     protected SpriteFont Title;
 	protected SpriteFont Level;
 	protected SpriteFont Level1;
+	protected SpriteFont Level2;
+	protected SpriteFont Level3;
     protected SpriteFont ReturnMenu;
     protected SpriteFont returnInstructionsLabel;
     protected Map background;
@@ -30,18 +32,24 @@ public class LevelSelectScreen extends Screen {
 
     @Override
     public void initialize() {
-		Title = new SpriteFont("Level Select", 200, 100, "Copperplate Gothic Light", 45, new Color(255, 255, 255)); //new Color(49, 207, 240));
+		Title = new SpriteFont("Level Select", 200, 100, Config.DEFAULT_FONT, 45, new Color(255, 255, 255)); //new Color(49, 207, 240));
         Title.setOutlineColor(Color.black);
         Title.setOutlineThickness(3);
-        returnInstructionsLabel = new SpriteFont("Return to Menu", 200, 170, "Copperplate Gothic Light", 30, new Color(255, 255, 255)); 
+        returnInstructionsLabel = new SpriteFont("Return to Menu", 200, 170, Config.DEFAULT_FONT, 30, new Color(255, 255, 255)); 
         returnInstructionsLabel.setOutlineColor(Color.black);
         returnInstructionsLabel.setOutlineThickness(3);
-        Level = new SpriteFont("Tutorial", 200, 221, "Copperplate Gothic Light", 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
+        Level = new SpriteFont("Tutorial", 200, 221, Config.DEFAULT_FONT, 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
         Level.setOutlineColor(Color.black);
         Level.setOutlineThickness(3);
-        Level1 = new SpriteFont("Level 1", 200, 272, "Copperplate Gothic Light", 30, Color.white);
+        Level1 = new SpriteFont("Level 1", 200, 272, Config.DEFAULT_FONT, 30, Color.white);
 		Level1.setOutlineColor(Color.black);
 		Level1.setOutlineThickness(3);
+		Level2 = new SpriteFont("Level 2", 200, 323, Config.DEFAULT_FONT, 30, Color.white);
+		Level2.setOutlineColor(Color.black);
+		Level2.setOutlineThickness(3);
+		Level3 = new SpriteFont("Level 3", 200, 374, Config.DEFAULT_FONT, 30, Color.white);
+		Level3.setOutlineColor(Color.black);
+		Level3.setOutlineThickness(3);
         background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
         keyPressTimer = 0;
@@ -67,33 +75,29 @@ public class LevelSelectScreen extends Screen {
         }
 
         // if down is pressed on last menu item or up is pressed on first menu item, "loop" the selection back around to the beginning/end
-        if (currentMenuItemHovered > 2) {
+        if (currentMenuItemHovered > 4) {
             currentMenuItemHovered = 0;
         } else if (currentMenuItemHovered < 0) {
-            currentMenuItemHovered = 2;
+            currentMenuItemHovered = 4;
         }
 
         // sets location for blue square in front of text (pointerLocation) and also sets color of spritefont text based on which menu item is being hovered
         if (currentMenuItemHovered == 0) {
-            Level.setColor(new Color(255, 255, 255)); //new Color(255, 215, 0));
-            Level1.setColor(new Color(255, 255, 255));
-            returnInstructionsLabel.setColor(new Color(255, 255, 255));
-            pointerLocationX = 170;
-            pointerLocationY = 177;
-        } else if (currentMenuItemHovered == 1) {
-            Level.setColor(new Color(255, 255, 255)); //new Color(49, 207, 240));
-            Level1.setColor(new Color(255, 255, 255));
-            returnInstructionsLabel.setColor(new Color(255, 255, 255));
-            pointerLocationX = 170;
-            pointerLocationY = 228;
-        } else if (currentMenuItemHovered == 2) {
-			Level.setColor(new Color(255, 255, 255));
-			Level1.setColor(new Color(255, 255, 255));
-			returnInstructionsLabel.setColor(new Color(255, 255, 255));
+			pointerLocationX = 170;
+			pointerLocationY = 177;
+		} else if (currentMenuItemHovered == 1) {
+			pointerLocationX = 170;
+			pointerLocationY = 228;
+		} else if (currentMenuItemHovered == 2) {
 			pointerLocationX = 170;
 			pointerLocationY = 279;
+		} else if (currentMenuItemHovered == 3) {
+			pointerLocationX = 170;
+			pointerLocationY = 330;
+		} else if (currentMenuItemHovered == 4) {
+			pointerLocationX = 170;
+			pointerLocationY = 381;
 		}
-        
 
         // if space is pressed on menu item, change to appropriate screen based on which menu item was chosen
         if (Keyboard.isKeyUp(Key.SPACE)) {
@@ -107,6 +111,10 @@ public class LevelSelectScreen extends Screen {
                 screenCoordinator.startNewGame(GameState.LEVEL);
 			} else if (menuItemSelected == 2) {
                 screenCoordinator.startNewGame(GameState.LEVEL1);
+			} else if (menuItemSelected == 3) {
+				screenCoordinator.startNewGame(GameState.LEVEL2);
+			} else if (menuItemSelected == 4) {
+				screenCoordinator.startNewGame(GameState.LEVEL3);
 			}
 		}
                 
@@ -117,6 +125,8 @@ public class LevelSelectScreen extends Screen {
         Title.draw(graphicsHandler);
         Level.draw(graphicsHandler);
         Level1.draw(graphicsHandler);
+        Level2.draw(graphicsHandler);
+		Level3.draw(graphicsHandler);
         returnInstructionsLabel.draw(graphicsHandler);
         graphicsHandler.drawFilledRectangleWithBorder(pointerLocationX, pointerLocationY, 20, 20, new Color(255, 255, 255), Color.black, 2); //new Color(49, 207, 240), Color.black, 2);
     }

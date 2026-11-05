@@ -25,7 +25,7 @@ public class GunPCannonBall extends Enemy {
     private float moveY;
 
     public GunPCannonBall(Point spawnPoint, float targetX, float targetY) {
-        super(spawnPoint.x-(3*4), spawnPoint.y-(3*4),
+        super(spawnPoint.x-(3*30), spawnPoint.y-(3*35),
                 new SpriteSheet(ImageLoader.load("Bullet1.png"), 15, 15),"DEFAULT");
 
         movementSpeed = 4f;
@@ -63,7 +63,7 @@ public class GunPCannonBall extends Enemy {
 				
                 if (enemy instanceof IDamagable) {
                     ((IDamagable) enemy).takeDamage(50);
-                    this.mapEntityStatus = MapEntityStatus.REMOVED;
+                    //this.mapEntityStatus = MapEntityStatus.REMOVED;
                     return;
                 }
                 
@@ -104,7 +104,7 @@ public class GunPCannonBall extends Enemy {
             put("DEFAULT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(0, 0))
                     .withScale(10)
-                    .withBounds(1, 1, 5, 5)
+                    .withBounds(1, 1, 13, 13)
                     .build()
             });
         }};

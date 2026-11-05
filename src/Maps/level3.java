@@ -7,6 +7,7 @@ import Enemies.Turret;
 import Enemies.CoinMimicEnemy;
 import Enemies.BlockMimicEnemy;
 import Enemies.GargoyleEnemy;
+import Enemies.ArmoredEnemy;
 import Engine.ImageLoader;
 import EnhancedMapTiles.Coin;
 import EnhancedMapTiles.EndLevelBox;
@@ -29,7 +30,7 @@ public class level3 extends Map {
 
     public level3() {
         super("level3.txt", new CommonTileset());
-        this.playerStartPosition = getMapTile(2, 5).getLocation();
+        this.playerStartPosition = getMapTile(2, 6).getLocation();
         //this.playerStartPosition = getMapTile(40, 24).getLocation(); //test spawn
     }
 
@@ -49,26 +50,26 @@ public class level3 extends Map {
         GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(17, 17).getLocation().addY(2), Direction.RIGHT);
         enemies.add(goblinEnemy);
 
-        GoblinEnemy goblinEnemy2 = new GoblinEnemy(getMapTile(30, 25).getLocation().addY(2), Direction.LEFT);
-        enemies.add(goblinEnemy2);
+        ArmoredEnemy armoredEnemy = new ArmoredEnemy(getMapTile(28, 25).getLocation().addY(2), Direction.LEFT);
+        enemies.add(armoredEnemy);
         
-        GoblinEnemy goblinEnemy3 = new GoblinEnemy(getMapTile(32, 25).getLocation().addY(2), Direction.LEFT);
-        enemies.add(goblinEnemy3);
+        ArmoredEnemy armoredEnemy1 = new ArmoredEnemy(getMapTile(32, 25).getLocation().addY(2), Direction.LEFT);
+        enemies.add(armoredEnemy1);
         
-        GoblinEnemy goblinEnemy4 = new GoblinEnemy(getMapTile(28, 25).getLocation().addY(2), Direction.LEFT);
-        enemies.add(goblinEnemy4);
+        //GoblinEnemy goblinEnemy4 = new GoblinEnemy(getMapTile(28, 25).getLocation().addY(2), Direction.LEFT);
+        //enemies.add(goblinEnemy4);
              
         GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(23, 15).getLocation().addY(2), Direction.RIGHT);
         enemies.add(gargoyleEnemy);
 
-        GargoyleEnemy gargoyleEnemy2 = new GargoyleEnemy(getMapTile(62, 10).getLocation().addY(2), Direction.LEFT);
+        GargoyleEnemy gargoyleEnemy2 = new GargoyleEnemy(getMapTile(59, 9).getLocation().addY(2), Direction.LEFT);
         enemies.add(gargoyleEnemy2);
         
         CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(59, 13).getLocation(), Direction.LEFT);
         enemies.add(coinMimicEnemy);
         
-        //CoinMimicEnemy coinMimicEnemy2 = new CoinMimicEnemy(getMapTile(58, 17).getLocation(), Direction.LEFT);
-        //enemies.add(coinMimicEnemy2);
+        CoinMimicEnemy coinMimicEnemy2 = new CoinMimicEnemy(getMapTile(18, 23).getLocation(), Direction.LEFT);
+        enemies.add(coinMimicEnemy2);
         
         BlockMimicEnemy blockMimicEnemy = new BlockMimicEnemy(getMapTile(14, 2).getLocation(), Direction.LEFT);
         enemies.add(blockMimicEnemy);
@@ -118,7 +119,7 @@ public class level3 extends Map {
         BlockMimicEnemy blockMimicEnemy15 = new BlockMimicEnemy(getMapTile(68, 8).getLocation(), Direction.LEFT);
         enemies.add(blockMimicEnemy15);
         
-        BlockMimicEnemy blockMimicEnemy16 = new BlockMimicEnemy(getMapTile(26, 26).getLocation(), Direction.LEFT);
+        BlockMimicEnemy blockMimicEnemy16 = new BlockMimicEnemy(getMapTile(29, 26).getLocation(), Direction.LEFT);
         enemies.add(blockMimicEnemy16);
         
         
@@ -162,23 +163,23 @@ public class level3 extends Map {
         //enhancedMapTiles.add(hmp3);
         //enhancedMapTiles.add(hmp4);
         //enhancedMapTiles.add(hmp5);
-       // EndLevelBox endLevelBox = new EndLevelBox(getMapTile(68, 8).getLocation());
-       // enhancedMapTiles.add(endLevelBox);
-       // EndLevelBox endLevelBox1 = new EndLevelBox(getMapTile(68, 7).getLocation());
-        //enhancedMapTiles.add(endLevelBox1);
-        //EndLevelBox endLevelBox2 = new EndLevelBox(getMapTile(68, 6).getLocation());
-        //enhancedMapTiles.add(endLevelBox2);
+        EndLevelBox endLevelBox = new EndLevelBox(getMapTile(66, 26).getLocation());
+        enhancedMapTiles.add(endLevelBox);
+        EndLevelBox endLevelBox1 = new EndLevelBox(getMapTile(65, 27).getLocation());
+        enhancedMapTiles.add(endLevelBox1);
+        EndLevelBox endLevelBox2 = new EndLevelBox(getMapTile(64, 28).getLocation());
+        enhancedMapTiles.add(endLevelBox2);
 
         //ammo boxes
-        SingleAmmo singleAmmo = new SingleAmmo(getMapTile(2, 5).getLocation());
+        SingleAmmo singleAmmo = new SingleAmmo(getMapTile(3, 7).getLocation());
         enhancedMapTiles.add(singleAmmo);
-        TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(2, 5).getLocation());
+        TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(3, 7).getLocation());
         enhancedMapTiles.add(twelveAmmo);
-        CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(2, 5).getLocation());
+        CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(63, 9).getLocation());
         enhancedMapTiles.add(cannonAmmo);
 
-        Coin coin1 = new Coin(getMapTile(18, 23).getLocation());
-        enhancedMapTiles.add(coin1);
+       // Coin coin1 = new Coin(getMapTile(18, 23).getLocation());
+      //  enhancedMapTiles.add(coin1);
 
         Coin coin2 = new Coin(getMapTile(18, 14).getLocation());
         enhancedMapTiles.add(coin2);
@@ -207,7 +208,7 @@ public class level3 extends Map {
         Coin coin10 = new Coin(getMapTile(53, 26).getLocation());
         enhancedMapTiles.add(coin10);
         
-        Coin coin11 = new Coin(getMapTile(58, 17).getLocation());
+        Coin coin11 = new Coin(getMapTile(58, 19).getLocation());
         enhancedMapTiles.add(coin11);
 
 

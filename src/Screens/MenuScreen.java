@@ -63,20 +63,20 @@ public class MenuScreen extends Screen {
 		Title = new SpriteFont("Blitz Goblin", 200, 100, Config.DEFAULT_FONT, 45, new Color(255, 255, 255)); //new Color(49, 207, 240));
         Title.setOutlineColor(Color.black);
         Title.setOutlineThickness(3);
-        playGame = new SpriteFont("PLAY GAME", 200, 170, Config.DEFAULT_FONT, 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
+        playGame = new SpriteFont("Play Game", 200, 170, Config.DEFAULT_FONT, 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
         playGame.setOutlineColor(Color.black);
         playGame.setOutlineThickness(3);
-        howToPlay = new SpriteFont("HOW TO PLAY", 200, 221, Config.DEFAULT_FONT, 30, Color.white);
+        howToPlay = new SpriteFont("How To Play", 200, 221, Config.DEFAULT_FONT, 30, Color.white);
 		howToPlay.setOutlineColor(Color.black);
 		howToPlay.setOutlineThickness(3);
-		levelSelect = new SpriteFont("LEVEL SELECT", 200, 272, Config.DEFAULT_FONT, 30, Color.white);
+		levelSelect = new SpriteFont("Level Select", 200, 272, Config.DEFAULT_FONT, 30, Color.white);
 		levelSelect.setOutlineColor(Color.black);
 		levelSelect.setOutlineThickness(3);
-        credits = new SpriteFont("CREDITS", 200, 323, Config.DEFAULT_FONT, 30, new Color(255, 255, 255));     // new Color(49, 207, 240));
-		settings = new SpriteFont("SETTINGS", 200, 374, Config.DEFAULT_FONT, 30, Color.white);
+        credits = new SpriteFont("Credits", 200, 323, Config.DEFAULT_FONT, 30, new Color(255, 255, 255));     // new Color(49, 207, 240));
+		settings = new SpriteFont("Settings", 200, 374, Config.DEFAULT_FONT, 30, Color.white);
 		settings.setOutlineColor(Color.black);
 		settings.setOutlineThickness(3);
-		settingsTitle = new SpriteFont("SETTINGS", 200, 170, Config.DEFAULT_FONT, 30, Color.white);
+		settingsTitle = new SpriteFont("Settings", 200, 170, Config.DEFAULT_FONT, 30, Color.white);
 		settingsTitle.setOutlineColor(Color.black);
 		settingsTitle.setOutlineThickness(3);
 		debugCountersOption = new SpriteFont("", 200, 221, Config.DEFAULT_FONT, 30, Color.white);
@@ -85,7 +85,7 @@ public class MenuScreen extends Screen {
 		showHitboxesOption = new SpriteFont("", 200, 272, Config.DEFAULT_FONT, 30, Color.white);
 		showHitboxesOption.setOutlineColor(Color.black);
 		showHitboxesOption.setOutlineThickness(3);
-		backOption = new SpriteFont("BACK", 200, 323, Config.DEFAULT_FONT, 30, Color.white);
+		backOption = new SpriteFont("Back", 200, 323, Config.DEFAULT_FONT, 30, Color.white);
 		backOption.setOutlineColor(Color.black);
 		backOption.setOutlineThickness(3);
 		warning = new SpriteFont("warning: placeholder assets all over the place", 0, 8,
@@ -108,10 +108,10 @@ public class MenuScreen extends Screen {
         warningShakeFrame++;
 
         if (settingsMenuOpen) {
-            debugCountersOption.setText("DEBUG COUNTERS: "
-                    + (GamePanel.isDebugCountersEnabled() ? "ON" : "OFF"));
-            showHitboxesOption.setText("SHOW HITBOXES: "
-                    + (GamePanel.isHitboxesEnabled() ? "ON" : "OFF"));
+            debugCountersOption.setText("Debug Counters: "
+                    + (GamePanel.isDebugCountersEnabled() ? "On" : "Off"));
+            showHitboxesOption.setText("Show Hitboxes: "
+                    + (GamePanel.isHitboxesEnabled() ? "On" : "Off"));
         }
 
         // if down or up is pressed, change the highlighted menu item
@@ -160,12 +160,12 @@ public class MenuScreen extends Screen {
         if (settingsMenuOpen) {
             if (settingsMenuItemHovered == 0) {
                 GamePanel.setDebugCountersEnabled(!GamePanel.isDebugCountersEnabled());
-                debugCountersOption.setText("DEBUG COUNTERS: "
-                        + (GamePanel.isDebugCountersEnabled() ? "ON" : "OFF"));
+                debugCountersOption.setText("Debug Counters: "
+                        + (GamePanel.isDebugCountersEnabled() ? "On" : "Off"));
             } else if (settingsMenuItemHovered == 1) {
                 GamePanel.setHitboxesEnabled(!GamePanel.isHitboxesEnabled());
-                showHitboxesOption.setText("SHOW HITBOXES: "
-                        + (GamePanel.isHitboxesEnabled() ? "ON" : "OFF"));
+                showHitboxesOption.setText("Show Hitboxes: "
+                        + (GamePanel.isHitboxesEnabled() ? "On" : "Off"));
             } else {
                 settingsMenuOpen = false;
             }
