@@ -33,25 +33,25 @@ public class LevelSelectScreen extends Screen {
 
     @Override
     public void initialize() {
-		Title = new SpriteFont("Level Select", 200, 100, Config.DEFAULT_FONT, 45, new Color(255, 255, 255)); //new Color(49, 207, 240));
+		Title = new SpriteFont("Level Select", 200, 305, Config.DEFAULT_FONT, 45, new Color(255, 255, 255)); //new Color(49, 207, 240));
         Title.setOutlineColor(Color.black);
         Title.setOutlineThickness(3);
-        returnInstructionsLabel = new SpriteFont("Return to Menu", 200, 170, Config.DEFAULT_FONT, 30, new Color(255, 255, 255)); 
+        returnInstructionsLabel = new SpriteFont("Return to Menu", 200, 342, Config.DEFAULT_FONT, 30, new Color(255, 255, 255));
         returnInstructionsLabel.setOutlineColor(Color.black);
         returnInstructionsLabel.setOutlineThickness(3);
-        Level = new SpriteFont("Tutorial", 200, 221, Config.DEFAULT_FONT, 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
+        Level = new SpriteFont("Tutorial", 200, 380, Config.DEFAULT_FONT, 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
         Level.setOutlineColor(Color.black);
         Level.setOutlineThickness(3);
-        Level1 = new SpriteFont("Level 1", 200, 272, Config.DEFAULT_FONT, 30, Color.white);
+        Level1 = new SpriteFont("Level 1", 200, 418, Config.DEFAULT_FONT, 30, Color.white);
 		Level1.setOutlineColor(Color.black);
 		Level1.setOutlineThickness(3);
-		Level2 = new SpriteFont("Level 2", 200, 323, Config.DEFAULT_FONT, 30, Color.white);
+		Level2 = new SpriteFont("Level 2", 200, 456, Config.DEFAULT_FONT, 30, Color.white);
 		Level2.setOutlineColor(Color.black);
 		Level2.setOutlineThickness(3);
-		Level3 = new SpriteFont("Level 3", 200, 374, Config.DEFAULT_FONT, 30, Color.white);
+		Level3 = new SpriteFont("Level 3", 200, 494, Config.DEFAULT_FONT, 30, Color.white);
 		Level3.setOutlineColor(Color.black);
 		Level3.setOutlineThickness(3);
-		GamblingRoom = new SpriteFont("Gambling Room", 200, 425, Config.DEFAULT_FONT, 30, Color.white);
+		GamblingRoom = new SpriteFont("Gambling Room", 200, 532, Config.DEFAULT_FONT, 30, Color.white);
 		GamblingRoom.setOutlineColor(Color.black);
 		GamblingRoom.setOutlineThickness(3);
         background = new TitleScreenMapNewVersion();
@@ -88,22 +88,22 @@ public class LevelSelectScreen extends Screen {
         // sets location for blue square in front of text (pointerLocation) and also sets color of spritefont text based on which menu item is being hovered
         if (currentMenuItemHovered == 0) {
 			pointerLocationX = 170;
-			pointerLocationY = 177;
+			pointerLocationY = 349;
 		} else if (currentMenuItemHovered == 1) {
 			pointerLocationX = 170;
-			pointerLocationY = 228;
+			pointerLocationY = 387;
 		} else if (currentMenuItemHovered == 2) {
 			pointerLocationX = 170;
-			pointerLocationY = 279;
+			pointerLocationY = 425;
 		} else if (currentMenuItemHovered == 3) {
 			pointerLocationX = 170;
-			pointerLocationY = 330;
+			pointerLocationY = 463;
 		} else if (currentMenuItemHovered == 4) {
 			pointerLocationX = 170;
-			pointerLocationY = 381;
+			pointerLocationY = 501;
 		} else if (currentMenuItemHovered == 5) {
 			pointerLocationX = 170;
-			pointerLocationY = 432;
+			pointerLocationY = 539;
 		}
 
         // if space is pressed on menu item, change to appropriate screen based on which menu item was chosen

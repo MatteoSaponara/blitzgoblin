@@ -302,7 +302,8 @@ public class CommonTileset extends Tileset {
                 .withTileType(TileType.HEALTH_PICKUP);
 
         mapTiles.add(healthPickUpTile);
-
+        
         return mapTiles;
     }
 }
+

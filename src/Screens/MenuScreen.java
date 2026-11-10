@@ -14,7 +14,6 @@ import java.io.IOException;
 public class MenuScreen extends Screen {
     protected ScreenCoordinator screenCoordinator;
     protected int currentMenuItemHovered = 0; // current menu item being "hovered" over
-    protected SpriteFont Title;
     protected SpriteFont playGame;
     protected SpriteFont credits;
     protected SpriteFont howToPlay;
@@ -60,32 +59,29 @@ public class MenuScreen extends Screen {
     @Override
     public void initialize() {
         loadCustomFont();
-		Title = new SpriteFont("Blitz Goblin", 200, 100, Config.DEFAULT_FONT, 45, new Color(255, 255, 255)); //new Color(49, 207, 240));
-        Title.setOutlineColor(Color.black);
-        Title.setOutlineThickness(3);
-        playGame = new SpriteFont("Play Game", 200, 170, Config.DEFAULT_FONT, 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
+		playGame = new SpriteFont("Play Game", 200, 375, Config.DEFAULT_FONT, 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
         playGame.setOutlineColor(Color.black);
         playGame.setOutlineThickness(3);
-        howToPlay = new SpriteFont("How To Play", 200, 221, Config.DEFAULT_FONT, 30, Color.white);
+        howToPlay = new SpriteFont("How To Play", 200, 415, Config.DEFAULT_FONT, 30, Color.white);
 		howToPlay.setOutlineColor(Color.black);
 		howToPlay.setOutlineThickness(3);
-		levelSelect = new SpriteFont("Level Select", 200, 272, Config.DEFAULT_FONT, 30, Color.white);
+		levelSelect = new SpriteFont("Level Select", 200, 455, Config.DEFAULT_FONT, 30, Color.white);
 		levelSelect.setOutlineColor(Color.black);
 		levelSelect.setOutlineThickness(3);
-        credits = new SpriteFont("Credits", 200, 323, Config.DEFAULT_FONT, 30, new Color(255, 255, 255));     // new Color(49, 207, 240));
-		settings = new SpriteFont("Settings", 200, 374, Config.DEFAULT_FONT, 30, Color.white);
+        credits = new SpriteFont("Credits", 200, 495, Config.DEFAULT_FONT, 30, new Color(255, 255, 255));     // new Color(49, 207, 240));
+		settings = new SpriteFont("Settings", 200, 535, Config.DEFAULT_FONT, 30, Color.white);
 		settings.setOutlineColor(Color.black);
 		settings.setOutlineThickness(3);
-		settingsTitle = new SpriteFont("Settings", 200, 170, Config.DEFAULT_FONT, 30, Color.white);
+		settingsTitle = new SpriteFont("Settings", 200, 350, Config.DEFAULT_FONT, 30, Color.white);
 		settingsTitle.setOutlineColor(Color.black);
 		settingsTitle.setOutlineThickness(3);
-		debugCountersOption = new SpriteFont("", 200, 221, Config.DEFAULT_FONT, 30, Color.white);
+		debugCountersOption = new SpriteFont("", 200, 395, Config.DEFAULT_FONT, 30, Color.white);
 		debugCountersOption.setOutlineColor(Color.black);
 		debugCountersOption.setOutlineThickness(3);
-		showHitboxesOption = new SpriteFont("", 200, 272, Config.DEFAULT_FONT, 30, Color.white);
+		showHitboxesOption = new SpriteFont("", 200, 440, Config.DEFAULT_FONT, 30, Color.white);
 		showHitboxesOption.setOutlineColor(Color.black);
 		showHitboxesOption.setOutlineThickness(3);
-		backOption = new SpriteFont("Back", 200, 323, Config.DEFAULT_FONT, 30, Color.white);
+		backOption = new SpriteFont("Back", 200, 485, Config.DEFAULT_FONT, 30, Color.white);
 		backOption.setOutlineColor(Color.black);
 		backOption.setOutlineThickness(3);
 		warning = new SpriteFont("warning: placeholder assets all over the place", 0, 8,
@@ -189,9 +185,9 @@ public class MenuScreen extends Screen {
     private void updatePointerLocation() {
         pointerLocationX = 170;
         if (settingsMenuOpen) {
-            pointerLocationY = 228 + settingsMenuItemHovered * 51;
+            pointerLocationY = 402 + settingsMenuItemHovered * 45;
         } else {
-            pointerLocationY = 177 + currentMenuItemHovered * 51;
+            pointerLocationY = 382 + currentMenuItemHovered * 40;
         }
     }
 
@@ -208,7 +204,6 @@ public class MenuScreen extends Screen {
             showHitboxesOption.draw(graphicsHandler);
             backOption.draw(graphicsHandler);
         } else {
-            Title.draw(graphicsHandler);
             playGame.draw(graphicsHandler);
             howToPlay.draw(graphicsHandler);
             levelSelect.draw(graphicsHandler);

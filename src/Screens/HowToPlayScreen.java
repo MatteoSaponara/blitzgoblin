@@ -40,23 +40,23 @@ public class HowToPlayScreen extends Screen {
         // setup graphics on screen (background map, spritefont text)
         background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
-        HTPLabel = new SpriteFont("How to Play", 200, 100, Config.DEFAULT_FONT, 40, Color.white);
-        ControlsLabel = new SpriteFont("Controls:", 100, 180, Config.DEFAULT_FONT, 30, Color.white);
-        WControlsLabel = new SpriteFont("Jump: W or Space", 100, 210, Config.DEFAULT_FONT, 25, Color.white);
-        AControlsLabel = new SpriteFont("MoveLeft: A", 100, 240, Config.DEFAULT_FONT, 25, Color.white);
-        DControlsLabel = new SpriteFont("MoveRight: D", 100, 270, Config.DEFAULT_FONT, 25, Color.white);
-        SControlsLabel = new SpriteFont("Crouch: S", 100, 300, Config.DEFAULT_FONT, 25, Color.white);
-        SPControlsLabel = new SpriteFont("Interact: E", 100, 330, Config.DEFAULT_FONT, 25, Color.white);
-        ATControlsLabel = new SpriteFont("Attack: Mouse Click", 100, 360, Config.DEFAULT_FONT, 25, Color.white);
-        XControlsLabel = new SpriteFont("Injure/Reset: X", 350, 210, Config.DEFAULT_FONT, 25, Color.white);
-        TyControlsLabel = new SpriteFont("Gun types: ", 350, 240, Config.DEFAULT_FONT, 25, Color.white);
-        OneControlsLabel = new SpriteFont("One Shot: 1", 350, 270, Config.DEFAULT_FONT, 25, Color.white);
-        TwoControlsLabel = new SpriteFont("Twelve shot: 2", 350, 300, Config.DEFAULT_FONT, 25, Color.white);
-        ThreeControlsLabel = new SpriteFont("Cannon Shot: 3", 350, 330, Config.DEFAULT_FONT, 25, Color.white);
-        fullscreenControlsLabel = new SpriteFont("Fullscreen: F11", 350, 360, Config.DEFAULT_FONT, 25, Color.white);
+        HTPLabel = new SpriteFont("How to Play", 200, 305, Config.DEFAULT_FONT, 40, Color.white);
+        ControlsLabel = new SpriteFont("Controls:", 100, 344, Config.DEFAULT_FONT, 30, Color.white);
+        WControlsLabel = new SpriteFont("Jump: W or Space", 100, 374, Config.DEFAULT_FONT, 25, Color.white);
+        AControlsLabel = new SpriteFont("MoveLeft: A", 100, 402, Config.DEFAULT_FONT, 25, Color.white);
+        DControlsLabel = new SpriteFont("MoveRight: D", 100, 430, Config.DEFAULT_FONT, 25, Color.white);
+        SControlsLabel = new SpriteFont("Crouch: S", 100, 458, Config.DEFAULT_FONT, 25, Color.white);
+        SPControlsLabel = new SpriteFont("Interact: E", 100, 486, Config.DEFAULT_FONT, 25, Color.white);
+        ATControlsLabel = new SpriteFont("Attack: Mouse Click", 100, 514, Config.DEFAULT_FONT, 25, Color.white);
+        XControlsLabel = new SpriteFont("Injure/Reset: X", 350, 374, Config.DEFAULT_FONT, 25, Color.white);
+        TyControlsLabel = new SpriteFont("Gun types: ", 350, 402, Config.DEFAULT_FONT, 25, Color.white);
+        OneControlsLabel = new SpriteFont("One Shot: 1", 350, 430, Config.DEFAULT_FONT, 25, Color.white);
+        TwoControlsLabel = new SpriteFont("Twelve shot: 2", 350, 458, Config.DEFAULT_FONT, 25, Color.white);
+        ThreeControlsLabel = new SpriteFont("Cannon Shot: 3", 350, 486, Config.DEFAULT_FONT, 25, Color.white);
+        fullscreenControlsLabel = new SpriteFont("Fullscreen: F11", 350, 514, Config.DEFAULT_FONT, 25, Color.white);
         
         
-        returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 532, Config.DEFAULT_FONT, 30, Color.white);
+        returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 558, Config.DEFAULT_FONT, 30, Color.white);
         keyLocker.lockKey(Key.SPACE);
     }
 

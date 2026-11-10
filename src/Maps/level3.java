@@ -72,8 +72,35 @@ public class level3 extends Map {
         CoinMimicEnemy coinMimicEnemy2 = new CoinMimicEnemy(getMapTile(18, 23).getLocation(), Direction.LEFT);
         enemies.add(coinMimicEnemy2);
         
-        Statlactite statlactite = new Statlactite(getMapTile(11, 3).getLocation());
+        Statlactite statlactite = new Statlactite(getMapTile(12, 3).getLocation());
         enemies.add(statlactite);
+        
+        Statlactite statlactite2 = new Statlactite(getMapTile(13, 3).getLocation());
+        enemies.add(statlactite2);
+        
+        Statlactite statlactite4 = new Statlactite(getMapTile(25, 3).getLocation());
+        enemies.add(statlactite4);
+        
+        Statlactite statlactite5 = new Statlactite(getMapTile(31, 3).getLocation());
+        enemies.add(statlactite5);
+        
+        Statlactite statlactite6 = new Statlactite(getMapTile(40, 3).getLocation());
+        enemies.add(statlactite6);
+        
+        Statlactite statlactite7 = new Statlactite(getMapTile(43, 2).getLocation());
+        enemies.add(statlactite7);
+        
+        Statlactite statlactite8 = new Statlactite(getMapTile(37, 3).getLocation());
+        enemies.add(statlactite8);
+        
+        Statlactite statlactite9 = new Statlactite(getMapTile(36, 3).getLocation());
+        enemies.add(statlactite9);
+        
+        Statlactite statlactite10 = new Statlactite(getMapTile(16, 3).getLocation());
+        enemies.add(statlactite10);
+        
+        Statlactite statlactite11 = new Statlactite(getMapTile(30, 3).getLocation());
+        enemies.add(statlactite11);
         
         BlockMimicEnemy blockMimicEnemy = new BlockMimicEnemy(getMapTile(14, 2).getLocation(), Direction.LEFT);
         enemies.add(blockMimicEnemy);

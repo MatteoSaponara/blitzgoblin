@@ -82,7 +82,7 @@ public class Lever extends Enemy implements IDamagable{
             put("DEFAULT", new Frame[]{
                     new FrameBuilder(spriteSheet.getSprite(0, 0))
                             .withScale(1)
-                            .withBounds(1, 1, 5, 5)
+                            .withBounds(1, 1, 27, 27)
                             .build()
             });
         }};
