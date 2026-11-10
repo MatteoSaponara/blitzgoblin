@@ -4,6 +4,7 @@ import Builders.FrameBuilder;
 import Engine.ImageLoader;
 import GameObject.Frame;
 import GameObject.ImageEffect;
+import GameObject.PhysicsParticle;
 import GameObject.SpriteSheet;
 import Level.Enemy;
 import Level.MapEntity;
@@ -13,16 +14,20 @@ import Utils.Direction;
 import Utils.Point;
 import Interfaces.IDamagable;
 
+import java.awt.Color;
 import java.util.HashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 // This class is for fireballs shot by dinosaur and turret enemies
 // it travels in a straight line (x axis) and disappears on a solid tile collision
 public class Fireball extends Enemy implements IDamagable {
+    private static final int EMBER_TRAIL_INTERVAL = 3;
     private float movementSpeed;
     private int existenceFrames;
     private final boolean hasExistenceLimit;
     private final Direction direction;
     private int health = 1;
+    private int emberTrailFrame;
 
     public Fireball(Point location, float movementSpeed, int existenceFrames) {
         this(location, movementSpeed, existenceFrames, true, getDirection(movementSpeed));
@@ -65,7 +70,35 @@ public class Fireball extends Enemy implements IDamagable {
             if (hasExistenceLimit) {
                 existenceFrames--;
             }
+            if (mapEntityStatus == MapEntityStatus.ACTIVE
+                    && ++emberTrailFrame >= EMBER_TRAIL_INTERVAL) {
+                emberTrailFrame = 0;
+                spawnEmber();
+            }
         }
+    }
+
+    private void spawnEmber() {
+        if (map == null) {
+            return;
+        }
+
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        float directionX = direction == Direction.RIGHT ? 1 : -1;
+        PhysicsParticle ember = new PhysicsParticle(
+                getX() + getWidth() / 2f - directionX * (float) random.nextDouble(5, 9),
+                getY() + getHeight() / 2f + (float) random.nextDouble(-3, 3),
+                (float) random.nextDouble(5, 7),
+                new Color(255, random.nextInt(90, 150), random.nextInt(10, 40), 230));
+        ember.setVelocity(
+                -directionX * (float) random.nextDouble(0.1, 0.4),
+                (float) random.nextDouble(-0.5, 0.1));
+        ember.setGravity(0, -0.01f);
+        ember.setDrag(0.05f);
+        ember.setLifetimeFrames(random.nextInt(28, 41));
+        ember.setFadesOut(true);
+        ember.setShrinksToNothing(true);
+        map.addParticle(ember);
     }
 
     @Override

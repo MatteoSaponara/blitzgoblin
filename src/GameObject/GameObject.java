@@ -367,24 +367,24 @@ public class GameObject extends AnimatedSprite {
                 currentFrame.getHeight(),
                 currentFrame.getImageEffect());
         } else if (map != null) {
-            // position relative to the exact camera, then snapped to the pixel grid
-            float relX = Math.round(x) - map.getCamera().getX();
-            float relY = Math.round(y) - map.getCamera().getY();
+            // Snap world positions and camera offsets separately so map objects share camera movement steps.
+            int cameraPixelX = GraphicsHandler.toPixelGrid(map.getCamera().getX());
+            int cameraPixelY = GraphicsHandler.toPixelGrid(map.getCamera().getY());
             int worldW = currentFrame.getWidth();
             int worldH = currentFrame.getHeight();
 
             int px1, py1, px2, py2;
             if (sharedEdgeDraw) {
-                px1 = GraphicsHandler.toPixelGrid(relX);
-                py1 = GraphicsHandler.toPixelGrid(relY);
-                px2 = GraphicsHandler.toPixelGrid(relX + worldW);
-                py2 = GraphicsHandler.toPixelGrid(relY + worldH);
+                px1 = GraphicsHandler.toPixelGrid(x) - cameraPixelX;
+                py1 = GraphicsHandler.toPixelGrid(y) - cameraPixelY;
+                px2 = GraphicsHandler.toPixelGrid(x + worldW) - cameraPixelX;
+                py2 = GraphicsHandler.toPixelGrid(y + worldH) - cameraPixelY;
             } else {
                 int pw = Math.max(GraphicsHandler.toPixelGrid(worldW), 1);
                 int ph = Math.max(GraphicsHandler.toPixelGrid(worldH), 1);
-                px1 = GraphicsHandler.toPixelGrid(relX);
+                px1 = GraphicsHandler.toPixelGrid(x) - cameraPixelX;
                 // anchored by the bottom edge so sprites line up with tile tops
-                py2 = GraphicsHandler.toPixelGrid(relY + worldH);
+                py2 = GraphicsHandler.toPixelGrid(y + worldH) - cameraPixelY;
                 py1 = py2 - ph;
                 px2 = px1 + pw;
             }

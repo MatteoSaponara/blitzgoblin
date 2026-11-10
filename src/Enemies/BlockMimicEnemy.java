@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class BlockMimicEnemy extends Enemy implements IDamagable {
-    private float flySpeed = 10f;
+    private float flySpeed = 7.5f;
     private float aggroRadius = 250;
     private int health = 1;
     protected int transformTimer;

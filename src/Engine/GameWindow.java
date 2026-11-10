@@ -50,10 +50,10 @@ public class GameWindow {
 		});
 		gamePanel.setFocusable(true);
 		gamePanel.requestFocusInWindow();
+		gamePanel.setPreferredSize(new Dimension(Config.GAME_WINDOW_WIDTH, Config.GAME_WINDOW_HEIGHT));
 		gameWindow.setContentPane(gamePanel);
 		gameWindow.setResizable(true);
-		//gameWindow.setSize(Config.GAME_WINDOW_WIDTH, Config.GAME_WINDOW_HEIGHT);
-		gameWindow.setSize(Config.GAME_WINDOW_WIDTH - 33, Config.GAME_WINDOW_HEIGHT);
+		gameWindow.pack();
 		gameWindow.setLocationRelativeTo(null);
 		gameWindow.setVisible(true);
 		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // it'd be nice if this actually worked more than 1/3rd of the time

@@ -110,7 +110,7 @@ public class GunPTwelveShot extends Enemy {
             put("DEFAULT", new Frame[] {
                 new FrameBuilder(spriteSheet.getSprite(0, 0))
                     .withScale(2.5f)
-                    .withBounds(1, 1, 5, 5)
+                    .withBounds(0, 0, 7, 7)
                     .build()
             });
         }};
