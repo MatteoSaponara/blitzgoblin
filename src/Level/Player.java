@@ -849,6 +849,14 @@ public abstract class Player extends GameObject
             {
                 health--;
                 invincibilityTimer = INVINCIBILITY_DURATION;
+                float playerCenterX = getX() + getWidth() / 2f;
+                float playerCenterY = getY() + getHeight() / 2f;
+                float sourceCenterX = mapEntity.getX() + mapEntity.getWidth() / 2f;
+                float sourceCenterY = mapEntity.getY() + mapEntity.getHeight() / 2f;
+                applyRecoilVector(
+                        playerCenterX - sourceCenterX,
+                        playerCenterY - sourceCenterY,
+                        ATTACK_PUSHBACK_FORCE);
 
                 if (health <= 0)
                 {
@@ -1080,6 +1088,11 @@ public abstract class Player extends GameObject
         float[] barrelPosition = getShotgun().getCurrentGunBarrelEndPixelPosition();
         float recoilDirectionX = barrelPosition[0] - targetX;
         float recoilDirectionY = barrelPosition[1] - targetY;
+        applyRecoilVector(recoilDirectionX, recoilDirectionY, recoilForce);
+    }
+
+    private void applyRecoilVector(float recoilDirectionX, float recoilDirectionY, float recoilForce)
+    {
         float directionLength = (float) Math.hypot(recoilDirectionX, recoilDirectionY);
 
         if (directionLength == 0)

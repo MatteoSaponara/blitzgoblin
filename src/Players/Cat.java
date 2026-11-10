@@ -23,9 +23,9 @@ public class Cat extends Player {
 
     // hurtbox used for every animation frame, in unscaled spritesheet pixel coordinates
     private static final int BOUNDS_X = 19;
-    private static final int BOUNDS_Y = 6;
+    private static final int BOUNDS_Y = 10;
     private static final int BOUNDS_WIDTH = 33;
-    private static final int BOUNDS_HEIGHT = 44;
+    private static final int BOUNDS_HEIGHT = 40;
 
     private boolean spriteHasShotgun;
 

@@ -104,20 +104,15 @@ public class PhysicsParticle {
             return;
         }
 
-        Color renderColor = color;
-        if (opacity < 1) {
-            int colorAlpha = Math.round(color.getAlpha() * opacity);
-            renderColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), colorAlpha);
-        }
-
         graphicsHandler.drawParticle(
                 drawX,
                 drawY,
                 drawWidth,
                 drawHeight,
                 rotationDegrees,
-                renderColor,
-                shape == Shape.CIRCLE);
+                color,
+                shape == Shape.CIRCLE,
+                opacity);
     }
 
     private static float snapToPixelGrid(float value) {

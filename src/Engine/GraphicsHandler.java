@@ -16,6 +16,8 @@ import java.util.stream.IntStream;
  * window with a coverage-weighted upscale before any other draw call and at the end of the frame.
  */
 public class GraphicsHandler {
+    private static final AlphaComposite[] PARTICLE_ALPHA_COMPOSITES = createParticleAlphaComposites();
+
     private Graphics2D g;
 
     // device pixels per logical pixel (above 1 on scaled/HiDPI displays)
@@ -86,6 +88,9 @@ public class GraphicsHandler {
             pixelBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
             pixelGraphics = pixelBuffer.createGraphics();
             pixelGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            pixelGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            pixelGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+            pixelGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
             outBuffer = new BufferedImage(outW, outH, BufferedImage.TYPE_INT_ARGB_PRE);
             pixelData = ((DataBufferInt) pixelBuffer.getRaster().getDataBuffer()).getData();
             outData = ((DataBufferInt) outBuffer.getRaster().getDataBuffer()).getData();
@@ -280,16 +285,46 @@ public class GraphicsHandler {
 
     public void drawParticle(float x, float y, float width, float height, float rotationDegrees,
                              Color color, boolean circular) {
+        drawParticle(x, y, width, height, rotationDegrees, color, circular, 1);
+    }
+
+    public void drawParticle(float x, float y, float width, float height, float rotationDegrees,
+                             Color color, boolean circular, float opacity) {
         if (pixelGridEnabled) {
             ensurePixelBuffer();
+            AlphaComposite composite = getParticleAlphaComposite(opacity, pixelGraphics.getComposite());
+            Color renderColor = composite == null && opacity < 1 ? applyOpacity(color, opacity) : color;
             int pixelX = toPixelGrid(x);
             int pixelY = toPixelGrid(y);
             int pixelWidth = Math.max(toPixelGrid(x + width) - pixelX, 1);
             int pixelHeight = Math.max(toPixelGrid(y + height) - pixelY, 1);
+            if (rotationDegrees == 0) {
+                Color oldColor = pixelGraphics.getColor();
+                Composite oldComposite = pixelGraphics.getComposite();
+                if (composite != null) {
+                    pixelGraphics.setComposite(composite);
+                }
+                pixelGraphics.setColor(renderColor);
+                if (circular) {
+                    pixelGraphics.fillOval(pixelX, pixelY, pixelWidth, pixelHeight);
+                } else {
+                    pixelGraphics.fillRect(pixelX, pixelY, pixelWidth, pixelHeight);
+                }
+                pixelGraphics.setColor(oldColor);
+                if (composite != null) {
+                    pixelGraphics.setComposite(oldComposite);
+                }
+                pixelLayerDirty = true;
+                return;
+            }
+
             Graphics2D particleGraphics = (Graphics2D) pixelGraphics.create();
             particleGraphics.rotate(Math.toRadians(rotationDegrees),
                     pixelX + pixelWidth / 2.0, pixelY + pixelHeight / 2.0);
-            particleGraphics.setColor(color);
+            if (composite != null) {
+                particleGraphics.setComposite(composite);
+            }
+            particleGraphics.setColor(renderColor);
             if (circular) {
                 particleGraphics.fill(new Ellipse2D.Float(pixelX, pixelY, pixelWidth, pixelHeight));
             } else {
@@ -301,15 +336,44 @@ public class GraphicsHandler {
         }
 
         flushPixelLayer();
+        AlphaComposite composite = getParticleAlphaComposite(opacity, g.getComposite());
+        Color renderColor = composite == null && opacity < 1 ? applyOpacity(color, opacity) : color;
         Graphics2D particleGraphics = (Graphics2D) g.create();
         particleGraphics.rotate(Math.toRadians(rotationDegrees), x + width / 2.0, y + height / 2.0);
-        particleGraphics.setColor(color);
+        if (composite != null) {
+            particleGraphics.setComposite(composite);
+        }
+        particleGraphics.setColor(renderColor);
         if (circular) {
             particleGraphics.fill(new Ellipse2D.Float(x, y, width, height));
         } else {
             particleGraphics.fill(new Rectangle2D.Float(x, y, width, height));
         }
         particleGraphics.dispose();
+    }
+
+    private static AlphaComposite getParticleAlphaComposite(float opacity, Composite currentComposite) {
+        if (opacity >= 1 || !(currentComposite instanceof AlphaComposite)) {
+            return null;
+        }
+        AlphaComposite alphaComposite = (AlphaComposite) currentComposite;
+        if (alphaComposite.getRule() != AlphaComposite.SRC_OVER || alphaComposite.getAlpha() != 1) {
+            return null;
+        }
+        return PARTICLE_ALPHA_COMPOSITES[Math.max(0, Math.min(255, Math.round(opacity * 255)))];
+    }
+
+    private static Color applyOpacity(Color color, float opacity) {
+        int colorAlpha = Math.round(color.getAlpha() * opacity);
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), colorAlpha);
+    }
+
+    private static AlphaComposite[] createParticleAlphaComposites() {
+        AlphaComposite[] composites = new AlphaComposite[256];
+        for (int alpha = 0; alpha < composites.length; alpha++) {
+            composites[alpha] = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha / 255f);
+        }
+        return composites;
     }
 
     public void drawParticleImage(BufferedImage image, float x, float y, float width, float height,
@@ -349,16 +413,26 @@ public class GraphicsHandler {
     }
 
     public void drawString(String text, int x, int y, Font font, Color color) {
-        flushPixelLayer();
-        Font oldFont = g.getFont();
-        Color oldColor = g.getColor();
+        ensurePixelBuffer();
+        Font oldFont = pixelGraphics.getFont();
+        Color oldColor = pixelGraphics.getColor();
+        RenderingHints oldHints = pixelGraphics.getRenderingHints();
 
-        g.setFont(font);
-        g.setColor(color);
-        g.drawString(text, x, y);
+        pixelGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        pixelGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        pixelGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+        pixelGraphics.setFont(toPixelFont(font));
+        pixelGraphics.setColor(color);
+        pixelGraphics.drawString(text, toPixelGrid(x), toPixelGrid(y));
 
-        g.setFont(oldFont);
-        g.setColor(oldColor);
+        pixelGraphics.setFont(oldFont);
+        pixelGraphics.setColor(oldColor);
+        pixelGraphics.setRenderingHints(oldHints);
+        pixelLayerDirty = true;
+    }
+
+    private static Font toPixelFont(Font font) {
+        return font.deriveFont(font.getSize2D() / Config.PIXEL_SCALE);
     }
 
     public static double[] getDeviceScale (){
@@ -367,35 +441,38 @@ public class GraphicsHandler {
 
     // https://stackoverflow.com/a/35222059 and https://stackoverflow.com/a/31831120
     public void drawStringWithOutline(String text, int x, int y, Font font, Color textColor, Color outlineColor, float outlineThickness) {
-        flushPixelLayer();
-        // remember original settings
-        Color originalColor = g.getColor();
-        Stroke originalStroke = g.getStroke();
-        RenderingHints originalHints = g.getRenderingHints();
-        g.setStroke(new BasicStroke(outlineThickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        ensurePixelBuffer();
+        Color originalColor = pixelGraphics.getColor();
+        Stroke originalStroke = pixelGraphics.getStroke();
+        Font originalFont = pixelGraphics.getFont();
+        RenderingHints originalHints = pixelGraphics.getRenderingHints();
+        pixelGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        pixelGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        pixelGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+        Font pixelFont = toPixelFont(font);
+        pixelGraphics.setFont(pixelFont);
 
-        // create a glyph vector from your text
-        GlyphVector glyphVector = font.createGlyphVector(g.getFontRenderContext(), text);
-
-        // get the shape object
+        GlyphVector glyphVector = pixelFont.createGlyphVector(pixelGraphics.getFontRenderContext(), text);
         Shape textShape = glyphVector.getOutline();
         AffineTransform at = new AffineTransform();
-        at.setToTranslation(Math.round(x), Math.round(y));
+        at.setToTranslation(toPixelGrid(x), toPixelGrid(y));
         textShape = at.createTransformedShape(textShape);
 
-        // activate anti aliasing for text rendering (if you want it to look nice)
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        if (outlineThickness > 0) {
+            float pixelOutlineThickness = Math.max(1,
+                    Math.round(outlineThickness / Config.PIXEL_SCALE));
+            pixelGraphics.setStroke(new BasicStroke(pixelOutlineThickness,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            pixelGraphics.setColor(outlineColor);
+            pixelGraphics.draw(textShape);
+        }
+        pixelGraphics.setColor(textColor);
+        pixelGraphics.fill(textShape);
 
-        g.setColor(outlineColor);
-        g.draw(textShape); // draw outline
-
-        g.setColor(textColor);
-        g.fill(textShape); // fill the shape
-
-        // reset to original settings after painting
-        g.setColor(originalColor);
-        g.setStroke(originalStroke);
-        g.setRenderingHints(originalHints);
+        pixelGraphics.setColor(originalColor);
+        pixelGraphics.setStroke(originalStroke);
+        pixelGraphics.setFont(originalFont);
+        pixelGraphics.setRenderingHints(originalHints);
+        pixelLayerDirty = true;
     }
 }
