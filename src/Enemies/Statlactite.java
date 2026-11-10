@@ -18,6 +18,7 @@ public class Statlactite extends Enemy{
     private Point startLocation;
     private boolean falling = false;
     private float fallSpeed = 7.5f;
+    private int collisionImmunityTimer;
 
 
     public Statlactite(Point startLocation) {
@@ -36,19 +37,33 @@ public class Statlactite extends Enemy{
     //PICKUP FROM CHANGING FALL LOGIC
     public void update(Player player) {
         inRange(player);
-        if (falling)
-        {
-            moveYHandleCollision(fallSpeed);
-        }
+        
+        if (falling && collisionImmunityTimer > 0) {
+			collisionImmunityTimer--;
+		}
+
+        if (falling) {
+			moveYHandleCollision(fallSpeed);			
+		}
         super.update(player);
     }
+    
+    @Override
+	public float moveYHandleCollision(float dy) {
+		if (collisionImmunityTimer > 0) {
+			moveY(dy);
+			return dy;
+		}
+
+		return super.moveYHandleCollision(dy);
+	}
 
     @Override
     public void onEndCollisionCheckY(boolean hasCollided, Direction direction, MapEntity entityCollidedWith) {
         // if the stalactite collides with anything solid on the y axis, it is removed
         if (hasCollided) {
-            this.mapEntityStatus = MapEntityStatus.REMOVED;
-        }
+			this.mapEntityStatus = MapEntityStatus.REMOVED;
+		}
     }
 
     @Override
@@ -64,7 +79,7 @@ public class Statlactite extends Enemy{
             put("DEFAULT", new Frame[]{
                     new FrameBuilder(spriteSheet.getSprite(0, 0))
                             .withScale(1)
-                            .withBounds(1, 1, 5, 5)
+                            .withBounds(6, 0, 15, 30)
                             .build()
             });
         }};
@@ -73,8 +88,9 @@ public class Statlactite extends Enemy{
     private void inRange(Player player) {
         float pX = player.getX();
         float pY = player.getY();
-        if (pX > this.startLocation.x - 20 && pX < this.startLocation.x + 20 && pY > this.startLocation.y - 20){
+        if (!falling && pX > this.startLocation.x - 20 && pX < this.startLocation.x + 20 && pY > this.startLocation.y - 20){
             falling = true;
+            collisionImmunityTimer = 30;
         }
     }
 }

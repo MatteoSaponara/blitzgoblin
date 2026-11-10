@@ -27,6 +27,7 @@ public class GamePanel extends JPanel {
 	private Thread gameLoopProcess;
 
 	private Key showFPSKey = Key.G;
+	private Key hitboxesKey = Key.H;
 	private SpriteFont fpsDisplayLabel;
 	private boolean showFPS = false;
 	private volatile int currentFPS;
@@ -147,6 +148,8 @@ public class GamePanel extends JPanel {
 		long updateStartNanos = System.nanoTime();
 		updatePauseState();
 		updateShowFPSState();
+		updateHitboxesState();
+		
 
 		synchronized (stateLock) {
 			if (!isGamePaused) {
@@ -180,7 +183,21 @@ public class GamePanel extends JPanel {
 		if (Keyboard.isKeyUp(showFPSKey)) {
 			keyLocker.unlockKey(showFPSKey);
 		}
+		
+	}
+		
+	private void updateHitboxesState() {
+		if (Keyboard.isKeyDown(hitboxesKey) && !keyLocker.isKeyLocked(hitboxesKey)) {
+			hitboxesEnabled = !hitboxesEnabled;
+			keyLocker.lockKey(hitboxesKey);
+		}
 
+		if (Keyboard.isKeyUp(hitboxesKey)) {
+			keyLocker.unlockKey(hitboxesKey);
+		}
+	}
+		
+	private void updatePerformanceLabel() {
 		if (showFPS || debugCountersEnabled) {
 			long now = System.nanoTime();
 			if (debugCountersEnabled && now - lastMemoryLabelUpdateNanos >= 1_000_000_000L) {

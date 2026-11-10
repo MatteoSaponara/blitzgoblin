@@ -102,6 +102,75 @@ public class level3 extends Map {
         Statlactite statlactite11 = new Statlactite(getMapTile(30, 3).getLocation());
         enemies.add(statlactite11);
         
+        Statlactite statlactite12 = new Statlactite(getMapTile(58, 2).getLocation());
+        enemies.add(statlactite12);
+        
+        Statlactite statlactite13 = new Statlactite(getMapTile(57, 3).getLocation());
+        enemies.add(statlactite13);
+        
+        Statlactite statlactite14 = new Statlactite(getMapTile(56, 4).getLocation());
+        enemies.add(statlactite14);
+        
+        Statlactite statlactite15 = new Statlactite(getMapTile(51, 2).getLocation());
+        enemies.add(statlactite15);
+        
+        Statlactite statlactite16 = new Statlactite(getMapTile(65, 2).getLocation());
+        enemies.add(statlactite16);
+        
+        Statlactite statlactite17 = new Statlactite(getMapTile(64, 3).getLocation());
+        enemies.add(statlactite17);
+        
+        Statlactite statlactite18 = new Statlactite(getMapTile(47, 9).getLocation());
+        enemies.add(statlactite18);
+        
+        Statlactite statlactite19 = new Statlactite(getMapTile(36, 10).getLocation());
+        enemies.add(statlactite19);
+        
+        Statlactite statlactite20 = new Statlactite(getMapTile(38, 11).getLocation());
+        enemies.add(statlactite20);
+        
+        Statlactite statlactite21 = new Statlactite(getMapTile(31, 11).getLocation());
+        enemies.add(statlactite21);
+        
+        Statlactite statlactite22 = new Statlactite(getMapTile(21, 11).getLocation());
+        enemies.add(statlactite22);
+        
+        Statlactite statlactite23 = new Statlactite(getMapTile(20, 12).getLocation());
+        enemies.add(statlactite23);
+        
+        Statlactite statlactite24 = new Statlactite(getMapTile(13, 12).getLocation());
+        enemies.add(statlactite24);
+        
+        Statlactite statlactite25 = new Statlactite(getMapTile(12, 12).getLocation());
+        enemies.add(statlactite25);
+        
+        Statlactite statlactite26 = new Statlactite(getMapTile(6, 11).getLocation());
+        enemies.add(statlactite26);
+        
+        Statlactite statlactite27 = new Statlactite(getMapTile(5, 12).getLocation());
+        enemies.add(statlactite27);
+        
+        Statlactite statlactite28 = new Statlactite(getMapTile(6, 11).getLocation());
+        enemies.add(statlactite28);
+        
+        Statlactite statlactite29 = new Statlactite(getMapTile(10, 20).getLocation());
+        enemies.add(statlactite29);
+        
+        Statlactite statlactite30 = new Statlactite(getMapTile(9, 21).getLocation());
+        enemies.add(statlactite30);
+        
+        Statlactite statlactite31 = new Statlactite(getMapTile(25, 21).getLocation());
+        enemies.add(statlactite31);
+        
+        Statlactite statlactite32 = new Statlactite(getMapTile(34, 17).getLocation());
+        enemies.add(statlactite32);
+        
+        Statlactite statlactite33 = new Statlactite(getMapTile(35, 17).getLocation());
+        enemies.add(statlactite33);
+        
+        Statlactite statlactite34 = new Statlactite(getMapTile(26, 21).getLocation());
+        enemies.add(statlactite34);
+        
         BlockMimicEnemy blockMimicEnemy = new BlockMimicEnemy(getMapTile(14, 2).getLocation(), Direction.LEFT);
         enemies.add(blockMimicEnemy);
         
