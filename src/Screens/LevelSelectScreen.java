@@ -19,7 +19,8 @@ public class LevelSelectScreen extends Screen {
 	protected SpriteFont Level1;
 	protected SpriteFont Level2;
 	protected SpriteFont Level3;
-	protected SpriteFont GamblingRoom;
+	protected SpriteFont NextPage;
+	//protected SpriteFont GamblingRoom;
     protected SpriteFont ReturnMenu;
     protected SpriteFont returnInstructionsLabel;
     protected Map background;
@@ -51,9 +52,13 @@ public class LevelSelectScreen extends Screen {
 		Level3 = new SpriteFont("Level 3", 200, 494, Config.DEFAULT_FONT, 30, Color.white);
 		Level3.setOutlineColor(Color.black);
 		Level3.setOutlineThickness(3);
-		GamblingRoom = new SpriteFont("Gambling Room", 200, 532, Config.DEFAULT_FONT, 30, Color.white);
-		GamblingRoom.setOutlineColor(Color.black);
-		GamblingRoom.setOutlineThickness(3);
+		NextPage = new SpriteFont("Next Page", 200, 532, Config.DEFAULT_FONT, 30, Color.white);
+		NextPage.setOutlineColor(Color.black);
+		NextPage.setOutlineThickness(3);
+		
+		//GamblingRoom = new SpriteFont("Gambling Room", 200, 532, Config.DEFAULT_FONT, 30, Color.white);
+		//GamblingRoom.setOutlineColor(Color.black);
+		//GamblingRoom.setOutlineThickness(3);
         background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
         keyPressTimer = 0;
@@ -123,7 +128,7 @@ public class LevelSelectScreen extends Screen {
 			} else if (menuItemSelected == 4) {
 				screenCoordinator.startNewGame(GameState.LEVEL3);
 			} else if (menuItemSelected == 5) {
-				screenCoordinator.startNewGame(GameState.GAMBLING_ROOM);
+				screenCoordinator.startNewGame(GameState.LEVEL_SELECT2);
 			}
 		}
                 
@@ -136,7 +141,8 @@ public class LevelSelectScreen extends Screen {
         Level1.draw(graphicsHandler);
         Level2.draw(graphicsHandler);
 		Level3.draw(graphicsHandler);
-		GamblingRoom.draw(graphicsHandler);
+		NextPage.draw(graphicsHandler);
+	//	GamblingRoom.draw(graphicsHandler);
         returnInstructionsLabel.draw(graphicsHandler);
         graphicsHandler.drawFilledRectangleWithBorder(pointerLocationX, pointerLocationY, 20, 20, new Color(255, 255, 255), Color.black, 2); //new Color(49, 207, 240), Color.black, 2);
     }

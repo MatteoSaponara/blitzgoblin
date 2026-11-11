@@ -12,6 +12,8 @@ import Maps.level3;
 import Screens.CreditsScreen;
 import Screens.HowToPlayScreen;
 import Screens.LevelSelectScreen;
+import Screens.LevelSelectScreen2;
+import Screens.LevelSelectScreen3;
 import Screens.MenuScreen;
 import Screens.PlayLevelScreen;
 //import Maps.Level1Map;
@@ -141,7 +143,13 @@ public class ScreenCoordinator extends Screen {
 					currentScreen = new HowToPlayScreen(this);
 						break;
 					case LEVEL_SELECT:
-					currentScreen = new LevelSelectScreen(this);
+						currentScreen = new LevelSelectScreen(this);
+						break;
+					case LEVEL_SELECT2:
+						currentScreen = new LevelSelectScreen2(this);
+						break;
+					case LEVEL_SELECT3:
+						currentScreen = new LevelSelectScreen3(this);
 						break;
 					case CREDITS:
 						currentScreen = new CreditsScreen(this);
