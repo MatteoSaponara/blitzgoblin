@@ -413,18 +413,32 @@ public class GraphicsHandler {
     }
 
     public void drawString(String text, int x, int y, Font font, Color color) {
+        drawString(text, x, y, font, color, 0);
+    }
+
+    public void drawString(String text, int x, int y, Font font, Color color, float rotationDegrees) {
         ensurePixelBuffer();
         Font oldFont = pixelGraphics.getFont();
         Color oldColor = pixelGraphics.getColor();
         RenderingHints oldHints = pixelGraphics.getRenderingHints();
+        AffineTransform oldTransform = pixelGraphics.getTransform();
 
         pixelGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         pixelGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         pixelGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
         pixelGraphics.setFont(toPixelFont(font));
         pixelGraphics.setColor(color);
-        pixelGraphics.drawString(text, toPixelGrid(x), toPixelGrid(y));
+        int pixelX = toPixelGrid(x);
+        int pixelY = toPixelGrid(y);
+        if (rotationDegrees != 0) {
+            FontMetrics metrics = pixelGraphics.getFontMetrics();
+            pixelGraphics.rotate(Math.toRadians(rotationDegrees),
+                    pixelX + metrics.stringWidth(text) / 2.0,
+                    pixelY + (metrics.getDescent() - metrics.getAscent()) / 2.0);
+        }
+        pixelGraphics.drawString(text, pixelX, pixelY);
 
+        pixelGraphics.setTransform(oldTransform);
         pixelGraphics.setFont(oldFont);
         pixelGraphics.setColor(oldColor);
         pixelGraphics.setRenderingHints(oldHints);

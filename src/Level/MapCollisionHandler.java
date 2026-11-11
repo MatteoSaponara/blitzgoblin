@@ -15,7 +15,7 @@ public class MapCollisionHandler {
         if(gameObjectIN instanceof Player
             && (tl.getTileType() == TileType.SPIKE_UP || tl.getTileType() == TileType.SPIKE_DOWN)) {
             Player plr = (Player) gameObjectIN;
-            plr.killPlayer();
+            plr.hurtPlayer(3);
             return true;
         }
         return false;

@@ -10,17 +10,21 @@ import Engine.KeyLocker;
 import Engine.Keyboard;
 import Engine.Mouse;
 import GameObject.GameObject;
+import GameObject.PhysicsParticle;
 import GameObject.Rectangle;
 import GameObject.SpriteSheet;
 import Interfaces.IDamagable;
 import Utils.AirGroundState;
 import Utils.Direction;
 import Utils.Point;
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Player extends GameObject
 {
     public static final int DEFAULT_MAX_HEALTH = 3;
+    private static final Color JUMP_DUST_COLOR = new Color(218, 207, 183, 235);
 
     // values that affect player movement
     // these should be set in a subclass
@@ -58,6 +62,7 @@ public abstract class Player extends GameObject
     protected AirGroundState airGroundState;
     protected AirGroundState previousAirGroundState;
     protected LevelState levelState;
+    private boolean landingDustPending;
 
     // classes that listen to player events can be added to this list
     protected ArrayList<PlayerListener> listeners = new ArrayList<>();
@@ -255,6 +260,7 @@ public abstract class Player extends GameObject
             jumpControlled = false;
             airGroundState = AirGroundState.AIR;
             previousAirGroundState = AirGroundState.AIR;
+            landingDustPending = false;
             playerState = isNoclipEnabled ? PlayerState.STANDING : PlayerState.JUMPING;
             if (isNoclipEnabled)
             {
@@ -423,6 +429,8 @@ public abstract class Player extends GameObject
 
             // player is set to be in air and then player is sent into the air
             airGroundState = AirGroundState.AIR;
+            landingDustPending = true;
+            spawnJumpDust(false);
             jumpControlled = true;
             jumpForce = jumpHeight;
             if (jumpForce > 0)
@@ -488,6 +496,36 @@ public abstract class Player extends GameObject
         else if (previousAirGroundState == AirGroundState.AIR && airGroundState == AirGroundState.GROUND)
         {
             playerState = PlayerState.STANDING;
+        }
+    }
+
+    private void spawnJumpDust(boolean landing)
+    {
+        if (map == null)
+        {
+            return;
+        }
+
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int particleCount = landing ? random.nextInt(7, 10) : random.nextInt(4, 7);
+        float centerX = getX() + getWidth() / 2f;
+        float feetY = getY() + getHeight();
+        for (int i = 0; i < particleCount; i++)
+        {
+            PhysicsParticle particle = new PhysicsParticle(
+                    centerX + (float) random.nextDouble(-getWidth() * 0.18f, getWidth() * 0.18f),
+                    feetY + (float) random.nextDouble(-0.75, 0.25),
+                    (float) random.nextDouble(3.2, 5.0),
+                    JUMP_DUST_COLOR);
+            particle.setVelocity(
+                    (float) random.nextDouble(-0.9, 0.9),
+                    (float) -random.nextDouble(landing ? 0.9 : 0.45, landing ? 1.8 : 1.1));
+            particle.setGravity(0, 0.08f);
+            particle.setDrag(0.08f);
+            particle.setLifetimeFrames(random.nextInt(16, 23));
+            particle.setFadesOut(true);
+            particle.setShrinksToNothing(true);
+            map.addParticle(particle);
         }
     }
 
@@ -800,6 +838,11 @@ public abstract class Player extends GameObject
         {
             if (hasCollided)
             {
+                if (previousAirGroundState == AirGroundState.AIR && landingDustPending)
+                {
+                    spawnJumpDust(true);
+                    landingDustPending = false;
+                }
                 momentumY = 0;
                 velocityY = 0;
                 airGroundState = AirGroundState.GROUND;
@@ -808,6 +851,10 @@ public abstract class Player extends GameObject
                 jumpControlled = false;
             } else
             {
+                if (previousAirGroundState == AirGroundState.GROUND)
+                {
+                    landingDustPending = true;
+                }
                 playerState = PlayerState.JUMPING;
                 airGroundState = AirGroundState.AIR;
             }
@@ -839,6 +886,19 @@ public abstract class Player extends GameObject
     public int getMaxHealth(){ return maxHealth; }
     
     public void setMaxHealth(int newMaxHealth) {maxHealth = newMaxHealth;}
+    public void hurtPlayer(int damage)
+    {
+        if (!isInvincible && invincibilityTimer <= 0)
+        {
+            health = Math.max(0, health - damage);
+            invincibilityTimer = INVINCIBILITY_DURATION;
+            if (health == 0)
+            {
+                levelState = LevelState.PLAYER_DEAD;
+            }
+        }
+    }
+
     // other entities can call this method to hurt the player
     public void hurtPlayer(MapEntity mapEntity)
     {
