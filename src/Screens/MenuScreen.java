@@ -9,9 +9,17 @@ import SpriteFont.SpriteFont;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
 
 // This is the class for the main menu screen
 public class MenuScreen extends Screen {
+    private static final String[] SPLASH_TEXT_OPTIONS = {
+            "This text is a mimic.",
+            "Get over it!",
+            "Okay vs. Not Okay",
+            "Counting or not counting goblin violence?"
+    };
+
     protected ScreenCoordinator screenCoordinator;
     protected int currentMenuItemHovered = 0; // current menu item being "hovered" over
     protected SpriteFont playGame;
@@ -23,10 +31,10 @@ public class MenuScreen extends Screen {
     protected SpriteFont debugCountersOption;
     protected SpriteFont showHitboxesOption;
     protected SpriteFont backOption;
-    protected SpriteFont warning;
+    protected SpriteFont splashText;
     protected Map background;
     protected int keyPressTimer;
-    protected int warningShakeFrame;
+    protected int splashTextRotationFrame;
     protected int pointerLocationX, pointerLocationY;
     protected int settingsMenuItemHovered;
     protected boolean settingsMenuOpen;
@@ -84,15 +92,15 @@ public class MenuScreen extends Screen {
 		backOption = new SpriteFont("Back", 200, 485, Config.DEFAULT_FONT, 30, Color.white);
 		backOption.setOutlineColor(Color.black);
 		backOption.setOutlineThickness(3);
-		warning = new SpriteFont("warning: placeholder assets all over the place", 0, 8,
+		String splashTextValue = SPLASH_TEXT_OPTIONS[
+		        ThreadLocalRandom.current().nextInt(SPLASH_TEXT_OPTIONS.length)];
+		splashText = new SpriteFont(splashTextValue, 0, 330,
 		        Config.DEFAULT_FONT, 28, new Color(255, 220, 80));
-        warning.setOutlineColor(Color.black);
-        warning.setOutlineThickness(4);
 
-        background = new TitleScreenMapNewVersion();
-        background.setAdjustCamera(false);
-        keyPressTimer = 0;
-        warningShakeFrame = 0;
+		background = new TitleScreenMapNewVersion();
+		background.setAdjustCamera(false);
+		keyPressTimer = 0;
+		splashTextRotationFrame = 0;
         settingsMenuItemHovered = 0;
         settingsMenuOpen = false;
         keyLocker.lockKey(Key.SPACE);
@@ -101,7 +109,7 @@ public class MenuScreen extends Screen {
     public void update() {
         // update background map (to play tile animations)
         background.update(null);
-        warningShakeFrame++;
+        splashTextRotationFrame++;
 
         if (settingsMenuOpen) {
             debugCountersOption.setText("Debug Counters: "
@@ -193,11 +201,11 @@ public class MenuScreen extends Screen {
 
     public void draw(GraphicsHandler graphicsHandler) {
         background.draw(graphicsHandler);
-        int warningWidth = graphicsHandler.getGraphics().getFontMetrics(warning.getFont()).stringWidth(warning.getText());
-        int shakeX = (int) (Math.sin(warningShakeFrame * 0.9) * 2);
-        int shakeY = (int) (Math.cos(warningShakeFrame * 1.3) * 2);
-        warning.setLocation(Config.GAME_WINDOW_WIDTH - warningWidth - 10 + shakeX, 8 + shakeY);
-        warning.draw(graphicsHandler);
+        int splashTextWidth = graphicsHandler.getGraphics().getFontMetrics(splashText.getFont())
+                .stringWidth(splashText.getText());
+        splashText.setX((Config.GAME_WINDOW_WIDTH - splashTextWidth) / 2f + 155);
+        float rotationDegrees = (float) (Math.sin(splashTextRotationFrame * 0.05) * 5);
+        splashText.drawRotated(graphicsHandler, rotationDegrees);
         if (settingsMenuOpen) {
             settingsTitle.draw(graphicsHandler);
             debugCountersOption.draw(graphicsHandler);

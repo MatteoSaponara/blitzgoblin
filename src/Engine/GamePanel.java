@@ -155,6 +155,7 @@ public class GamePanel extends JPanel {
 			if (!isGamePaused) {
 				screenManager.update();
 			}
+			updatePerformanceLabel();
 		}
 		
 		if (jumpscareTimer > 0) {

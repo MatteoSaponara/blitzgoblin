@@ -125,6 +125,11 @@ public class SpriteFont {
 		}
 	}
 
+	public void drawRotated(GraphicsHandler graphicsHandler, float rotationDegrees) {
+		int ascent = getAscent(graphicsHandler.getGraphics());
+		graphicsHandler.drawString(text, Math.round(x), Math.round(y) + ascent, font, color, rotationDegrees);
+	}
+
 	// this can be called instead of regular draw to have the text drop to the next line in graphics space on a new line character
 	public void drawWithParsedNewLines(GraphicsHandler graphicsHandler, int gapBetweenLines) {
 		int ascent = getAscent(graphicsHandler.getGraphics());
