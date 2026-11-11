@@ -41,8 +41,7 @@ Enemies work great to hinder the player's progression through a level, but most 
 
 ## Game music/sounds
 
-There is no music/sounds in this game! 
-Music and sound support could be added to specific classes, or even be added to the actual game engine itself so every class in the game can play sounds conveniently.
+The engine now has reusable sound-effect and looping-music playback through `Engine.AudioManager`. Audio assets and calls to play them still need to be added to the game.
 
 ## Improved jump mechanics
 
