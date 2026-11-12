@@ -16,6 +16,10 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class BlockMimicEnemy extends Enemy implements IDamagable {
+    private static final float SPRITE_SCALE = 1.4f;
+    private static final int FRAME_WIDTH = 43;
+    private static final int FRAME_HEIGHT = 43;
+    private static final int IDLE_ART_INSET = 4;
     private float flySpeed = 6.66f;
     private float aggroRadius = 250;
     private int health = 1;
@@ -23,7 +27,7 @@ public class BlockMimicEnemy extends Enemy implements IDamagable {
     protected BlockMimicState blockMimicState;
     
     public BlockMimicEnemy(Point location, Direction facingDirection) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("MimicBlockTest14.png"), 59, 59), "IDLE");
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("MimicBlockTest14.png"), FRAME_WIDTH, FRAME_HEIGHT), "IDLE");
         this.initialize();
     }
 
@@ -81,25 +85,34 @@ public class BlockMimicEnemy extends Enemy implements IDamagable {
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
         BufferedImage idleImage = spriteSheet.getImage()
-                .getSubimage(0, 0, 59, 59)
-                .getSubimage(5, 5, 49, 49);
+                .getSubimage(
+                        IDLE_ART_INSET,
+                        IDLE_ART_INSET,
+                        FRAME_WIDTH - 2 * IDLE_ART_INSET,
+                        FRAME_HEIGHT - 2 * IDLE_ART_INSET);
 
         Frame[] idle = new Frame[] {
-            new FrameBuilder(idleImage).build()
+            new FrameBuilder(idleImage)
+                    .withScale(SPRITE_SCALE)
+                    .build()
         };
 
         Frame[] transform = new Frame[4];
         for (int i = 0; i < 4; i++) {
             BufferedImage frameImage = spriteSheet.getImage()
-                    .getSubimage((i + 1) * 59, 0, 59, 59);
-            transform[i] = new FrameBuilder(frameImage, 8).build();
+                    .getSubimage((i + 1) * FRAME_WIDTH, 0, FRAME_WIDTH, FRAME_HEIGHT);
+            transform[i] = new FrameBuilder(frameImage, 8)
+                    .withScale(SPRITE_SCALE)
+                    .build();
         }
 
         BufferedImage chaseImage = spriteSheet.getImage()
-                .getSubimage(5 * 59, 0, 59, 59);
+                .getSubimage(5 * FRAME_WIDTH, 0, FRAME_WIDTH, FRAME_HEIGHT);
 
         Frame[] chase = new Frame[] {
-            new FrameBuilder(chaseImage, 10).build()
+            new FrameBuilder(chaseImage, 10)
+                    .withScale(SPRITE_SCALE)
+                    .build()
         };
 
         return new HashMap<String, Frame[]>() {{

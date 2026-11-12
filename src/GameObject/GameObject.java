@@ -5,6 +5,7 @@ import Level.*;
 import Utils.Direction;
 import Utils.ImageUtils;
 import Utils.MathUtils;
+import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.util.HashMap;
 
@@ -358,9 +359,13 @@ public class GameObject extends AnimatedSprite {
 
     @Override
     public void draw(GraphicsHandler graphicsHandler) {
+        draw(graphicsHandler, currentFrame.getImage());
+    }
+
+    protected void draw(GraphicsHandler graphicsHandler, BufferedImage image) {
         if (map != null && !graphicsHandler.isPixelGridEnabled()) {
             graphicsHandler.drawImage(
-                currentFrame.getImage(),
+                image,
                 Math.round(getCalibratedXLocation()),
                 Math.round(getCalibratedYLocation()),
                 currentFrame.getWidth(),
@@ -388,9 +393,9 @@ public class GameObject extends AnimatedSprite {
                 py1 = py2 - ph;
                 px2 = px1 + pw;
             }
-            graphicsHandler.drawPixelImage(currentFrame.getImage(), px1, py1, px2, py2, currentFrame.getImageEffect());
+            graphicsHandler.drawPixelImage(image, px1, py1, px2, py2, currentFrame.getImageEffect());
         } else {
-            super.draw(graphicsHandler);
+            currentFrame.draw(graphicsHandler);
         }
     }
     
