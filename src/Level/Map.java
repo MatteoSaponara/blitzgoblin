@@ -9,7 +9,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /*
@@ -23,6 +25,9 @@ import java.util.Scanner;
 */
 
 public abstract class Map {
+    private static final int DARKNESS_PER_TILE = 52;
+    private static final int MAX_DARKNESS_ALPHA = 154;
+
     // the tile map (map tiles that make up the entire map image)
     protected MapTile[] mapTiles;
 
@@ -86,6 +91,7 @@ public abstract class Map {
         this.particles = new ArrayList<>();
 
         loadMapFile();
+        recalculateTileDarkness();
 
         this.enemies = loadEnemies();
         for (Enemy enemy: this.enemies) {
@@ -141,7 +147,7 @@ public abstract class Map {
                 int yLocation = i * tileset.getScaledSpriteHeight();
                 MapTile tile = tileset.getTile(tileIndex).build(xLocation, yLocation);
                 tile.setMap(this);
-                setMapTile(j, i, tile);
+                mapTiles[getConvertedIndex(j, i)] = tile;
 
                 if (tile.isAnimated()) {
                     animatedMapTiles.add(tile);
@@ -224,11 +230,68 @@ public abstract class Map {
     // set specific map tile from tile map to a new map tile
     public void setMapTile(int x, int y, MapTile tile) {
         if (isInBounds(x, y)) {
-            MapTile oldMapTile = getMapTile(x, y);
+            int index = getConvertedIndex(x, y);
+            MapTile oldMapTile = mapTiles[index];
+            boolean oldFullBlock = oldMapTile != null && oldMapTile.isFullBlock();
+            boolean newFullBlock = tile.isFullBlock();
             animatedMapTiles.remove(oldMapTile);
-            mapTiles[getConvertedIndex(x, y)] = tile;
+            tile.setMap(this);
+            mapTiles[index] = tile;
             if (tile.isAnimated()) {
                 animatedMapTiles.add(tile);
+            }
+            if (oldMapTile != tile && (oldFullBlock || newFullBlock)) {
+                recalculateTileDarkness();
+            }
+        }
+    }
+
+    private void recalculateTileDarkness() {
+        int[] distances = new int[mapTiles.length];
+        Arrays.fill(distances, Integer.MAX_VALUE);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int index = getConvertedIndex(x, y);
+                MapTile tile = mapTiles[index];
+                if (tile == null || !tile.isFullBlock()) {
+                    distances[index] = 0;
+                }
+            }
+        }
+
+        ArrayDeque<Integer> tilesToVisit = new ArrayDeque<>();
+        for (int i = 0; i < distances.length; i++) {
+            if (distances[i] == 0) {
+                tilesToVisit.add(i);
+            }
+        }
+        while (!tilesToVisit.isEmpty()) {
+            int index = tilesToVisit.remove();
+            int x = index % width;
+            int y = index / width;
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dx = -1; dx <= 1; dx++) {
+                    int nextX = x + dx;
+                    int nextY = y + dy;
+                    if ((dx != 0 || dy != 0) && isInBounds(nextX, nextY)) {
+                        int nextIndex = getConvertedIndex(nextX, nextY);
+                        if (distances[nextIndex] == Integer.MAX_VALUE) {
+                            distances[nextIndex] = distances[index] + 1;
+                            tilesToVisit.add(nextIndex);
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < mapTiles.length; i++) {
+            MapTile tile = mapTiles[i];
+            if (tile != null) {
+                int darkness = distances[i] == Integer.MAX_VALUE
+                        ? MAX_DARKNESS_ALPHA
+                        : Math.min(Math.max(0, distances[i] - 1) * DARKNESS_PER_TILE, MAX_DARKNESS_ALPHA);
+                tile.setDarknessAlpha(darkness);
             }
         }
     }

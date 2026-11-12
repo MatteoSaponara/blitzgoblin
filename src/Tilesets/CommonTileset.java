@@ -15,7 +15,11 @@ import java.util.ArrayList;
 public class CommonTileset extends Tileset {
 
     public CommonTileset() {
-        super(ImageLoader.load("CommonTileset.png"), Config.TILE_ART_SIZE, Config.TILE_ART_SIZE, Config.TILE_SCALE);
+        this("CommonTileset.png");
+    }
+
+    protected CommonTileset(String imageFileName) {
+        super(ImageLoader.load(imageFileName), Config.TILE_ART_SIZE, Config.TILE_ART_SIZE, Config.TILE_SCALE);
     }
 
     @Override

@@ -12,6 +12,8 @@ import javax.swing.*;
  * This is where the game loop process and render back buffer is setup
  */
 public class GamePanel extends JPanel {
+	private static final int RENDER_SCALE = 2;
+
 	// loads Screens on to the JPanel
 	// each screen has its own update and draw methods defined to handle a "section" of the game.
 	private ScreenManager screenManager;
@@ -51,7 +53,7 @@ public class GamePanel extends JPanel {
 	private static final int COUNTER_MAX_HEIGHT = 28;
 	private static volatile boolean debugCountersEnabled = false;
 	private static volatile boolean hitboxesEnabled = false;
-	private boolean doPaint;
+	private volatile boolean doPaint;
 	private static BufferedImage jumpscareImage;
 	private static int jumpscareTimer = 0;
 	private static final int JUMPSCARE_DURATION = 60;
@@ -272,29 +274,21 @@ public class GamePanel extends JPanel {
 			synchronized (stateLock) {
 				int gameWidth = Config.GAME_WINDOW_WIDTH;
 				int gameHeight = Config.GAME_WINDOW_HEIGHT;
+				int renderWidth = gameWidth * RENDER_SCALE;
+				int renderHeight = gameHeight * RENDER_SCALE;
 				int panelWidth = getWidth();
 				int panelHeight = getHeight();
 				if (panelWidth <= 0 || panelHeight <= 0) {
 					return;
 				}
 
-				if (gameImage == null ||
-						gameImage.getWidth() != panelWidth ||
-						gameImage.getHeight() != panelHeight) {
+				if (gameImage == null) {
 					gameImage = new BufferedImage(
-							panelWidth,
-							panelHeight,
+							renderWidth,
+							renderHeight,
 							BufferedImage.TYPE_INT_ARGB
 					);
 				}
-
-				Graphics2D gameGraphics = gameImage.createGraphics();
-
-				gameGraphics.setColor(Color.BLACK);
-				gameGraphics.fillRect(0, 0, panelWidth, panelHeight);
-				
-				//System.out.println("ScreenManager: " + ScreenManager.getScreenWidth() + "x" + ScreenManager.getScreenHeight());
-				//System.out.println("Panel: " + panelWidth + "x" + panelHeight + " | Game image: " + gameWidth + "x" + gameHeight);
 
 				double scaleX = (double) panelWidth / gameWidth;
 				double scaleY = (double) panelHeight / gameHeight;
@@ -307,8 +301,10 @@ public class GamePanel extends JPanel {
 				
 				Mouse.setGameTransform(scale, drawX, drawY);
 
-				gameGraphics.translate(drawX, drawY);
-				gameGraphics.scale(scale, scale);
+				Graphics2D gameGraphics = gameImage.createGraphics();
+				gameGraphics.setColor(Color.BLACK);
+				gameGraphics.fillRect(0, 0, renderWidth, renderHeight);
+				gameGraphics.scale(RENDER_SCALE, RENDER_SCALE);
 				gameGraphics.clipRect(0, 0, gameWidth, gameHeight);
 				graphicsHandler.setGraphics(gameGraphics);
 				draw();
@@ -324,7 +320,7 @@ public class GamePanel extends JPanel {
 						RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
 				);	
 
-				screenGraphics.drawImage(gameImage, 0, 0, null);
+				screenGraphics.drawImage(gameImage, drawX, drawY, drawWidth, drawHeight, null);
 				
 				if (jumpscareTimer > 0 && jumpscareImage != null) {
 					screenGraphics.drawImage(jumpscareImage, drawX, drawY, drawWidth, drawHeight, null);
@@ -333,7 +329,6 @@ public class GamePanel extends JPanel {
 				screenGraphics.dispose();
 			}
 
-			Toolkit.getDefaultToolkit().sync();
 			recordPaintFrame(paintStartNanos, System.nanoTime());
 		}
 	}

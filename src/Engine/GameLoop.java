@@ -81,7 +81,9 @@ public class GameLoop {
                         nextUpdateTime = now;
                     }
 
-                    gamePanel.repaint();
+                    if (updateCount > 0) {
+                        gamePanel.repaint();
+                    }
 
                     // Sleep to the next tick deadline without repeated 1 ms sleeps adding frame-time jitter.
                     long timeUntilNextUpdate;

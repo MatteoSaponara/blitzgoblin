@@ -1,5 +1,6 @@
 package Game;
 
+import Engine.AudioManager;
 import Engine.GameWindow;
 import Engine.ScreenManager;
 
@@ -15,6 +16,7 @@ public class Game {
     }
 
     public Game() {
+        AudioManager.getInstance().initializeSoundEffects();
         GameWindow gameWindow = new GameWindow();
         ScreenManager screenManager = gameWindow.getScreenManager();
         screenManager.setCurrentScreen(new ScreenCoordinator());

@@ -8,6 +8,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.stream.IntStream;
 
 
@@ -17,6 +20,13 @@ import java.util.stream.IntStream;
  */
 public class GraphicsHandler {
     private static final AlphaComposite[] PARTICLE_ALPHA_COMPOSITES = createParticleAlphaComposites();
+    private static final int TILE_SHADE_STEP = 52;
+    private static final int MAX_TILE_SHADE = 156;
+    private static final float SHADOW_HUE = 0.62f;
+    private static final float MAX_SHADOW_HUE_SHIFT = 0.08f;
+    private static final float MAX_SHADOW_SATURATION_BOOST = 0.18f;
+
+    private final Map<BufferedImage, BufferedImage[]> darkenedImageCache = new WeakHashMap<>();
 
     private Graphics2D g;
 
@@ -176,6 +186,58 @@ public class GraphicsHandler {
             pixelGraphics.setColor(borderColor);
             pixelGraphics.drawRect(x1, y1, pixelWidth - 1, pixelHeight - 1);
         }
+    }
+
+    public BufferedImage getDarkenedImage(BufferedImage image, int darknessAlpha) {
+        int shadeLevel = Math.min(Math.max((darknessAlpha + TILE_SHADE_STEP / 2) / TILE_SHADE_STEP, 0),
+                MAX_TILE_SHADE / TILE_SHADE_STEP);
+        if (shadeLevel == 0) {
+            return image;
+        }
+
+        BufferedImage[] darkenedImages = darkenedImageCache.get(image);
+        if (darkenedImages == null) {
+            darkenedImages = new BufferedImage[MAX_TILE_SHADE / TILE_SHADE_STEP];
+            darkenedImageCache.put(image, darkenedImages);
+        }
+        int shadeIndex = shadeLevel - 1;
+        if (darkenedImages[shadeIndex] == null) {
+            BufferedImage darkenedImage = new BufferedImage(
+                    image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            int alpha = shadeLevel * TILE_SHADE_STEP;
+            float shadeAmount = Math.min(alpha / (float) MAX_TILE_SHADE, 1f);
+            float brightness = (255 - alpha) / 255f;
+            for (int y = 0; y < image.getHeight(); y++) {
+                for (int x = 0; x < image.getWidth(); x++) {
+                    int pixel = image.getRGB(x, y);
+                    if ((pixel >>> 24) == 0) {
+                        darkenedImage.setRGB(x, y, pixel);
+                        continue;
+                    }
+
+                    float[] hsb = Color.RGBtoHSB(
+                            (pixel >>> 16) & 0xFF, (pixel >>> 8) & 0xFF, pixel & 0xFF, null);
+                    hsb[0] = shiftHueTowardShadow(hsb[0], shadeAmount);
+                    hsb[1] = Math.min(hsb[1] + MAX_SHADOW_SATURATION_BOOST * shadeAmount, 1f);
+                    hsb[2] *= brightness;
+                    int shaded = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+                    darkenedImage.setRGB(x, y, (pixel & 0xFF000000) | (shaded & 0x00FFFFFF));
+                }
+            }
+            darkenedImages[shadeIndex] = darkenedImage;
+        }
+        return darkenedImages[shadeIndex];
+    }
+
+    private static float shiftHueTowardShadow(float hue, float shadeAmount) {
+        float hueDifference = SHADOW_HUE - hue;
+        if (hueDifference > 0.5f) {
+            hueDifference -= 1f;
+        } else if (hueDifference < -0.5f) {
+            hueDifference += 1f;
+        }
+        float shiftedHue = hue + hueDifference * MAX_SHADOW_HUE_SHIFT * shadeAmount;
+        return shiftedHue - (float) Math.floor(shiftedHue);
     }
 
     // draws the pixel grid to the window at device resolution and clears it

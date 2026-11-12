@@ -9,6 +9,7 @@ import Maps.TestMap;
 import Maps.level1;
 import Maps.level2;
 import Maps.level3;
+import Maps.level4;
 import Screens.CreditsScreen;
 import Screens.HowToPlayScreen;
 import Screens.LevelSelectScreen;
@@ -58,6 +59,9 @@ public class ScreenCoordinator extends Screen {
 				break;
 			case LEVEL3:
 				currentLevel = 5;
+				break;
+			case LEVEL4:
+				currentLevel = 7;
 				break;
 			default:
 				currentLevel = 0;
@@ -134,6 +138,10 @@ public class ScreenCoordinator extends Screen {
 						
 					case LEVEL3:
 						currentScreen =new PlayLevelScreen(this, new level3());
+						break;
+
+					case LEVEL4:
+						currentScreen =new PlayLevelScreen(this, new level4());
 						break;
 					case GAMBLING_ROOM:
 						currentScreen = new PlayLevelScreen(this, new GamblingRoom());

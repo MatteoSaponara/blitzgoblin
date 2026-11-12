@@ -3,15 +3,21 @@ package Level;
 import Engine.GraphicsHandler;
 import GameObject.Frame;
 import GameObject.SpriteSheet;
+import java.awt.image.BufferedImage;
+import java.util.Collections;
 import java.util.HashMap;
 
 // Represents a map tile in a Map's tile map
 public class MapTile extends MapEntity {
+    private static final java.util.Map<BufferedImage, Boolean> OPAQUE_IMAGE_CACHE =
+            Collections.synchronizedMap(new java.util.WeakHashMap<BufferedImage, Boolean>());
+
     // this determines a tile's properties, like if it's passable or not
     protected TileType tileType;
     protected TileLayout tileLayout; // only used for slopes
 
     private int tileIndex;
+    private int darknessAlpha;
 
     {
         sharedEdgeDraw = true;
@@ -55,6 +61,35 @@ public class MapTile extends MapEntity {
         this.tileType = tileType;
     }
 
+    boolean isFullBlock() {
+        if (tileType != TileType.NOT_PASSABLE || tileLayout != null) {
+            return false;
+        }
+
+        BufferedImage image = currentFrame.getImage();
+        synchronized (OPAQUE_IMAGE_CACHE) {
+            Boolean isOpaque = OPAQUE_IMAGE_CACHE.get(image);
+            if (isOpaque != null) {
+                return isOpaque;
+            }
+
+            for (int y = 0; y < image.getHeight(); y++) {
+                for (int x = 0; x < image.getWidth(); x++) {
+                    if ((image.getRGB(x, y) >>> 24) != 0xFF) {
+                        OPAQUE_IMAGE_CACHE.put(image, false);
+                        return false;
+                    }
+                }
+            }
+            OPAQUE_IMAGE_CACHE.put(image, true);
+        }
+        return true;
+    }
+
+    void setDarknessAlpha(int darknessAlpha) {
+        this.darknessAlpha = darknessAlpha;
+    }
+
     // determines if tile is animated or not
     public boolean isAnimated() {
         return getCurrentAnimation().length > 1;
@@ -69,7 +104,13 @@ public class MapTile extends MapEntity {
     }
 
     public void draw(GraphicsHandler graphicsHandler) {
-        super.draw(graphicsHandler);
+        if (darknessAlpha > 0 && map != null) {
+            BufferedImage darkenedImage = graphicsHandler.getDarkenedImage(
+                    currentFrame.getImage(), darknessAlpha);
+            super.draw(graphicsHandler, darkenedImage);
+        } else {
+            super.draw(graphicsHandler);
+        }
 
         // uncomment this to draw bounds of all non passable tiles (useful for debugging)
         /*

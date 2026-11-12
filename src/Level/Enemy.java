@@ -14,6 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Enemy extends MapEntity {
     private static final int DAMAGE_FLASH_DURATION = 8;
     private static final int DEATH_PARTICLE_LIFETIME = 180;
+    private static final Color BLOOD_COLOR = new Color(190, 24, 42);
     private int damageFlashTimer;
     private boolean deathParticlesSpawned;
 
@@ -54,17 +55,30 @@ public class Enemy extends MapEntity {
 
     protected void startDamageFlash() {
         damageFlashTimer = DAMAGE_FLASH_DURATION;
+        spawnBloodParticles(1, 3, 5, 60);
     }
 
     protected void spawnDeathParticles() {
-        if (deathParticlesSpawned || map == null) {
+        if (deathParticlesSpawned || map == null || !hasBlood()) {
             return;
         }
         deathParticlesSpawned = true;
 
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int particleCount = random.nextInt(2, 6);
-        Color bloodColor = new Color(190, 24, 42);
+        spawnBloodParticles(particleCount, 4, 7.5f, DEATH_PARTICLE_LIFETIME);
+    }
+
+    protected boolean hasBlood() {
+        return true;
+    }
+
+    private void spawnBloodParticles(int particleCount, float minSize, float maxSize, int lifetimeFrames) {
+        if (map == null || !hasBlood()) {
+            return;
+        }
+
+        ThreadLocalRandom random = ThreadLocalRandom.current();
         float centerX = getX() + getWidth() / 2f;
         float centerY = getY() + getHeight() / 2f;
 
@@ -72,11 +86,11 @@ public class Enemy extends MapEntity {
             PhysicsParticle particle = new PhysicsParticle(
                     centerX + (float) random.nextDouble(-2, 2),
                     centerY + (float) random.nextDouble(-2, 2),
-                    (float) random.nextDouble(4, 7.5),
-                    bloodColor);
+                    (float) random.nextDouble(minSize, maxSize),
+                    BLOOD_COLOR);
             particle.setVelocity((float) random.nextDouble(-3.2, 3.2), (float) random.nextDouble(-5.8, -2.6));
             particle.setGravity(0, 0.18f);
-            particle.setLifetimeFrames(DEATH_PARTICLE_LIFETIME);
+            particle.setLifetimeFrames(lifetimeFrames);
             map.addParticle(particle);
         }
     }

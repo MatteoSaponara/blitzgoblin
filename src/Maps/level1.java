@@ -22,7 +22,11 @@ import java.util.ArrayList;
 public class level1 extends Map {
 
     public level1() {
-        super("level1.txt", new CommonTileset());
+        this("level1.txt", new CommonTileset());
+    }
+
+    protected level1(String mapFileName, Tileset tileset) {
+        super(mapFileName, tileset);
         this.playerStartPosition = getMapTile(2, 24).getLocation();
         //this.playerStartPosition = getMapTile(51, 17).getLocation(); //test spawn
     }
