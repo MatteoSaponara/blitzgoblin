@@ -4,6 +4,7 @@ import Enemies.GunPCannonBall;
 import Enemies.GunPOne;
 import Enemies.GunPTwelveShot;
 import Enemies.Turret;
+import Engine.AudioManager;
 import Engine.GraphicsHandler;
 import Engine.Key;
 import Engine.KeyLocker;
@@ -64,6 +65,7 @@ public abstract class Player extends GameObject
     protected AirGroundState previousAirGroundState;
     protected LevelState levelState;
     private boolean landingDustPending;
+    private float fallApexY;
 
     // classes that listen to player events can be added to this list
     protected ArrayList<PlayerListener> listeners = new ArrayList<>();
@@ -138,6 +140,7 @@ public abstract class Player extends GameObject
         playerState = PlayerState.STANDING;
         previousPlayerState = playerState;
         levelState = LevelState.RUNNING;
+        jumpKeyLocked = Keyboard.isKeyDown(JUMP_KEYS);
         if(hasShotgun)
         {
             playerShotgun = new Shotgun(x, y, this);
@@ -342,8 +345,7 @@ public abstract class Player extends GameObject
         // if jump key is pressed, player enters JUMPING state
         else if (Keyboard.isKeyDown(JUMP_KEYS) && !jumpKeyLocked)
         {
-            jumpKeyLocked = true;
-            playerState = PlayerState.JUMPING;
+            startJump();
         }
 
         // if crouch key is pressed, player enters CROUCHING state
@@ -390,8 +392,7 @@ public abstract class Player extends GameObject
         // if jump key is pressed, player enters JUMPING state
         if (Keyboard.isKeyDown(JUMP_KEYS) && !jumpKeyLocked)
         {
-            jumpKeyLocked = true;
-            playerState = PlayerState.JUMPING;
+            startJump();
         }
 
         // if crouch key is pressed,
@@ -413,9 +414,15 @@ public abstract class Player extends GameObject
         // if jump key is pressed, player enters JUMPING state
         if (Keyboard.isKeyDown(JUMP_KEYS) && !jumpKeyLocked)
         {
-            jumpKeyLocked = true;
-            playerState = PlayerState.JUMPING;
+            startJump();
         }
+    }
+
+    private void startJump()
+    {
+        jumpKeyLocked = true;
+        playerState = PlayerState.JUMPING;
+        AudioManager.getInstance().playSoundEffect("jump.wav");
     }
 
     // player JUMPING state logic
@@ -431,6 +438,7 @@ public abstract class Player extends GameObject
             // player is set to be in air and then player is sent into the air
             airGroundState = AirGroundState.AIR;
             landingDustPending = true;
+            fallApexY = getY();
             spawnJumpDust(false);
             jumpControlled = true;
             jumpForce = jumpHeight;
@@ -636,6 +644,7 @@ public abstract class Player extends GameObject
                 switch (ammoMode) {
                     case "single":
                         if (hasSingleAmmo) {
+                            AudioManager.getInstance().playSoundEffect("shotgun.wav");
                             shootSingleShot(mouseX, mouseY);
                             shotFired = true;
                         }
@@ -643,6 +652,7 @@ public abstract class Player extends GameObject
                         break;
                     case "twelve":
                         if (hasTwelveAmmo) {
+                            AudioManager.getInstance().playSoundEffect("shotgun.wav");
                             System.out.println("Firing twelve ammo");
                         for (Enemy bullet : getShotgun().shootTwelveShot()) {
                             map.addEnemy(bullet);
@@ -654,6 +664,7 @@ public abstract class Player extends GameObject
                         break;
                     case "cannon":
                         if (hasCannonAmmo) {
+                            AudioManager.getInstance().playSoundEffect("shotgun.wav");
                             shootCannonBall(mouseX, mouseY);
                             shotFired = true;
                         }
@@ -842,6 +853,9 @@ public abstract class Player extends GameObject
                 if (previousAirGroundState == AirGroundState.AIR && landingDustPending)
                 {
                     spawnJumpDust(true);
+                    float fallDistance = Math.max(0, getY() - fallApexY);
+                    float landingGainDb = -40 + Math.min(fallDistance / 160f, 1f) * 20f;
+                    AudioManager.getInstance().playSoundEffect("land.wav", landingGainDb);
                     landingDustPending = false;
                 }
                 momentumY = 0;
@@ -852,9 +866,14 @@ public abstract class Player extends GameObject
                 jumpControlled = false;
             } else
             {
-                if (previousAirGroundState == AirGroundState.GROUND)
+                if (previousAirGroundState == AirGroundState.GROUND && !landingDustPending)
                 {
                     landingDustPending = true;
+                    fallApexY = getY();
+                }
+                if (landingDustPending)
+                {
+                    fallApexY = Math.min(fallApexY, getY());
                 }
                 playerState = PlayerState.JUMPING;
                 airGroundState = AirGroundState.AIR;
