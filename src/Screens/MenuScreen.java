@@ -17,7 +17,9 @@ public class MenuScreen extends Screen {
             "This text is a mimic.",
             "Get over it!",
             "Okay vs. Not Okay",
-            "Counting or not counting goblin violence?"
+            "Counting or not counting goblin violence?",
+            "Skill Issue",
+            "Try Harder",
     };
 
     protected ScreenCoordinator screenCoordinator;

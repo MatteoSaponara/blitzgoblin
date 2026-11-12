@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class DoorBlock extends EnhancedMapTile {
     
     public DoorBlock(Point location) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("Door.png"), 35, 35), TileType.NOT_PASSABLE);
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("MagicDoor2.png"), 35, 35), TileType.NOT_PASSABLE);
     }
 
     @Override
@@ -35,13 +35,22 @@ public class DoorBlock extends EnhancedMapTile {
                             .withBounds(1, 1, 35, 35)
                             .build()
                 });
+                
+                put("OPEN", new Frame[] {
+                    new FrameBuilder(spriteSheet.getSprite(0, 1), 40)
+                            .withScale(1.4f)
+                            .withBounds(1, 1, 35, 35)
+                            .build()
+                });
             }};
         }
     public void switchDoorState() {
         if (this.getTileType() == TileType.NOT_PASSABLE) {
             this.setTileType(TileType.PASSABLE);
+            this.currentAnimationName = "OPEN";
         } else {
             this.setTileType(TileType.NOT_PASSABLE);
+            this.currentAnimationName = "DEFAULT";
         }
     }
 }

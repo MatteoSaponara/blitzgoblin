@@ -58,6 +58,9 @@ public class TestMap extends Map {
         
         CoinMimicEnemy coinMimicEnemy2 = new CoinMimicEnemy(getMapTile(57, 18).getLocation(), Direction.LEFT);
         enemies.add(coinMimicEnemy2);
+        
+        CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(2, 4).getLocation(), Direction.LEFT);
+        enemies.add(coinMimicEnemy);
 
       // BlockMimicEnemy blockMimicEnemy = new BlockMimicEnemy(getMapTile(12, 19).getLocation(), Direction.LEFT);
        //enemies.add(blockMimicEnemy);

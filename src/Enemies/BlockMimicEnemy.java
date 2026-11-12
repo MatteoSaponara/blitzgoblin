@@ -11,6 +11,7 @@ import Level.MapEntityStatus;
 import Level.Player;
 import Utils.Direction;
 import Utils.Point;
+import Engine.AudioManager;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -143,6 +144,7 @@ public class BlockMimicEnemy extends Enemy implements IDamagable {
     @Override
     public void touchedPlayer(Player player) {
         GamePanel.triggerBlockMimicJumpscare();
+        AudioManager.getInstance().playSoundEffect("sample-3s.wav");
         player.killPlayer();
         this.mapEntityStatus = MapEntityStatus.REMOVED;
     }
