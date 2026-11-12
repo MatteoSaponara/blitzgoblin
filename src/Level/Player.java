@@ -25,6 +25,7 @@ public abstract class Player extends GameObject
 {
     public static final int DEFAULT_MAX_HEALTH = 3;
     private static final Color JUMP_DUST_COLOR = new Color(218, 207, 183, 235);
+    private static final Color BLOOD_COLOR = new Color(190, 24, 42);
 
     // values that affect player movement
     // these should be set in a subclass
@@ -892,6 +893,10 @@ public abstract class Player extends GameObject
         {
             health = Math.max(0, health - damage);
             invincibilityTimer = INVINCIBILITY_DURATION;
+            if (damage > 0)
+            {
+                spawnDamageParticles();
+            }
             if (health == 0)
             {
                 levelState = LevelState.PLAYER_DEAD;
@@ -909,6 +914,7 @@ public abstract class Player extends GameObject
             {
                 health--;
                 invincibilityTimer = INVINCIBILITY_DURATION;
+                spawnDamageParticles();
                 float playerCenterX = getX() + getWidth() / 2f;
                 float playerCenterY = getY() + getHeight() / 2f;
                 float sourceCenterX = mapEntity.getX() + mapEntity.getWidth() / 2f;
@@ -926,6 +932,26 @@ public abstract class Player extends GameObject
             }
         }
     }
+
+    private void spawnDamageParticles()
+    {
+        if (map == null)
+        {
+            return;
+        }
+
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        PhysicsParticle particle = new PhysicsParticle(
+                getX() + getWidth() / 2f + (float) random.nextDouble(-2, 2),
+                getY() + getHeight() / 2f + (float) random.nextDouble(-2, 2),
+                (float) random.nextDouble(3, 5),
+                BLOOD_COLOR);
+        particle.setVelocity((float) random.nextDouble(-3.2, 3.2), (float) random.nextDouble(-5.8, -2.6));
+        particle.setGravity(0, 0.18f);
+        particle.setLifetimeFrames(60);
+        map.addParticle(particle);
+    }
+
     public void killPlayer() {
         if (!isInvincible) {
             levelState = LevelState.PLAYER_DEAD;

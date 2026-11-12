@@ -134,6 +134,11 @@ public class Turret extends Enemy implements IDamagable{
     public int getHealth() {
         return health;
     }
+
+    @Override
+    protected boolean hasBlood() {
+        return false;
+    }
     
     public void takeDamage(int damage) {
         if (damage > 0) {
