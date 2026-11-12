@@ -1,3 +1,3 @@
 shotgun.wav gain=-12 pitchMin=-1 pitchMax=1
 land.wav pitchMin=-1 pitchMax=1
-jump.wav gain=-12 pitchMin=-1 pitchMax=1
+jump.wav gain=-11 pitchMin=-1 pitchMax=1

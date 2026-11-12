@@ -10,6 +10,7 @@ import Maps.TitleScreenMapNewVersion;
 import Maps.level1;
 import Maps.level2;
 import Maps.level3;
+import Maps.level4;
 import java.util.ArrayList;
 
 public class EditorMaps {
@@ -23,6 +24,7 @@ public class EditorMaps {
             add("level1");
             add("level2");
             add("level3");
+            add("level4");
             add("GamblingRoom");
         }};
     }
@@ -45,6 +47,8 @@ public class EditorMaps {
                 return new level2();
             case "level3":
                 return new level3();
+            case "level4":
+                return new level4();
             case "GamblingRoom":
                 return new GamblingRoom();
                 
