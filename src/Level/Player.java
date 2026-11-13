@@ -6,6 +6,7 @@ import Enemies.GunPTwelveShot;
 import Enemies.Turret;
 import Engine.AudioManager;
 import Engine.GraphicsHandler;
+import Engine.ImageLoader;
 import Engine.Key;
 import Engine.KeyLocker;
 import Engine.Keyboard;
@@ -27,6 +28,16 @@ public abstract class Player extends GameObject
     public static final int DEFAULT_MAX_HEALTH = 3;
     private static final Color JUMP_DUST_COLOR = new Color(218, 207, 183, 235);
     private static final Color BLOOD_COLOR = new Color(190, 24, 42);
+    private static final int DEATH_GIB_LIFETIME = 90;
+    private static final String[] DEATH_GIB_IMAGES = {
+            "gibs/goblin/gibArm1.png",
+            "gibs/goblin/gibArm2.png",
+            "gibs/goblin/gibGun.png",
+            "gibs/goblin/gibHead.png",
+            "gibs/goblin/gibLeg1.png",
+            "gibs/goblin/gibLeg2.png",
+            "gibs/goblin/gibTorso.png"
+    };
 
     // values that affect player movement
     // these should be set in a subclass
@@ -66,6 +77,9 @@ public abstract class Player extends GameObject
     protected LevelState levelState;
     private boolean landingDustPending;
     private float fallApexY;
+    private boolean deathGibsSpawned;
+    private int deathGibFramesRemaining;
+    private boolean deathNotified;
 
     // classes that listen to player events can be added to this list
     protected ArrayList<PlayerListener> listeners = new ArrayList<>();
@@ -1014,6 +1028,22 @@ public abstract class Player extends GameObject
     // if player has died, this will be the update cycle
     public void updatePlayerDead()
     {
+        if (deathGibsSpawned)
+        {
+            if (deathGibFramesRemaining > 0)
+            {
+                deathGibFramesRemaining--;
+            } else if (!deathNotified)
+            {
+                deathNotified = true;
+                for (PlayerListener listener : listeners)
+                {
+                    listener.onDeath();
+                }
+            }
+            return;
+        }
+
         // change player animation to DEATH
         if (!currentAnimationName.startsWith("DEATH"))
         {
@@ -1031,20 +1061,34 @@ public abstract class Player extends GameObject
         {
             super.update();
         }
-        // if death animation on last frame (it is set up not to loop back to start), player should continually fall until it goes off screen
+        // Spawn the gib effect after the death pose has finished.
         else if (currentFrameIndex == getCurrentAnimation().length - 1)
         {
-            if (map.getCamera().containsDraw(this))
-            {
-                moveY(6); // changed to 6. too slow
-            } else
-            {
-                // tell all player listeners that the player has died in the level
-                for (PlayerListener listener : listeners)
-                {
-                    listener.onDeath();
-                }
-            }
+            spawnDeathGibs();
+            deathGibsSpawned = true;
+            deathGibFramesRemaining = DEATH_GIB_LIFETIME;
+        }
+    }
+
+    private void spawnDeathGibs()
+    {
+        if (map == null)
+        {
+            return;
+        }
+
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        float centerX = getX() + getWidth() / 2f;
+        float centerY = getY() + getHeight() / 2f;
+        for (String imagePath : DEATH_GIB_IMAGES)
+        {
+            PhysicsParticle particle = new PhysicsParticle(centerX, centerY, ImageLoader.load(imagePath));
+            particle.setVelocity((float) random.nextDouble(-3.2, 3.2),
+                    (float) random.nextDouble(-5.8, -2.6));
+            particle.setGravity(0, 0.18f);
+            particle.setSpinDegreesPerFrame((float) random.nextDouble(-12, 12));
+            particle.setLifetimeFrames(DEATH_GIB_LIFETIME);
+            map.addParticle(particle);
         }
     }
     
@@ -1101,6 +1145,11 @@ public abstract class Player extends GameObject
         this.levelState = levelState;
     }
 
+    public boolean isDeathGibsSpawned()
+    {
+        return deathGibsSpawned;
+    }
+
     public void addListener(PlayerListener listener)
     {
         listeners.add(listener);
@@ -1109,6 +1158,11 @@ public abstract class Player extends GameObject
     @Override
     public void draw(GraphicsHandler graphicsHandler)
     {
+        if (deathGibsSpawned)
+        {
+            return;
+        }
+
         float alpha = getDrawAlpha();
         if (alpha < 1f) {
             graphicsHandler.setAlpha(alpha);
