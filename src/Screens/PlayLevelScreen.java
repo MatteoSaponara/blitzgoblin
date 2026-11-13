@@ -151,7 +151,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case RUNNING:
                 map.draw(graphicsHandler);
                 player.draw(graphicsHandler);
-                if(player.getShotgun() != null) { 
+                if (player.getShotgun() != null && !player.isDeathGibsSpawned()) {
                     player.getShotgun().draw(graphicsHandler);
                     if(player.playerCanShootShotgun())
                         graphicsHandler.drawImage(ImageLoader.load("gunui.png"), 27, 100, 55, 25);
