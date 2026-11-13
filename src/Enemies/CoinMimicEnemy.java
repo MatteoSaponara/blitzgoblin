@@ -16,6 +16,7 @@ import Utils.AirGroundState;
 import Utils.Direction;
 import Utils.Point;
 import Engine.GamePanel;
+import Engine.AudioManager;
 
 import java.util.HashMap;
 
@@ -198,6 +199,7 @@ public class CoinMimicEnemy extends Enemy implements IDamagable {
 
     @Override 
     public void touchedPlayer(Player player) {
+		AudioManager.getInstance().playSoundEffect("wega-jumpscare.wav");
 		GamePanel.triggerJumpscare();
         player.killPlayer();
         this.mapEntityStatus = MapEntityStatus.REMOVED;

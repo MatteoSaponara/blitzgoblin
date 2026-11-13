@@ -7,6 +7,7 @@ import Enemies.Turret;
 import Enemies.CoinMimicEnemy;
 import Enemies.BlockMimicEnemy;
 import Enemies.GargoyleEnemy;
+import Enemies.GhostWalrus;
 import Enemies.ArmoredEnemy;
 import Enemies.Statlactite;
 import Engine.ImageLoader;
@@ -60,11 +61,11 @@ public class level3 extends Map {
         //GoblinEnemy goblinEnemy4 = new GoblinEnemy(getMapTile(28, 25).getLocation().addY(2), Direction.LEFT);
         //enemies.add(goblinEnemy4);
              
-        GargoyleEnemy gargoyleEnemy = new GargoyleEnemy(getMapTile(23, 15).getLocation().addY(2), Direction.RIGHT);
-        enemies.add(gargoyleEnemy);
+        GhostWalrus ghostWalrus = new GhostWalrus(getMapTile(23, 15).getLocation().addY(2), Direction.RIGHT);
+        enemies.add(ghostWalrus);
 
-        GargoyleEnemy gargoyleEnemy2 = new GargoyleEnemy(getMapTile(59, 9).getLocation().addY(2), Direction.LEFT);
-        enemies.add(gargoyleEnemy2);
+        GhostWalrus ghostWalrus2 = new GhostWalrus(getMapTile(59, 9).getLocation().addY(2), Direction.LEFT);
+        enemies.add(ghostWalrus2);
         
         CoinMimicEnemy coinMimicEnemy = new CoinMimicEnemy(getMapTile(59, 13).getLocation(), Direction.LEFT);
         enemies.add(coinMimicEnemy);

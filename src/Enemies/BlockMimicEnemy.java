@@ -156,8 +156,8 @@ public class BlockMimicEnemy extends Enemy implements IDamagable {
     
     @Override
     public void touchedPlayer(Player player) {
+		AudioManager.getInstance().playSoundEffect("wega-jumpscare.wav");
         GamePanel.triggerBlockMimicJumpscare();
-        AudioManager.getInstance().playSoundEffect("sample-3s.wav");
         player.killPlayer();
         this.mapEntityStatus = MapEntityStatus.REMOVED;
     }

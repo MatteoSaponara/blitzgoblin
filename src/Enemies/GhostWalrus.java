@@ -25,7 +25,7 @@ public class GhostWalrus extends Enemy implements IDamagable {
     private int health = 3;
 
     public GhostWalrus(Point location, Direction facingDirection) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("Walrus.png"), 24, 24), "FLY_LEFT");
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("GhostWalrus.png"), 24, 24), "FLY_LEFT");
         this.startFacingDirection = facingDirection;
         this.initialize();
     }
