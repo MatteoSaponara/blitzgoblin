@@ -203,6 +203,10 @@ public class HeroEnemy extends Enemy implements IDamagable {
     public int getHealth() {
         return health;
     }
+
+    public boolean canBeShot() {
+        return heroState == HeroState.IDLE;
+    }
     
     public void takeDamage(int damage) {
         if (heroState != HeroState.IDLE || damage <= 0) {

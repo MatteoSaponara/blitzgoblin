@@ -60,7 +60,9 @@ public class GunPCannonBall extends Enemy {
 
         for (Enemy enemy : map.getActiveEnemies()) {
             if (enemy != this &&
-                    enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE && this.intersects(enemy)) {
+                    enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE &&
+                    (!(enemy instanceof HeroEnemy) || ((HeroEnemy) enemy).canBeShot()) &&
+                    this.intersects(enemy)) {
 				
                 if (enemy instanceof IDamagable) {
                     if(!(enemy instanceof IArmored)) {
