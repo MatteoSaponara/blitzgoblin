@@ -53,6 +53,7 @@ public class GunPTwelveShot extends Enemy {
         moveYHandleCollision(moveY);
 
         distanceTraveled += movementSpeed;
+        spawnBulletTrail(moveX, moveY);
 
         for (Enemy enemy : map.getActiveEnemies()) {
             if (enemy != this &&

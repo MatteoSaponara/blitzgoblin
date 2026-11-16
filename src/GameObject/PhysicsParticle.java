@@ -34,6 +34,7 @@ public class PhysicsParticle {
     private int ageFrames;
     private boolean fadesOut;
     private boolean shrinksToNothing;
+    private boolean drawBehindMapEntities;
     private Color color;
     private Shape shape = Shape.CIRCLE;
     private BufferedImage image;
@@ -213,6 +214,14 @@ public class PhysicsParticle {
 
     public float getHeight() {
         return height;
+    }
+
+    public boolean drawsBehindMapEntities() {
+        return drawBehindMapEntities;
+    }
+
+    public void setDrawBehindMapEntities(boolean drawBehindMapEntities) {
+        this.drawBehindMapEntities = drawBehindMapEntities;
     }
 
     public void setRotationDegrees(float rotationDegrees) {
