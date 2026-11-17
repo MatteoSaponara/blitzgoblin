@@ -481,9 +481,17 @@ public abstract class Map {
     }
 
     public void draw(GraphicsHandler graphicsHandler) {
-        camera.draw(graphicsHandler);
+        camera.drawMapTiles(graphicsHandler);
         for (PhysicsParticle particle : particles) {
-            particle.draw(graphicsHandler, camera.getX(), camera.getY());
+            if (particle.drawsBehindMapEntities()) {
+                particle.draw(graphicsHandler, camera.getX(), camera.getY());
+            }
+        }
+        camera.drawMapEntities(graphicsHandler);
+        for (PhysicsParticle particle : particles) {
+            if (!particle.drawsBehindMapEntities()) {
+                particle.draw(graphicsHandler, camera.getX(), camera.getY());
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package Level;
 
 import Engine.Config;
+import Engine.AudioManager;
 import Engine.GraphicsHandler;
 import GameObject.Frame;
 import GameObject.PhysicsParticle;
@@ -15,8 +16,11 @@ public class Enemy extends MapEntity {
     private static final int DAMAGE_FLASH_DURATION = 8;
     private static final int DEATH_PARTICLE_LIFETIME = 180;
     private static final Color BLOOD_COLOR = new Color(190, 24, 42);
+    private static final Color BULLET_TRAIL_COLOR = new Color(255, 235, 130, 255);
     private int damageFlashTimer;
     private boolean deathParticlesSpawned;
+    private boolean deathSoundPlayed;
+    private int bulletTrailTimer;
 
     public Enemy(float x, float y, SpriteSheet spriteSheet, String startingAnimation) {
         super(x, y, spriteSheet, startingAnimation);
@@ -58,6 +62,24 @@ public class Enemy extends MapEntity {
         spawnBloodParticles(1, 3, 5, 60);
     }
 
+    protected void spawnBulletTrail(float velocityX, float velocityY) {
+        if (map == null || bulletTrailTimer++ % 2 != 0) {
+            return;
+        }
+
+        PhysicsParticle particle = new PhysicsParticle(
+                getX() + getWidth() / 2f,
+                getY() + getHeight() / 2f,
+                5.5f,
+                BULLET_TRAIL_COLOR);
+        particle.setVelocity(-velocityX * 0.08f, -velocityY * 0.08f);
+        particle.setLifetimeFrames(12);
+        particle.setFadesOut(true);
+        particle.setShrinksToNothing(true);
+        particle.setDrawBehindMapEntities(true);
+        map.addParticle(particle);
+    }
+
     protected void spawnDeathParticles() {
         if (deathParticlesSpawned || map == null || !hasBlood()) {
             return;
@@ -67,6 +89,15 @@ public class Enemy extends MapEntity {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int particleCount = random.nextInt(2, 6);
         spawnBloodParticles(particleCount, 4, 7.5f, DEATH_PARTICLE_LIFETIME);
+    }
+
+    protected final void playDeathSound() {
+        if (deathSoundPlayed) {
+            return;
+        }
+        deathSoundPlayed = true;
+        int soundNumber = ThreadLocalRandom.current().nextInt(1, 3);
+        AudioManager.getInstance().playSoundEffect("bustflesh" + soundNumber + ".wav");
     }
 
     protected boolean hasBlood() {

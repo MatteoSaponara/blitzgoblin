@@ -31,6 +31,8 @@ public class Turret extends Enemy implements IDamagable{
 
     // how many frames before firing that the turret switches to its charging pose
     protected final int CHARGE_DURATION = 20;
+    private static final int SHAKE_DURATION = 6;
+    private int shakeTimer;
 
     public Turret(Point startLocation, Direction facingDirection) {
         // sprite is a single row of 2 frames, each 31x33 with 1px of padding between them
@@ -52,6 +54,7 @@ public class Turret extends Enemy implements IDamagable{
 
     @Override
     public void update(Player player) {
+        setX(startPositionX);
 
         // switch to the charging pose as the shoot timer counts down towards firing, otherwise show the normal/shooting pose
         boolean isChargingUp = shootTimer <= CHARGE_DURATION;
@@ -84,6 +87,8 @@ public class Turret extends Enemy implements IDamagable{
             // add fireball enemy to the map for it to spawn in the level
             map.addEnemy(fireball);
 
+            shakeTimer = SHAKE_DURATION;
+
             // reset shoot wait timer so the process can happen again (dino walks around, then waits, then shoots)
             shootTimer = 130;
         }
@@ -91,6 +96,12 @@ public class Turret extends Enemy implements IDamagable{
             shootTimer--;
         }
         super.update(player);
+
+        if (shakeTimer > 0) {
+            int shakeOffset = shakeTimer % 4 < 2 ? -2 : 2;
+            setX(startPositionX + shakeOffset);
+            shakeTimer--;
+        }
     }
 
     @Override
@@ -141,9 +152,6 @@ public class Turret extends Enemy implements IDamagable{
     }
     
     public void takeDamage(int damage) {
-        if (damage > 0) {
-            startDamageFlash();
-        }
         health -= damage;
         if (health < 1) {
             die();
@@ -151,6 +159,7 @@ public class Turret extends Enemy implements IDamagable{
         }
     }
     public void die() {
+        playDeathSound();
         spawnDeathParticles();
         this.mapEntityStatus = MapEntityStatus.REMOVED;
         getMap().addEnemy(new DeathAnimEnemies(new Point(getX(), getY()), "DeathAnimationEnemies.png", 32, 32, 4, 8, 1.4f));

@@ -53,11 +53,13 @@ public class GunPTwelveShot extends Enemy {
         moveYHandleCollision(moveY);
 
         distanceTraveled += movementSpeed;
+        spawnBulletTrail(moveX, moveY);
 
         for (Enemy enemy : map.getActiveEnemies()) {
             if (enemy != this &&
                     enemy.getMapEntityStatus() == MapEntityStatus.ACTIVE 
                     && !(enemy instanceof GunPTwelveShot)
+                    && (!(enemy instanceof HeroEnemy) || ((HeroEnemy) enemy).canBeShot())
                     && this.intersects(enemy)) {
                 if (enemy instanceof IDamagable) {
                     if(!(enemy instanceof IArmored)) {

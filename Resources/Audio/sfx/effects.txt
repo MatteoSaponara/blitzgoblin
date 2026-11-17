@@ -1,3 +1,6 @@
 shotgun.wav gain=-12 pitchMin=-1 pitchMax=1
 land.wav pitchMin=-1 pitchMax=1
-jump.wav gain=-11 pitchMin=-1 pitchMax=1
+jump.wav gain=-10 pitchMin=-1 pitchMax=1
+shotgunpump.wav gain=-12 pitchMin=-1 pitchMax=1
+bustflesh1.wav gain=-15 pitchMin=-1 pitchMax=2
+bustflesh2.wav gain=-15 pitchMin=-1 pitchMax=2

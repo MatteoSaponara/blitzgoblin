@@ -29,10 +29,10 @@ public abstract class Player extends GameObject
     private static final Color JUMP_DUST_COLOR = new Color(218, 207, 183, 235);
     private static final Color BLOOD_COLOR = new Color(190, 24, 42);
     private static final int DEATH_GIB_LIFETIME = 90;
+    private static final String DEATH_GUN_GIB_IMAGE = "gibs/goblin/gibGun.png";
     private static final String[] DEATH_GIB_IMAGES = {
             "gibs/goblin/gibArm1.png",
             "gibs/goblin/gibArm2.png",
-            "gibs/goblin/gibGun.png",
             "gibs/goblin/gibHead.png",
             "gibs/goblin/gibLeg1.png",
             "gibs/goblin/gibLeg2.png",
@@ -76,10 +76,12 @@ public abstract class Player extends GameObject
     protected AirGroundState previousAirGroundState;
     protected LevelState levelState;
     private boolean landingDustPending;
+    private boolean touchingWater;
     private float fallApexY;
     private boolean deathGibsSpawned;
     private int deathGibFramesRemaining;
     private boolean deathNotified;
+    private boolean deathSoundPlayed;
 
     // classes that listen to player events can be added to this list
     protected ArrayList<PlayerListener> listeners = new ArrayList<>();
@@ -113,10 +115,9 @@ public abstract class Player extends GameObject
     protected int attackTimer = 0;
 
     protected int shotgunAttackTimer = 0;
-    //protected final int SHOTGUN_ATTACK_COOLDOWN = 25;
-    protected final int SINGLE_AMMO_COOLDOWN = 25;
-	protected final int TWELVE_AMMO_COOLDOWN = 60;
-	protected final int CANNON_AMMO_COOLDOWN = 90;
+
+    private boolean shotgunPumpPending;
+    protected final int SHOTGUN_ATTACK_COOLDOWN = 25;
     protected final int ATTACK_DURATION = 15;
     protected final int ATTACK_WIDTH = 15;
     protected final int ATTACK_OVERLAP = 6; // how far the attack box pushes into the player's sprite bounds
@@ -240,6 +241,8 @@ public abstract class Player extends GameObject
                 lastAmountMovedX = super.moveXHandleCollision(moveAmountX);
                 lastAmountMovedY = super.moveYHandleCollision(moveAmountY);
             }
+
+            updateWaterSplash();
 
             // Updates mouse aim angle and curser position coordinates.
             updateAiming();
@@ -533,7 +536,7 @@ public abstract class Player extends GameObject
         }
 
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int particleCount = landing ? random.nextInt(7, 10) : random.nextInt(4, 7);
+        int particleCount = landing ? random.nextInt(9, 13) : random.nextInt(5, 8);
         float centerX = getX() + getWidth() / 2f;
         float feetY = getY() + getHeight();
         for (int i = 0; i < particleCount; i++)
@@ -541,7 +544,7 @@ public abstract class Player extends GameObject
             PhysicsParticle particle = new PhysicsParticle(
                     centerX + (float) random.nextDouble(-getWidth() * 0.18f, getWidth() * 0.18f),
                     feetY + (float) random.nextDouble(-0.75, 0.25),
-                    (float) random.nextDouble(3.2, 5.0),
+                    (float) random.nextDouble(5.5, 8.5),
                     JUMP_DUST_COLOR);
             particle.setVelocity(
                     (float) random.nextDouble(-0.9, 0.9),
@@ -549,6 +552,67 @@ public abstract class Player extends GameObject
             particle.setGravity(0, 0.08f);
             particle.setDrag(0.08f);
             particle.setLifetimeFrames(random.nextInt(16, 23));
+            particle.setFadesOut(true);
+            particle.setShrinksToNothing(true);
+            map.addParticle(particle);
+        }
+    }
+
+    private void updateWaterSplash()
+    {
+        if (map == null)
+        {
+            return;
+        }
+
+        Rectangle bounds = getBounds();
+        int tileWidth = map.getTileset().getScaledSpriteWidth();
+        int tileHeight = map.getTileset().getScaledSpriteHeight();
+        int firstTileX = (int) Math.floor(bounds.getX1() / tileWidth);
+        int lastTileX = (int) Math.floor(bounds.getX2() / tileWidth);
+        int firstTileY = (int) Math.floor(bounds.getY1() / tileHeight);
+        int lastTileY = (int) Math.floor(bounds.getY2() / tileHeight);
+        boolean currentlyTouchingWater = false;
+
+        for (int tileY = firstTileY; tileY <= lastTileY && !currentlyTouchingWater; tileY++)
+        {
+            for (int tileX = firstTileX; tileX <= lastTileX; tileX++)
+            {
+                MapTile tile = map.getMapTile(tileX, tileY);
+                if (tile != null && tile.getTileType() == TileType.WATER && bounds.intersects(tile.getBounds()))
+                {
+                    currentlyTouchingWater = true;
+                    break;
+                }
+            }
+        }
+
+        if (currentlyTouchingWater != touchingWater)
+        {
+            spawnWaterSplash();
+            touchingWater = currentlyTouchingWater;
+        }
+    }
+
+    private void spawnWaterSplash()
+    {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        float centerX = getX() + getWidth() / 2f;
+        float splashY = getY() + getHeight() * 0.68f;
+
+        for (int i = 0; i < 6; i++)
+        {
+            PhysicsParticle particle = new PhysicsParticle(
+                    centerX + (float) random.nextDouble(-8, 8),
+                    splashY,
+                    (float) random.nextDouble(12, 18),
+                    Color.WHITE);
+            particle.setVelocity(
+                    (float) random.nextDouble(-2.5, 2.5),
+                    (float) -random.nextDouble(2.5, 5.0));
+            particle.setGravity(0, 0.24f);
+            particle.setDrag(0.04f);
+            particle.setLifetimeFrames(random.nextInt(30, 43));
             particle.setFadesOut(true);
             particle.setShrinksToNothing(true);
             map.addParticle(particle);
@@ -689,19 +753,9 @@ public abstract class Player extends GameObject
                 }
             if (shotFired) {
                 getShotgun().spawnShotSmoke();
+                shotgunPumpPending = true;
             }
-            //shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
-            switch (ammoMode) {
-				case "single":
-				shotgunAttackTimer = SINGLE_AMMO_COOLDOWN;
-				break;
-				case "twelve":
-				shotgunAttackTimer = TWELVE_AMMO_COOLDOWN;
-				break;
-				case "cannon":
-				shotgunAttackTimer = CANNON_AMMO_COOLDOWN;
-				break;
-				}
+            shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
            
             getShotgun().playShootAnimation();
             }    
@@ -728,6 +782,10 @@ public abstract class Player extends GameObject
         }
         if(!playerCanShootShotgun()) {
             shotgunAttackTimer--;
+            if (shotgunAttackTimer == 0 && shotgunPumpPending) {
+                AudioManager.getInstance().playSoundEffect("shotgunpump.wav");
+                shotgunPumpPending = false;
+            }
         }
     }
 
@@ -1043,6 +1101,13 @@ public abstract class Player extends GameObject
     // if player has died, this will be the update cycle
     public void updatePlayerDead()
     {
+        if (!deathSoundPlayed)
+        {
+            int soundNumber = ThreadLocalRandom.current().nextInt(1, 3);
+            AudioManager.getInstance().playSoundEffect("bustflesh" + soundNumber + ".wav");
+            deathSoundPlayed = true;
+        }
+
         if (deathGibsSpawned)
         {
             if (deathGibFramesRemaining > 0)
@@ -1097,20 +1162,31 @@ public abstract class Player extends GameObject
         float centerY = getY() + getHeight() / 2f;
         for (String imagePath : DEATH_GIB_IMAGES)
         {
-            PhysicsParticle particle = new PhysicsParticle(centerX, centerY, ImageLoader.load(imagePath));
-            particle.setVelocity((float) random.nextDouble(-3.2, 3.2),
-                    (float) random.nextDouble(-5.8, -2.6));
-            particle.setGravity(0, 0.18f);
-            particle.setSpinDegreesPerFrame((float) random.nextDouble(-12, 12));
-            particle.setLifetimeFrames(DEATH_GIB_LIFETIME);
-            map.addParticle(particle);
+            spawnDeathGib(imagePath, centerX, centerY, random);
         }
+        if (hasShotgun)
+        {
+            spawnDeathGib(DEATH_GUN_GIB_IMAGE, centerX, centerY, random);
+        }
+    }
+
+    private void spawnDeathGib(String imagePath, float centerX, float centerY, ThreadLocalRandom random)
+    {
+        PhysicsParticle particle = new PhysicsParticle(centerX, centerY, ImageLoader.load(imagePath));
+        particle.setVelocity((float) random.nextDouble(-3.2, 3.2),
+                (float) random.nextDouble(-5.8, -2.6));
+        particle.setGravity(0, 0.18f);
+        particle.setSpinDegreesPerFrame((float) random.nextDouble(-12, 12));
+        particle.setLifetimeFrames(DEATH_GIB_LIFETIME);
+        map.addParticle(particle);
     }
     
 
     public void collectCoin()
     {
 		coins++;
+        int chime = ThreadLocalRandom.current().nextInt(1, 4);
+        AudioManager.getInstance().playSoundEffect("chime" + chime + ".wav");
 	}
 
     public int getCoins()

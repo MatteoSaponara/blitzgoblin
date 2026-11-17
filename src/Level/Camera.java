@@ -256,13 +256,18 @@ public class Camera extends Rectangle {
 
     // draws active map entities to the screen
     public void drawMapEntities(GraphicsHandler graphicsHandler) {
+        for (EnhancedMapTile enhancedMapTile : activeEnhancedMapTiles) {
+            if (enhancedMapTile.drawsBehindEnemies() && containsDraw(enhancedMapTile)) {
+                enhancedMapTile.draw(graphicsHandler);
+            }
+        }
         for (Enemy enemy : activeEnemies) {
             if (containsDraw(enemy)) {
                 enemy.draw(graphicsHandler);
             }
         }
         for (EnhancedMapTile enhancedMapTile : activeEnhancedMapTiles) {
-            if (containsDraw(enhancedMapTile)) {
+            if (!enhancedMapTile.drawsBehindEnemies() && containsDraw(enhancedMapTile)) {
                 enhancedMapTile.draw(graphicsHandler);
             }
         }
