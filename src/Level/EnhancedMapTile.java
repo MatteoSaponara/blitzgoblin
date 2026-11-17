@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 // This class is a base class for all enhanced map tiles in the game -- all enhanced map tiles should extend from it
 public class EnhancedMapTile extends MapTile {
+    private boolean drawsBehindEnemies;
 
     public EnhancedMapTile(float x, float y, HashMap<String, Frame[]> animations, TileType tileType) {
         super(x, y, animations, tileType);
@@ -22,6 +23,14 @@ public class EnhancedMapTile extends MapTile {
 
     public EnhancedMapTile(float x, float y, Frame frame, TileType tileType) {
         super(x, y, frame, tileType);
+    }
+
+    public boolean drawsBehindEnemies() {
+        return drawsBehindEnemies;
+    }
+
+    protected void setDrawsBehindEnemies(boolean drawsBehindEnemies) {
+        this.drawsBehindEnemies = drawsBehindEnemies;
     }
 
     @Override
