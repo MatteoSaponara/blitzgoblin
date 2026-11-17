@@ -225,6 +225,7 @@ public class HeroEnemy extends Enemy implements IDamagable {
             return;
         }
 
+        playDeathSound();
         spawnDeathParticles();
         health = 0;
         heroState = HeroState.HIT;

@@ -1,6 +1,7 @@
 package Level;
 
 import Engine.Config;
+import Engine.AudioManager;
 import Engine.GraphicsHandler;
 import GameObject.Frame;
 import GameObject.PhysicsParticle;
@@ -18,6 +19,7 @@ public class Enemy extends MapEntity {
     private static final Color BULLET_TRAIL_COLOR = new Color(255, 235, 130, 255);
     private int damageFlashTimer;
     private boolean deathParticlesSpawned;
+    private boolean deathSoundPlayed;
     private int bulletTrailTimer;
 
     public Enemy(float x, float y, SpriteSheet spriteSheet, String startingAnimation) {
@@ -87,6 +89,15 @@ public class Enemy extends MapEntity {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int particleCount = random.nextInt(2, 6);
         spawnBloodParticles(particleCount, 4, 7.5f, DEATH_PARTICLE_LIFETIME);
+    }
+
+    protected final void playDeathSound() {
+        if (deathSoundPlayed) {
+            return;
+        }
+        deathSoundPlayed = true;
+        int soundNumber = ThreadLocalRandom.current().nextInt(1, 3);
+        AudioManager.getInstance().playSoundEffect("bustflesh" + soundNumber + ".wav");
     }
 
     protected boolean hasBlood() {

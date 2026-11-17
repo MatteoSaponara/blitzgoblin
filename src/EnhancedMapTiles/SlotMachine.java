@@ -1,6 +1,7 @@
 package EnhancedMapTiles;
 
 import Builders.FrameBuilder;
+import Engine.GraphicsHandler;
 import Engine.ImageLoader;
 import Enemies.GunPCannonBall;
 import Enemies.GunPOne;
@@ -14,7 +15,6 @@ import Level.Player;
 import Level.TileType;
 import Utils.Point;
 import java.util.HashMap;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class SlotMachine extends EnhancedMapTile {
     private static final int FRAME_WIDTH = 134;
@@ -27,9 +27,7 @@ public class SlotMachine extends EnhancedMapTile {
     private static final int TARGET_BOUNDS_HEIGHT = 34;
     private static final String IDLE_ANIMATION = "DEFAULT";
     private static final String SHOT_ANIMATION = "SHOT";
-    private static final int COIN_CHARGE_COOLDOWN_FRAMES = 25;
-    private static final int HEART_REWARD_CHANCE_DENOMINATOR = 10;
-    private int coinChargeCooldown;
+    private final SlotMachineDisplay display = new SlotMachineDisplay();
 
     public SlotMachine(Point location) {
         super(location.x, location.y,
@@ -69,9 +67,9 @@ public class SlotMachine extends EnhancedMapTile {
     @Override
     public void update(Player player) {
         super.update(player);
-
-        if (coinChargeCooldown > 0) {
-            coinChargeCooldown--;
+        SlotMachineDisplay.Outcome completedOutcome = display.update();
+        if (completedOutcome != null) {
+            completedOutcome.award(player);
         }
 
         boolean hitByShot = false;
@@ -88,18 +86,33 @@ public class SlotMachine extends EnhancedMapTile {
             setCurrentAnimationName(SHOT_ANIMATION);
         }
 
-        if (hitByShot && coinChargeCooldown == 0 && player.getCoins() > 0) {
+        if (hitByShot && display.canGamble() && player.getCoins() > 0) {
             player.setCoins(player.getCoins() - 1);
-            coinChargeCooldown = COIN_CHARGE_COOLDOWN_FRAMES;
-            if (ThreadLocalRandom.current().nextInt(HEART_REWARD_CHANCE_DENOMINATOR) == 0) {
-                player.setMaxHealth(player.getMaxHealth() + 1);
-                player.setPlayerHealth(player.getHealth() + 1);
-            }
+            display.startSpin();
         }
 
         if (SHOT_ANIMATION.equals(getCurrentAnimationName()) && hasAnimationLooped) {
             setCurrentAnimationName(IDLE_ANIMATION);
         }
+    }
+
+    @Override
+    public void draw(GraphicsHandler graphicsHandler) {
+        super.draw(graphicsHandler);
+        float cameraX = map == null ? 0 : map.getCamera().getX();
+        float cameraY = map == null ? 0 : map.getCamera().getY();
+        int screenX;
+        int screenY;
+        if (graphicsHandler.isPixelGridEnabled() && map != null) {
+            screenX = GraphicsHandler.toPixelGrid(getX())
+                    - GraphicsHandler.toPixelGrid(cameraX);
+            screenY = GraphicsHandler.toPixelGrid(getY())
+                    - GraphicsHandler.toPixelGrid(cameraY);
+        } else {
+            screenX = GraphicsHandler.toPixelGrid(Math.round(getX() - cameraX));
+            screenY = GraphicsHandler.toPixelGrid(Math.round(getY() - cameraY));
+        }
+        display.draw(graphicsHandler, screenX, screenY);
     }
 
     private boolean isPlayerProjectile(Enemy enemy) {

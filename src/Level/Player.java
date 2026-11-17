@@ -81,6 +81,7 @@ public abstract class Player extends GameObject
     private boolean deathGibsSpawned;
     private int deathGibFramesRemaining;
     private boolean deathNotified;
+    private boolean deathSoundPlayed;
 
     // classes that listen to player events can be added to this list
     protected ArrayList<PlayerListener> listeners = new ArrayList<>();
@@ -114,6 +115,7 @@ public abstract class Player extends GameObject
     protected int attackTimer = 0;
 
     protected int shotgunAttackTimer = 0;
+    private boolean shotgunPumpPending;
     protected final int SHOTGUN_ATTACK_COOLDOWN = 25;
     protected final int ATTACK_DURATION = 15;
     protected final int ATTACK_WIDTH = 15;
@@ -750,6 +752,7 @@ public abstract class Player extends GameObject
                 }
             if (shotFired) {
                 getShotgun().spawnShotSmoke();
+                shotgunPumpPending = true;
             }
             shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
             getShotgun().playShootAnimation();
@@ -777,6 +780,10 @@ public abstract class Player extends GameObject
         }
         if(!playerCanShootShotgun()) {
             shotgunAttackTimer--;
+            if (shotgunAttackTimer == 0 && shotgunPumpPending) {
+                AudioManager.getInstance().playSoundEffect("shotgunpump.wav");
+                shotgunPumpPending = false;
+            }
         }
     }
 
@@ -1092,6 +1099,13 @@ public abstract class Player extends GameObject
     // if player has died, this will be the update cycle
     public void updatePlayerDead()
     {
+        if (!deathSoundPlayed)
+        {
+            int soundNumber = ThreadLocalRandom.current().nextInt(1, 3);
+            AudioManager.getInstance().playSoundEffect("bustflesh" + soundNumber + ".wav");
+            deathSoundPlayed = true;
+        }
+
         if (deathGibsSpawned)
         {
             if (deathGibFramesRemaining > 0)
@@ -1169,6 +1183,8 @@ public abstract class Player extends GameObject
     public void collectCoin()
     {
 		coins++;
+        int chime = ThreadLocalRandom.current().nextInt(1, 4);
+        AudioManager.getInstance().playSoundEffect("chime" + chime + ".wav");
 	}
 
     public int getCoins()
