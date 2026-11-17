@@ -5,6 +5,7 @@ import GameObject.Frame;
 import GameObject.SpriteSheet;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
+import Tilesets.CommonEntityTileset;
 import java.util.HashMap;
 
 // Represents a map tile in a Map's tile map
@@ -17,18 +18,24 @@ public class MapTile extends MapEntity {
     protected TileLayout tileLayout; // only used for slopes
 
     private int tileIndex;
+
     private int darknessAlpha;
 
     {
         sharedEdgeDraw = true;
     }
 
+
     public MapTile(float x, float y, HashMap<String, Frame[]> animations, TileType tileType, int tileIndex) {
         super(x, y, animations, "DEFAULT");
         this.tileType = tileType;
         this.tileIndex = tileIndex;
     }
-
+    public MapTile(float x, float y, int layer, int gamePlayLayerIN, HashMap<String, Frame[]> animations, TileType tileType, int tileIndex) {
+        super(x, y,layer, gamePlayLayerIN, animations, "DEFAULT");
+        this.tileType = tileType;
+        this.tileIndex = tileIndex;
+    }
     public MapTile(float x, float y, HashMap<String, Frame[]> animations, TileType tileType) {
         super(x, y, animations, "DEFAULT");
         this.tileType = tileType;
@@ -38,15 +45,30 @@ public class MapTile extends MapEntity {
         super(x, y, spriteSheet, "DEFAULT");
         this.tileType = tileType;
     }
-
+     public MapTile(float x, float y, int numLayerIN, HashMap<String, Frame[]> animations, TileType tileType) {
+        super(x, y, numLayerIN, numLayerIN, animations, "DEFAULT");
+        this.tileType = tileType;
+        this.tileIndex = tileIndex;
+    }
     public MapTile(float x, float y, Frame[] frames, TileType tileType) {
         super(x, y, frames);
         this.tileType = tileType;
     }
-
+    public MapTile(float x, float y, int numLayerIN, Frame frame, TileType tileType) {
+        super(x, y, frame);
+        numLayer = numLayerIN;
+        this.tileType = tileType;
+    }
     public MapTile(float x, float y, Frame frame, TileType tileType) {
         super(x, y, frame);
         this.tileType = tileType;
+    }
+    public MapTile copy(){
+        return new MapTile(this.x, this.y, this.animations, this.tileType, this.tileIndex);
+    }
+    public MapTile copyEmpty(){
+        //return new MapTile(this.x, this.y, this.animations, TileType.PASSABLE, 1);
+        return new MapTile(this.x, this.y, new CommonEntityTileset().getTile(0).cloneAnimations(), TileType.PASSABLE, 0);
     }
 
     public TileType getTileType() {
@@ -104,7 +126,8 @@ public class MapTile extends MapEntity {
     }
 
     public void draw(GraphicsHandler graphicsHandler) {
-        if (darknessAlpha > 0 && map != null) {
+       // System.out.println(darknessAlpha);
+        if (darknessAlpha > 0 && map != null) { 
             BufferedImage darkenedImage = graphicsHandler.getDarkenedImage(
                     currentFrame.getImage(), darknessAlpha);
             super.draw(graphicsHandler, darkenedImage);

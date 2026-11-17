@@ -145,6 +145,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         return (int) ((coinAnimationTicks / COIN_FRAME_DURATION) % COIN_FRAME_COUNT);
     }
 
+
     public void draw(GraphicsHandler graphicsHandler) {
         // based on screen state, draw appropriate graphics
         switch (playLevelScreenState) {
@@ -170,6 +171,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 if (GamePanel.isHitboxesEnabled()) {
                     map.drawDebugHitboxes(graphicsHandler, player);
                 }
+                map.draw(graphicsHandler, true);
 
                 for (int i = 0; i < player.getHealth(); i++) {
                     graphicsHandler.drawImage(heartFrames[getHeartAnimationFrame(i)], 10 + (i * 40), 10,
@@ -191,7 +193,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         }
     }
 
-
+    @Override public Level.Map hasMap(){
+        return this.map;
+    }
 
     public PlayLevelScreenState getPlayLevelScreenState() {
         return playLevelScreenState;

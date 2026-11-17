@@ -8,7 +8,6 @@ import Level.Enemy;
 import Level.MapEntityStatus;
 import Level.Player;
 import Utils.Point;
-
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
@@ -22,7 +21,8 @@ public class DeathAnimEnemies extends Enemy {
     private int animationTimer = 0;
 
     public DeathAnimEnemies(Point location, String imageName, int frameWidth, int frameHeight, int frameCount, int frameDelay, float scale) {
-        super(location.x, location.y, createAnimations(imageName, frameWidth, frameHeight, frameCount, frameDelay, scale), "DEATH");
+        super(location.x, location.y,0, createAnimations(imageName, frameWidth, frameHeight, frameCount, frameDelay, scale), "DEATH");
+        //placeholder number for layer. 0, representing the bottom of the map layer stack
 
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;

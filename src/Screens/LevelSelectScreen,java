@@ -24,6 +24,7 @@ public class LevelSelectScreen extends Screen {
 
     public LevelSelectScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
+        this.background = new TitleScreenMapNewVersion();
     }
 
     @Override
@@ -37,7 +38,6 @@ public class LevelSelectScreen extends Screen {
         howToPlay = new SpriteFont("HOW TO PLAY", 200, 221, "Copperplate Gothic Light", 30, Color.white);
 		howToPlay.setOutlineColor(Color.black);
 		howToPlay.setOutlineThickness(3);
-        background = new TitleScreenMapNewVersion();
         background.setAdjustCamera(false);
         keyPressTimer = 0;
         menuItemSelected = -1;
@@ -128,5 +128,9 @@ public class LevelSelectScreen extends Screen {
 		levelSelect.draw(graphicsHandler);
         credits.draw(graphicsHandler);
         graphicsHandler.drawFilledRectangleWithBorder(pointerLocationX, pointerLocationY, 20, 20, new Color(255, 255, 255), Color.black, 2); //new Color(49, 207, 240), Color.black, 2);
+    }
+    
+    @Override public Level.Map hasMap(){
+        return this.map;
     }
 }

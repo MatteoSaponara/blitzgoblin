@@ -2,6 +2,7 @@ package Enemies;
 
 import Builders.FrameBuilder;
 import Engine.ImageLoader;
+import Engine.ScreenManager;
 import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
@@ -28,16 +29,18 @@ public class GoblinEnemy extends Enemy implements IDamagable{
     private boolean moving = true;
     private int health = 8;
 
-    public GoblinEnemy (Point location, Direction facingDirection) {
+    public GoblinEnemy (Point location, int layer, int gamePlayLayerIN, Direction facingDirection) {
         // Change BugEnemy.png to GoblinEnemy.png when the sprite is ready
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("enemygoblin.png"), 48, 52), "WALK_LEFT");
+        super(location.x, location.y, layer, gamePlayLayerIN, new SpriteSheet(ImageLoader.load("enemygoblin.png"), 48, 52), "WALK_LEFT");
         this.startFacingDirection = facingDirection;
         this.initialize();
     }
+    private static int numgoblin = 0;
 
     @Override
     public void initialize() {
         super.initialize();
+        numgoblin++;
         facingDirection = startFacingDirection;
         if (facingDirection == Direction.RIGHT) {
             currentAnimationName = "WALK_RIGHT";
@@ -49,6 +52,7 @@ public class GoblinEnemy extends Enemy implements IDamagable{
 
     @Override
     public void update(Player player) {
+        //System.out.println("numgoblin: "+numgoblin);
         float moveAmountX = 0;
         float moveAmountY = 0;
 

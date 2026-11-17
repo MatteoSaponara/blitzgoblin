@@ -23,6 +23,7 @@ public class LevelClearedScreen extends Screen {
     public void update() {
 
     }
+    
 
     public void draw(GraphicsHandler graphicsHandler) {
         // paint entire screen black and dislpay level cleared text

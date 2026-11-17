@@ -1,18 +1,38 @@
 package Level;
 
+import Enemies.BlockMimicEnemy;
+import Enemies.BugEnemy;
+import Enemies.CoinMimicEnemy;
+import Enemies.GargoyleEnemy;
+import Enemies.GoblinEnemy;
+import Enemies.HeroEnemy;
+import Enemies.Turret;
 import Engine.Config;
 import Engine.GraphicsHandler;
+import Engine.ImageLoader;
 import Engine.ScreenManager;
+import EnhancedMapTiles.CannonAmmo;
+import EnhancedMapTiles.Coin;
+import EnhancedMapTiles.EndLevelBox;
+import EnhancedMapTiles.HorizontalMovingPlatform;
+import EnhancedMapTiles.SingleAmmo;
+import EnhancedMapTiles.TwelveAmmo;
 import GameObject.PhysicsParticle;
+import GameObject.Rectangle;
+import Tilesets.CommonEntityTileset;
+import Utils.Direction;
 import Utils.Point;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import javax.swing.text.Position;
 
 /*
     This class is for defining a map that is used for a specific level
@@ -29,7 +49,8 @@ public abstract class Map {
     private static final int MAX_DARKNESS_ALPHA = 154;
 
     // the tile map (map tiles that make up the entire map image)
-    protected MapTile[] mapTiles;
+    protected MapTile[][] mapTiles;
+    protected MapTile[] entityMapTiles;
 
     // width and height of the map in terms of the number of tiles width-wise and height-wise
     protected int width;
@@ -58,26 +79,51 @@ public abstract class Map {
 
     // lists to hold map entities that are a part of the map
     protected ArrayList<Enemy> enemies;
+    protected ArrayList<Enemy> enemyQueue = new ArrayList<Enemy>();
     protected ArrayList<EnhancedMapTile> enhancedMapTiles;
     protected ArrayList<NPC> npcs;
     private ArrayList<PhysicsParticle> particles;
+
+    protected boolean hasEntities = false;
+
+    public boolean getHasEntities() { return hasEntities;}
 
     // if set to false, camera will not move as player moves
     protected boolean adjustCamera = true;
 
     private static final float CAMERA_FOLLOW_SMOOTHING = 0.2f;
 
+    // number of layers to render
+    protected int numLayers = 2;
+
+    // visual layer the player appears in
+    protected int currentGameplayLayer = 0;
+
+    public Color mapBackgroundColor = new Color(27, 12, 53);
     // map tiles in map that are animated
     protected ArrayList<MapTile> animatedMapTiles;
 
-    public Map(String mapFileName, Tileset tileset) {
+    public Map(String mapFileName, Tileset tilesetIN) {
         this.mapFileName = mapFileName;
-        this.tileset = tileset;
+        this.tileset = tilesetIN;
         setupMap();
         this.startBoundX = 0;
         this.startBoundY = 0;
-        this.endBoundX = width * tileset.getScaledSpriteWidth();
-        this.endBoundY = height * tileset.getScaledSpriteHeight();
+        this.endBoundX = width * tilesetIN.getScaledSpriteWidth();
+        this.endBoundY = height * tilesetIN.getScaledSpriteHeight();
+        this.xMidPoint = ScreenManager.getScreenWidth() / 2;
+        this.yMidPoint = (ScreenManager.getScreenHeight() / 2);
+        this.playerStartPosition = new Point(0, 0);
+    }
+    public Map(String mapFileName, Tileset tilesetIN, int startingGameplayLayerIN) {
+        this.mapFileName = mapFileName;
+        this.tileset = tilesetIN;
+        this.currentGameplayLayer = startingGameplayLayerIN;
+        setupMap();
+        this.startBoundX = 0;
+        this.startBoundY = 0;
+        this.endBoundX = width * tilesetIN.getScaledSpriteWidth();
+        this.endBoundY = height * tilesetIN.getScaledSpriteHeight();
         this.xMidPoint = ScreenManager.getScreenWidth() / 2;
         this.yMidPoint = (ScreenManager.getScreenHeight() / 2);
         this.playerStartPosition = new Point(0, 0);
@@ -89,7 +135,10 @@ public abstract class Map {
     public void setupMap() {
         this.animatedMapTiles = new ArrayList<>();
         this.particles = new ArrayList<>();
-
+        this.enhancedMapTiles = new ArrayList<EnhancedMapTile>();
+        this.testNumOfPlatformsMapedit = 0;
+        this.enemies = new ArrayList<Enemy>();
+        this.enemyQueue = new ArrayList<Enemy>();
         loadMapFile();
         recalculateTileDarkness();
 
@@ -97,8 +146,10 @@ public abstract class Map {
         for (Enemy enemy: this.enemies) {
             enemy.setMap(this);
         }
-
+        ArrayList<EnhancedMapTile> testfds = new ArrayList<EnhancedMapTile>();
+        for (EnhancedMapTile elem : enhancedMapTiles) { testfds.add(elem); }
         this.enhancedMapTiles = loadEnhancedMapTiles();
+        for (EnhancedMapTile elem : testfds) { enhancedMapTiles.add(elem); }
         for (EnhancedMapTile enhancedMapTile: this.enhancedMapTiles) {
             enhancedMapTile.setMap(this);
         }
@@ -110,6 +161,7 @@ public abstract class Map {
 
         this.camera = new Camera(0, 0, tileset.getScaledSpriteWidth(), tileset.getScaledSpriteHeight(), this);
     }
+    int testNumOfPlatformsMapedit = 0;
 
     // reads in a map file to create the map's tilemap
     private void loadMapFile() {
@@ -129,26 +181,119 @@ public abstract class Map {
                 System.out.println("Failed to create an empty map file!");
                 throw new RuntimeException();
             }
-        }
+        }   
 
         // read in map width and height from the first line of map file
         this.width = fileInput.nextInt();
         this.height = fileInput.nextInt();
+        this.numLayers = fileInput.nextInt();
 
         // define array size for map tiles, which is width * height (this is a standard array, NOT a 2D array)
-        this.mapTiles = new MapTile[this.height * this.width];
+        this.mapTiles = new MapTile[this.height * this.width][numLayers];
+        this.entityMapTiles = new MapTile[this.height * this.width];
         fileInput.nextLine();
 
         // read in each tile index from the map file, use the defined tileset to get the associated MapTile to that tileset, and place it in the array
-        for (int i = 0; i < height; i++) {
+        for (int i = 0; i < (height*numLayers); i++) {
+            ArrayList<Point> horizontalMovingPlatformStarts = new ArrayList<Point>();
+            ArrayList<Point> horizontalMovingPlatformEnds = new ArrayList<Point>();
+            int currentPlatformIndex = 0;
             for (int j = 0; j < width; j++) {
                 int tileIndex = fileInput.nextInt();
                 int xLocation = j * tileset.getScaledSpriteWidth();
-                int yLocation = i * tileset.getScaledSpriteHeight();
-                MapTile tile = tileset.getTile(tileIndex).build(xLocation, yLocation);
+                int yLocation = (i%height) * tileset.getScaledSpriteHeight();
+                MapTile tile = tileset.getTile(tileIndex).build(xLocation, yLocation, (i/height), currentGameplayLayer);
                 tile.setMap(this);
-                mapTiles[getConvertedIndex(j, i)] = tile;
 
+                setMapTile(j, i%height, (i/height), tile);
+                if((fileInput.hasNext(":"))) {
+                    hasEntities = true;
+                    fileInput.next();
+                    int testint = fileInput.nextInt();
+                    MapTile testd = new CommonEntityTileset()
+                    .getTile(testint)
+                    .build(xLocation, yLocation);
+                    if(testint > 0){
+                        //System.out.println("adding " +testd.getTileType() + testd.getTileIndex() +"\nat : ("+
+                        //String.valueOf((testd.getX()/(Config.TILE_ART_SIZE*Config.TILE_SCALE)))+", "
+                    //+ String.valueOf((testd.getY()/(Config.TILE_ART_SIZE*Config.TILE_SCALE)))+")");
+
+                        entityMapTiles[((i*width) + j) % (height*width)] = testd;
+
+                        //instructions for spawning specific enemies/entities based on the map file info.
+                        switch (testint) {
+                            case 1: // Goblin Enemy
+                                enemyQueue.add(new GoblinEnemy(new Point(testd.getX(), testd.getY()),
+                                 getCurrentGameplayLayer(),
+                                 getCurrentGameplayLayer(),
+                                Direction.LEFT));
+                                break;
+                            case 2: // Bug Enemy
+                                enemyQueue.add(new BugEnemy(new Point(testd.getX(), testd.getY()),
+                                getCurrentGameplayLayer(),
+                                getCurrentGameplayLayer(),
+                                Direction.LEFT));
+                                break;
+                            case 3: // Turret Enemy
+                                enemyQueue.add(new Turret(new Point(testd.getX(), testd.getY()),
+                                getCurrentGameplayLayer(),
+                                getCurrentGameplayLayer(),
+                                Direction.LEFT));
+                                break;
+                            case 4: // Block Mimic Enemy
+                                enemyQueue.add(new BlockMimicEnemy(new Point(testd.getX(), testd.getY()),
+                                getCurrentGameplayLayer(),
+                                getCurrentGameplayLayer(),
+                                Direction.LEFT));
+                                break;
+                            case 5: // Horizontal moving platform
+                            horizontalMovingPlatformStarts.add(new Point(testd.getX(), testd.getY()));
+                                if(!horizontalMovingPlatformEnds.isEmpty()) {
+                                    this.enhancedMapTiles.add(new HorizontalMovingPlatform(ImageLoader.load("GreenPlatform.png"),
+                                    new Point(horizontalMovingPlatformStarts.getLast().x, horizontalMovingPlatformStarts.getLast().y),
+                                    new Point(horizontalMovingPlatformEnds.getLast().x, horizontalMovingPlatformEnds.getLast().y),
+                                    getCurrentGameplayLayer(),
+                                    TileType.JUMP_THROUGH_PLATFORM,
+                                    1.4f,
+                                    new Rectangle(0, 6,16,4),
+                                    Direction.RIGHT));
+                                    horizontalMovingPlatformEnds.removeLast();
+                                    horizontalMovingPlatformStarts.removeLast();
+                                    testNumOfPlatformsMapedit++;
+                                    currentPlatformIndex++;
+                                    
+                                }
+                                break;
+                            case 6: // Horizontal moving platform end
+                                horizontalMovingPlatformEnds.add(new Point(testd.getX(), testd.getY()));
+                                if(!horizontalMovingPlatformStarts.isEmpty()) {
+                                    this.enhancedMapTiles.add(new HorizontalMovingPlatform(ImageLoader.load("GreenPlatform.png"),
+                                    new Point(horizontalMovingPlatformStarts.getLast().x, horizontalMovingPlatformStarts.getLast().y),
+                                    new Point(horizontalMovingPlatformEnds.getLast().x, horizontalMovingPlatformEnds.getLast().y),
+                                    getCurrentGameplayLayer(),
+                                    TileType.JUMP_THROUGH_PLATFORM,
+                                    1.4f,
+                                    new Rectangle(0, 6,16,4),
+                                    Direction.LEFT));
+                                    horizontalMovingPlatformEnds.removeLast();
+                                    horizontalMovingPlatformStarts.removeLast();
+                                    testNumOfPlatformsMapedit++;
+                                    currentPlatformIndex++;
+                                }
+                                break;
+                            case 7: // Coin 
+                                this.enhancedMapTiles.add(new Coin(new Point(testd.getX(), testd.getY()),
+                                getCurrentGameplayLayer()));
+                                break;
+                            case 8: // EndBox 
+                                this.enhancedMapTiles.add(new EndLevelBox(new Point(testd.getX(), testd.getY())));
+                                break;
+                            default:
+                                throw new AssertionError();
+                        }
+                    }
+                }
+                    
                 if (tile.isAnimated()) {
                     animatedMapTiles.add(tile);
                 }
@@ -209,34 +354,70 @@ public abstract class Map {
     public int getHeightPixels() {
         return height * tileset.getScaledSpriteHeight();
     }
+    public void setAllMapTiles(MapTile[][] inputMapTiles) {
+        mapTiles = inputMapTiles;
+    }
+
+    public MapTile[] setMapTiles(MapTile[] inputMapTiles) {
+        for (int i = 0; i < mapTiles.length; i++) {
+            mapTiles[i][currentGameplayLayer] = inputMapTiles[i];
+        }
+        return getMapTiles();
+    }
+
+    public MapTile[] getMapTiles(int accessedLayerIN) {
+        MapTile[] resultMapTile = new MapTile[this.height * this.width]; 
+        
+        for (int i = 0; i < mapTiles.length; i++) {
+            if((accessedLayerIN < mapTiles[i].length))
+                resultMapTile[i] = mapTiles[i][accessedLayerIN];
+        }
+        return resultMapTile;
+    }
 
     public MapTile[] getMapTiles() {
+        return getMapTiles(currentGameplayLayer);
+    }
+    public MapTile[][] getAllMapTiles(){
         return mapTiles;
-    }
+    }   
+    public MapTile[] getEntityMapTiles() { return entityMapTiles; }
 
-    public void setMapTiles(MapTile[] mapTiles) {
+    
+
+    /*public void setMapTiles(MapTile[] mapTiles) {
         this.mapTiles = mapTiles;
-    }
+    }*/
 
     // get specific map tile from tile map
+
     public MapTile getMapTile(int x, int y) {
         if (isInBounds(x, y)) {
-            return mapTiles[getConvertedIndex(x, y)];
+            return mapTiles[getConvertedIndex(x, y)][currentGameplayLayer];
+        } else {
+            return null;
+        }
+    }
+
+    public MapTile getMapTile(int x, int y, int accessedLayerIn) {
+        if (isInBounds(x, y)) {
+            return mapTiles[getConvertedIndex(x, y)][accessedLayerIn];
         } else {
             return null;
         }
     }
 
     // set specific map tile from tile map to a new map tile
-    public void setMapTile(int x, int y, MapTile tile) {
+    public void setMapTile(int x, int y, int accessedLayerIn, MapTile tile) {
         if (isInBounds(x, y)) {
             int index = getConvertedIndex(x, y);
-            MapTile oldMapTile = mapTiles[index];
+            MapTile oldMapTile = mapTiles[index][accessedLayerIn];
             boolean oldFullBlock = oldMapTile != null && oldMapTile.isFullBlock();
             boolean newFullBlock = tile.isFullBlock();
             animatedMapTiles.remove(oldMapTile);
+            
             tile.setMap(this);
-            mapTiles[index] = tile;
+            mapTiles[index][accessedLayerIn] = tile;
             if (tile.isAnimated()) {
                 animatedMapTiles.add(tile);
             }
@@ -253,7 +434,7 @@ public abstract class Map {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int index = getConvertedIndex(x, y);
-                MapTile tile = mapTiles[index];
+                MapTile tile = mapTiles[index][currentGameplayLayer];
                 if (tile == null || !tile.isFullBlock()) {
                     distances[index] = 0;
                 }
@@ -286,16 +467,33 @@ public abstract class Map {
         }
 
         for (int i = 0; i < mapTiles.length; i++) {
-            MapTile tile = mapTiles[i];
-            if (tile != null) {
-                int darkness = distances[i] == Integer.MAX_VALUE
-                        ? MAX_DARKNESS_ALPHA
-                        : Math.min(Math.max(0, distances[i] - 1) * DARKNESS_PER_TILE, MAX_DARKNESS_ALPHA);
-                tile.setDarknessAlpha(darkness);
+            for (int numLayer = 0; numLayer < numLayers; numLayer++) {
+                MapTile tile = mapTiles[i][numLayer];
+                if (tile != null) {
+                    int darkness = distances[i] == Integer.MAX_VALUE
+                            ? MAX_DARKNESS_ALPHA
+                            : Math.min(Math.max(0, distances[i] - 1) * DARKNESS_PER_TILE, MAX_DARKNESS_ALPHA);
+                    //adjusting darkness value based on tile layer
+                    darkness -=  DARKNESS_PER_TILE*(numLayer-this.getCurrentGameplayLayer());
+                    tile.setDarknessAlpha(darkness);
+                }
             }
         }
     }
+    
+    // set specific map tile from tile map to a new map tile
+    public void setMapTile(int x, int y, MapTile tile) {
+        setMapTile(x, y, currentGameplayLayer, tile);
+    }
 
+    public int getCurrentGameplayLayer() {return currentGameplayLayer;}
+
+    public int getCurrentMapLayerNumber() {return numLayers;}
+
+
+    public void setCurrentGameplayLayer(int currentGameplayLayer) { this.currentGameplayLayer = currentGameplayLayer; }
+
+    public void setCurrentMapLayerNumber(int newNumLayers) {this.numLayers = newNumLayers;}
     // returns a tile based on a position in the map
     public MapTile getTileByPosition(float xPosition, float yPosition) {
         Point tileIndex = getTileIndexByPosition(xPosition, yPosition);
@@ -321,11 +519,14 @@ public abstract class Map {
     // since tile map array is a standard (1D) array and not a 2D,
     // instead of doing [y][x] to get a value, instead the same can be achieved with x + width * y
     private int getConvertedIndex(int x, int y) {
-        return x + width * y;
+        return x + (width * y);
     }
 
     // list of enemies defined to be a part of the map, should be overridden in a subclass
     protected ArrayList<Enemy> loadEnemies() {
+        for (Enemy enem: enemyQueue) {
+            this.enemies.add(enem);
+        }
         return new ArrayList<>();
     }
 
@@ -355,6 +556,55 @@ public abstract class Map {
 
     public ArrayList<MapTile> getAnimatedMapTiles() {
         return animatedMapTiles;
+    }
+     
+    public Enemy spawnEnemy(Class<?> enemyClassIN, int x, int y,  Direction directionIN){
+        
+        Enemy enemyOut;
+        if(enemyClassIN == GoblinEnemy.class) {
+            enemyOut = new GoblinEnemy(getMapTile(x, y).getLocation().subtractY(25), currentGameplayLayer, currentGameplayLayer, directionIN);
+        }
+        else if(enemyClassIN == BugEnemy.class){
+            enemyOut = new BugEnemy(getMapTile(x, y).getLocation().subtractY(25), currentGameplayLayer, currentGameplayLayer, directionIN);
+        }
+        else if(enemyClassIN == Turret.class){
+            enemyOut = new Turret(getMapTile(x, y).getLocation().addY(2), currentGameplayLayer, currentGameplayLayer, directionIN);
+        }
+        else if(enemyClassIN == CoinMimicEnemy.class){
+            enemyOut = new CoinMimicEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, currentGameplayLayer, directionIN);
+        }
+        else if(enemyClassIN == GargoyleEnemy.class){
+            enemyOut = new GargoyleEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, currentGameplayLayer, directionIN);
+        }
+        else if(enemyClassIN == HeroEnemy.class){
+            enemyOut = new HeroEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, currentGameplayLayer, directionIN);
+        }
+        else {
+            enemyOut = new BugEnemy(getMapTile(x, y).getLocation(), currentGameplayLayer, currentGameplayLayer, directionIN);
+        }
+        return enemyOut;
+    }
+    public EnhancedMapTile spawnEnhancedMapTile(Class<?> enhancedMapTileIN, int x, int y){
+        EnhancedMapTile enhancedMapTileOut;
+        if(enhancedMapTileIN == CannonAmmo.class) {
+            enhancedMapTileOut = new CannonAmmo(getMapTile(x, y).getLocation(), currentGameplayLayer);
+        }
+        else if(enhancedMapTileIN == SingleAmmo.class){
+            enhancedMapTileOut = new SingleAmmo(getMapTile(x, y).getLocation(), currentGameplayLayer);
+        }
+        else if(enhancedMapTileIN == TwelveAmmo.class){
+            enhancedMapTileOut = new TwelveAmmo(getMapTile(x, y).getLocation(), currentGameplayLayer);
+        }
+        else if(enhancedMapTileIN == EndLevelBox.class) {
+            enhancedMapTileOut = new EndLevelBox(getMapTile(x, y).getLocation(), currentGameplayLayer);
+        }
+        else if (enhancedMapTileIN == Coin.class) {
+          enhancedMapTileOut = new Coin(getMapTile(x, y).getLocation(), currentGameplayLayer);
+        }
+        else {
+            enhancedMapTileOut = new TwelveAmmo(getMapTile(x, y).getLocation(), currentGameplayLayer);
+        }
+        return enhancedMapTileOut;
     }
 
     // returns all active enemies (enemies that are a part of the current update cycle) -- this changes every frame by the Camera class
@@ -481,7 +731,7 @@ public abstract class Map {
     }
 
     public void draw(GraphicsHandler graphicsHandler) {
-        camera.drawMapTiles(graphicsHandler);
+        camera.draw(graphicsHandler);
         for (PhysicsParticle particle : particles) {
             if (particle.drawsBehindMapEntities()) {
                 particle.draw(graphicsHandler, camera.getX(), camera.getY());
@@ -497,6 +747,9 @@ public abstract class Map {
 
     public void drawDebugHitboxes(GraphicsHandler graphicsHandler, Player player) {
         camera.drawDebugHitboxes(graphicsHandler, player);
+    }
+    public void draw(GraphicsHandler graphicsHandler, boolean renderAboveGameplay) {
+        camera.draw(graphicsHandler, renderAboveGameplay);
     }
 
     public int getEndBoundX() { return endBoundX; }

@@ -1,25 +1,18 @@
 package Maps;
 
 import Enemies.BugEnemy;
+import Enemies.CoinMimicEnemy;
+import Enemies.GargoyleEnemy;
 import Enemies.GoblinEnemy;
 import Enemies.HeroEnemy;
 import Enemies.Turret;
-import Enemies.CoinMimicEnemy;
-import Enemies.GargoyleEnemy;
-import Enemies.BlockMimicEnemy;
 import Engine.ImageLoader;
-import EnhancedMapTiles.Coin;
-import EnhancedMapTiles.EndLevelBox;
-import EnhancedMapTiles.HorizontalMovingPlatform;
-// Ammo pickup imports
-import EnhancedMapTiles.SingleAmmo;
-import EnhancedMapTiles.TwelveAmmo;
-import EnhancedMapTiles.CannonAmmo;
+import EnhancedMapTiles.*;
 import GameObject.Rectangle;
 import Level.*;
-import NPCs.Walrus;
 import NPCs.CrouchSign;
 import NPCs.HealthPickupSign;
+import NPCs.Walrus;
 import Tilesets.CommonTileset;
 import Utils.Direction;
 import java.util.ArrayList;
@@ -28,9 +21,9 @@ import java.util.ArrayList;
 
 // Represents a test map to be used in a level
 public class TestMap extends Map {
-
+    public static int startingGameplayLayer = 1; //set to layer you want gameplay to start in on load
     public TestMap() {
-        super("test_map.txt", new CommonTileset());
+        super("test_map.txt", new CommonTileset(), startingGameplayLayer);
         this.playerStartPosition = getMapTile(2, 24).getLocation();
         //this.playerStartPosition = getMapTile(40, 24).getLocation(); //test spawn
     }
@@ -38,10 +31,20 @@ public class TestMap extends Map {
     @Override
     public ArrayList<Enemy> loadEnemies() {
         ArrayList<Enemy> enemies = new ArrayList<>();
-
-        GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(28, 25).getLocation().subtractY(25), Direction.LEFT);
-        enemies.add(goblinEnemy);
-        GoblinEnemy goblinEnemy1 = new GoblinEnemy(getMapTile(35, 16).getLocation().subtractY(25), Direction.RIGHT);
+        for (Enemy enem: enemyQueue) {
+            enemies.add(enem);
+        }
+        
+        enemies.add(spawnEnemy(GoblinEnemy.class, 28, 25, Direction.LEFT));
+        enemies.add(spawnEnemy(GoblinEnemy.class, 35, 16, Direction.RIGHT));
+        enemies.add(spawnEnemy(GoblinEnemy.class, 42, 26, Direction.RIGHT));
+        enemies.add(spawnEnemy(BugEnemy.class, 13, 15, Direction.LEFT));
+        enemies.add(spawnEnemy(Turret.class, 23, 23, Direction.LEFT));
+        enemies.add(spawnEnemy(Turret.class, 12, 10, Direction.LEFT));
+        enemies.add(spawnEnemy(HeroEnemy.class, 63, 19, Direction.LEFT));
+        enemies.add(spawnEnemy(CoinMimicEnemy.class, 20, 23, Direction.LEFT));
+        enemies.add(spawnEnemy(GargoyleEnemy.class, 13, 20, Direction.LEFT));
+        /*GoblinEnemy goblinEnemy1 = new GoblinEnemy(getMapTile(35, 16).getLocation().subtractY(25), Direction.RIGHT);
         enemies.add(goblinEnemy1);
         GoblinEnemy goblinEnemy2 = new GoblinEnemy(getMapTile(42, 26).getLocation().subtractY(25), Direction.RIGHT);
         enemies.add(goblinEnemy2);
@@ -60,8 +63,10 @@ public class TestMap extends Map {
         enemies.add(coinMimicEnemy2);
 
       // BlockMimicEnemy blockMimicEnemy = new BlockMimicEnemy(getMapTile(12, 19).getLocation(), Direction.LEFT);
-       //enemies.add(blockMimicEnemy);
+       //enemies.add(blockMimicEnemy);*/
 
+
+        
         return enemies;
     }
 
@@ -140,14 +145,14 @@ public class TestMap extends Map {
         enhancedMapTiles.add(endLevelBox2);
 
         //ammo boxes
-        /*
+        
         SingleAmmo singleAmmo = new SingleAmmo(getMapTile(10, 27).getLocation());
         enhancedMapTiles.add(singleAmmo);
         TwelveAmmo twelveAmmo = new TwelveAmmo(getMapTile(14, 24).getLocation());
         enhancedMapTiles.add(twelveAmmo);
         CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(18, 24).getLocation());
         enhancedMapTiles.add(cannonAmmo);
-        */
+        
 
         Coin coin1 = new Coin(getMapTile(9, 22).getLocation());
 		enhancedMapTiles.add(coin1);

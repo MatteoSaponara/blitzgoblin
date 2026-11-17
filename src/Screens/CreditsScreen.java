@@ -44,7 +44,9 @@ public class CreditsScreen extends Screen {
             screenCoordinator.setGameState(GameState.MENU);
         }
     }
-
+    @Override public Level.Map hasMap(){
+        return this.background;
+    }
     public void draw(GraphicsHandler graphicsHandler) {
         background.draw(graphicsHandler);
         creditsLabel.draw(graphicsHandler);

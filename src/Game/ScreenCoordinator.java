@@ -107,7 +107,7 @@ public class ScreenCoordinator extends Screen {
 	public void setGameState(GameState gameState) {
 		this.gameState = gameState;
 	}
-
+	public Screen getCurrentScreen() {return currentScreen;}
 	@Override
 	public void initialize() {
 		// start game off with Menu Screen
@@ -171,7 +171,6 @@ public class ScreenCoordinator extends Screen {
 			currentScreen.update();
 		} while (previousGameState != gameState);
 	}
-
 	@Override
 	public void draw(GraphicsHandler graphicsHandler) {
 		// call the draw method for the currentScreen

@@ -8,7 +8,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.stream.IntStream;
@@ -21,13 +20,16 @@ import java.util.stream.IntStream;
 public class GraphicsHandler {
     private static final AlphaComposite[] PARTICLE_ALPHA_COMPOSITES = createParticleAlphaComposites();
     private static final int TILE_SHADE_STEP = 52;
-    private static final int MAX_TILE_SHADE = 156;
+    //private static final int MAX_TILE_SHADE = 156;
+    private static final int MAX_TILE_SHADE = 208;
     private static final float SHADOW_HUE = 0.62f;
     private static final float MAX_SHADOW_HUE_SHIFT = 0.08f;
     private static final float MAX_SHADOW_SATURATION_BOOST = 0.18f;
 
     private final Map<BufferedImage, BufferedImage[]> darkenedImageCache = new WeakHashMap<>();
-
+    public boolean isDarkenedImageCacheEmpty() {
+        return darkenedImageCache.isEmpty();
+    }   
     private Graphics2D g;
 
     // device pixels per logical pixel (above 1 on scaled/HiDPI displays)

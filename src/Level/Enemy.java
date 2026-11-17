@@ -20,14 +20,20 @@ public class Enemy extends MapEntity {
     private boolean deathParticlesSpawned;
     private int bulletTrailTimer;
 
+    public Enemy(float x, float y, int layer,  int gameplayLayerIN, SpriteSheet spriteSheet, String startingAnimation) {
+        super(x, y, layer, gameplayLayerIN, spriteSheet, startingAnimation);
+    }
     public Enemy(float x, float y, SpriteSheet spriteSheet, String startingAnimation) {
         super(x, y, spriteSheet, startingAnimation);
     }
-
-    public Enemy(float x, float y, HashMap<String, Frame[]> animations, String startingAnimation) {
+    public Enemy(float x, float y, int layer, HashMap<String, Frame[]> animations, String startingAnimation) {
         super(x, y, animations, startingAnimation);
+        numLayer = layer;
     }
-
+    /*public Enemy(float x, float y, HashMap<String, Frame[]> animations, String startingAnimation) {
+        super(x, y, animations, startingAnimation);
+        numLayer = layer;
+    }*/
     public Enemy(float x, float y, Frame[] frames) {
         super(x, y, frames);
     }
@@ -47,9 +53,12 @@ public class Enemy extends MapEntity {
 
     public void update(Player player) {
         super.update();
+
         if (damageFlashTimer > 0) {
             damageFlashTimer--;
         }
+        
+        numLayer = map.getCurrentGameplayLayer();
         if (intersects(player)) {
             touchedPlayer(player);
         }

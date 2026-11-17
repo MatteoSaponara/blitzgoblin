@@ -18,6 +18,10 @@ public class EndLevelBox extends EnhancedMapTile {
         super(location.x, location.y, new SpriteSheet(ImageLoader.load("HiddenEndBox.png"), 16, 16), TileType.PASSABLE);
         //super(location.x, location.y, new SpriteSheet(ImageLoader.load("GoldBox.png"), 16, 16), TileType.PASSABLE);
     }
+    public EndLevelBox(Point location, int numLayerIN) {
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("GoldBox.png"), 16, 16), TileType.PASSABLE);
+        numLayer = numLayerIN;
+    }
 
     @Override
     public void update(Player player) {

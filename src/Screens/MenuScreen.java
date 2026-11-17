@@ -32,6 +32,7 @@ public class MenuScreen extends Screen {
     protected SpriteFont showHitboxesOption;
     protected SpriteFont backOption;
     protected SpriteFont splashText;
+    protected SpriteFont warning;
     protected Map background;
     protected int keyPressTimer;
     protected int splashTextRotationFrame;
@@ -42,6 +43,7 @@ public class MenuScreen extends Screen {
 
     public MenuScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
+        this.background = new TitleScreenMapNewVersion();
     }
     private static Font customFont;
 
@@ -101,6 +103,7 @@ public class MenuScreen extends Screen {
 		background.setAdjustCamera(false);
 		keyPressTimer = 0;
 		splashTextRotationFrame = 0;
+
         settingsMenuItemHovered = 0;
         settingsMenuOpen = false;
         keyLocker.lockKey(Key.SPACE);
@@ -109,7 +112,9 @@ public class MenuScreen extends Screen {
     public void update() {
         // update background map (to play tile animations)
         background.update(null);
+        
         splashTextRotationFrame++;
+
 
         if (settingsMenuOpen) {
             debugCountersOption.setText("Debug Counters: "
@@ -198,7 +203,7 @@ public class MenuScreen extends Screen {
             pointerLocationY = 382 + currentMenuItemHovered * 40;
         }
     }
-
+    
     public void draw(GraphicsHandler graphicsHandler) {
         background.draw(graphicsHandler);
         int splashTextWidth = graphicsHandler.getGraphics().getFontMetrics(splashText.getFont())
@@ -218,6 +223,10 @@ public class MenuScreen extends Screen {
             credits.draw(graphicsHandler);
             settings.draw(graphicsHandler);
         }
+
         graphicsHandler.drawFilledRectangleWithBorder(pointerLocationX, pointerLocationY, 20, 20, new Color(255, 255, 255), Color.black, 2); //new Color(49, 207, 240), Color.black, 2);
+    }
+    @Override public Level.Map hasMap(){
+        return this.background;
     }
 }

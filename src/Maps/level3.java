@@ -1,25 +1,18 @@
 package Maps;
 
-import Enemies.BugEnemy;
-import Enemies.GoblinEnemy;
-import Enemies.HeroEnemy;
-import Enemies.Turret;
-import Enemies.CoinMimicEnemy;
-import Enemies.BlockMimicEnemy;
-import Enemies.GargoyleEnemy;
 import Enemies.ArmoredEnemy;
+import Enemies.BlockMimicEnemy;
+import Enemies.CoinMimicEnemy;
+import Enemies.GargoyleEnemy;
+import Enemies.GoblinEnemy;
 import Enemies.Statlactite;
-import Engine.ImageLoader;
+import Enemies.Turret;
+import EnhancedMapTiles.CannonAmmo;
 import EnhancedMapTiles.Coin;
 import EnhancedMapTiles.EndLevelBox;
-import EnhancedMapTiles.HorizontalMovingPlatform;
-// Ammo pickup imports
 import EnhancedMapTiles.SingleAmmo;
 import EnhancedMapTiles.TwelveAmmo;
-import EnhancedMapTiles.CannonAmmo;
-import GameObject.Rectangle;
 import Level.*;
-import NPCs.Walrus;
 import Tilesets.CommonTileset;
 import Utils.Direction;
 import java.util.ArrayList;
@@ -28,6 +21,7 @@ import java.util.ArrayList;
 
 
 public class level3 extends Map {
+    public static int startingGameplayLayer = 0; //set to layer you want gameplay to start in on load
 
     public level3() {
         super("level3.txt", new CommonTileset());
@@ -48,8 +42,7 @@ public class level3 extends Map {
         Turret turretEnemy4 = new Turret(getMapTile(3, 15).getLocation().addY(2), Direction.RIGHT);
         enemies.add(turretEnemy4);     
 
-        GoblinEnemy goblinEnemy = new GoblinEnemy(getMapTile(17, 17).getLocation().addY(2), Direction.RIGHT);
-        enemies.add(goblinEnemy);
+        enemies.add(spawnEnemy(GoblinEnemy.class, 17, 17, Direction.RIGHT));
 
         ArmoredEnemy armoredEnemy = new ArmoredEnemy(getMapTile(28, 25).getLocation().addY(2), Direction.LEFT);
         enemies.add(armoredEnemy);

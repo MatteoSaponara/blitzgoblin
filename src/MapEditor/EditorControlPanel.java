@@ -4,24 +4,25 @@ import Engine.Config;
 import Level.Map;
 import Level.MapTile;
 import Utils.Colors;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import javax.swing.*;
 
-public class EditorControlPanel extends JPanel {
-
+public class EditorControlPanel extends JPanel implements EditorControlPanelInterface {
     private ArrayList<String> mapNames;
     private JComboBox<String> mapNamesComboBox;
     private TilePicker tilePicker;
     private MapBuilder mapBuilder;
     private Map selectedMap;
+    public static EditorControlPanel thisEditorControlPanel;
 
     public EditorControlPanel(SelectedTileIndexHolder selectedTileIndexHolder, MapBuilder mapBuilder, JFrame parent) {
+        if(this.getClass() == EditorControlPanel.class)
+            thisEditorControlPanel = this;
         setLayout(new BorderLayout());
         setBackground(Colors.CORNFLOWER_BLUE);
         setLocation(0, 0);
@@ -53,6 +54,19 @@ public class EditorControlPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setMap();
+                if (!selectedMap.getHasEntities()) {
+                    mapBuilder.setEntityMapTiles(MapBuilder.createEmptyVersionOfInputMapTiles(selectedMap.getMapTiles()));
+                }
+                else {
+                    MapTile[] newEnemyMaptiles = MapBuilder.createEmptyVersionOfInputMapTiles(selectedMap.getMapTiles());
+                    for (MapTile tileIN : selectedMap.getEntityMapTiles()) {
+                        if(tileIN == null)
+                            continue;
+                        newEnemyMaptiles[Math.round(tileIN.getY()/(Engine.Config.TILE_ART_SIZE*Engine.Config.TILE_SCALE)) * selectedMap.getWidth() +
+                            Math.round(tileIN.getX()/(Engine.Config.TILE_ART_SIZE*Engine.Config.TILE_SCALE))] = tileIN;
+                    }
+                    mapBuilder.setEntityMapTiles(newEnemyMaptiles);
+                }
             }
         });
         mapChoosePanel.add(mapNamesComboBox);
@@ -111,18 +125,30 @@ public class EditorControlPanel extends JPanel {
         String fileName = getSelectedMap().getMapFileName();
         try {
             FileWriter fileWriter = new FileWriter(Config.MAP_FILES_PATH + fileName);
-            fileWriter.write(map.getWidth() + " " + map.getHeight() + "\n");
-            MapTile[] mapTiles = map.getMapTiles();
-            for (int i = 0; i < map.getHeight(); i++) {
-                for (int j = 0; j < map.getWidth(); j++) {
-                    fileWriter.write(String.valueOf(mapTiles[j + map.getWidth() * i].getTileIndex()));
-                    if (j < map.getWidth() - 1) {
-                        fileWriter.write(" ");
-                    } else if (j >= map.getWidth() -1 && i < map.getHeight() - 1) {
-                        fileWriter.write("\n");
+            fileWriter.write(map.getWidth() + " " + map.getHeight() + " " +map.getCurrentMapLayerNumber()+"\n");
+            MapTile[][] mapTiles = map.getAllMapTiles();
+            for(int layerNum = 0; layerNum < map.getCurrentMapLayerNumber(); layerNum++) {
+                for (int i = 0; i < map.getHeight(); i++) {
+                    for (int j = 0; j < map.getWidth(); j++) {
+                        System.err.println("j, i: "+j+", "+i+"\nmap.getWidth(): "+map.getWidth() + "layerNum: "+layerNum);
+                        System.err.println(j + (map.getWidth() * i));
+                        fileWriter.write(String.valueOf(mapTiles[j + (map.getWidth() * i)][layerNum].getTileIndex()));
+                        //change this later if messing with interactions between entities on different layers.
+                        if(layerNum == map.getCurrentGameplayLayer() &&
+                        TileBuilder.getEntityMapTiles()[j + map.getWidth() * i].getTileIndex() > 0) {
+                        System.err.println("tileindex: "+TileBuilder.getEntityMapTiles()[j + map.getWidth() * i].getTileIndex());
+                        fileWriter.write(" : "+TileBuilder.getEntityMapTiles()[j + map.getWidth() * i].getTileIndex());
+                        }
+                        if (j < map.getWidth() - 1) {
+                            fileWriter.write(" ");
+                        } else if (j >= map.getWidth() -1 && i < map.getHeight() - 1) {
+                            fileWriter.write("\n");
+                        }
                     }
                 }
+                fileWriter.write("\n");            
             }
+            
             fileWriter.close();
         } catch (IOException ex) {
             ex.printStackTrace();

@@ -34,8 +34,10 @@ public class Cat extends Player {
         super(new SpriteSheet(ImageLoader.load(hasShotgun ? "goblinarmless.png" : "goblin.png"), 73, 54),
                 x, y, "STAND_RIGHT", hasShotgun);
         spriteHasShotgun = hasShotgun;
-        gravity = .5f;
-        terminalVelocityY = 7.5f;
+        
+        numLayer = 0;
+        gravity = 1.8f;
+        terminalVelocityY = 10f;
         jumpHeight = 12.75f;
         jumpCutForce = 4f; // upward force a released jump key is cut down to (lower = shorter taps)
         jumpDegrade = .5f;
@@ -44,13 +46,14 @@ public class Cat extends Player {
         // velocity and Momentum Implementation for Goblin Character
         walkSpeed = 2.63f; //Top speed (units per frame); raise this to walk faster
         drag = 0.75f; //Acceleration decrease calculation factor.
+
         acceleration = walkSpeed * (1 - drag) / drag; //Rate of acceleration per frame, derived so walkSpeed is actually reached
 
 
         //Recoil Tuning Parameters
-        singleAmmoRecoil = 12.0f;
+        singleAmmoRecoil = 14.0f;
         twelveAmmoRecoil = 4.0f;
-        cannonAmmoRecoil = 18.0f;
+        cannonAmmoRecoil = 25.0f;
 
 
 

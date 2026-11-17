@@ -15,15 +15,18 @@ import java.util.ArrayList;
 
 // Represents a test map to be used in a level
 public class TestMapBackup extends Map {
-
+    public static int startingGameplayLayer = 0; //set to layer you want gameplay to start in on load
     public TestMapBackup() {
-        super("test_map.txt", new CommonTileset());
+        super("test_map.txt", new CommonTileset(), startingGameplayLayer);
         this.playerStartPosition = getMapTile(2, 11).getLocation();
     }
 
     @Override
     public ArrayList<Enemy> loadEnemies() {
         ArrayList<Enemy> enemies = new ArrayList<>();
+        for (Enemy enem: enemyQueue) {
+            enemies.add(enem);
+        }
 
         BugEnemy bugEnemy = new BugEnemy(getMapTile(16, 10).getLocation().subtractY(25), Direction.LEFT);
         enemies.add(bugEnemy);
