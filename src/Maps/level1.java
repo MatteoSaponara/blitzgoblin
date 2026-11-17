@@ -15,6 +15,7 @@ import Level.*;
 import Tilesets.CommonTileset;
 import Utils.Direction;
 import java.util.ArrayList;
+import Engine.AudioManager;
 
 
 
@@ -28,6 +29,7 @@ public class level1 extends Map {
     protected level1(String mapFileName, Tileset tileset) {
         super(mapFileName, tileset);
         this.playerStartPosition = getMapTile(2, 24).getLocation();
+        AudioManager.getInstance().playMusic("8BitCave.wav");
         //this.playerStartPosition = getMapTile(51, 17).getLocation(); //test spawn
     }
 

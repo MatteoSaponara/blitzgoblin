@@ -113,7 +113,10 @@ public abstract class Player extends GameObject
     protected int attackTimer = 0;
 
     protected int shotgunAttackTimer = 0;
-    protected final int SHOTGUN_ATTACK_COOLDOWN = 25;
+    //protected final int SHOTGUN_ATTACK_COOLDOWN = 25;
+    protected final int SINGLE_AMMO_COOLDOWN = 25;
+	protected final int TWELVE_AMMO_COOLDOWN = 60;
+	protected final int CANNON_AMMO_COOLDOWN = 90;
     protected final int ATTACK_DURATION = 15;
     protected final int ATTACK_WIDTH = 15;
     protected final int ATTACK_OVERLAP = 6; // how far the attack box pushes into the player's sprite bounds
@@ -135,9 +138,9 @@ public abstract class Player extends GameObject
     protected boolean hasCannonAmmo = false;
 
     // Recoil Forces By Ammo
-    protected float singleAmmoRecoil = 0.3f;
-    protected float twelveAmmoRecoil = 7.0f;
-    protected float cannonAmmoRecoil = 15.0f;
+    protected float singleAmmoRecoil = 12f;
+    protected float twelveAmmoRecoil = 30.0f;
+    protected float cannonAmmoRecoil = 60.0f;
 
     public float getCurrentAmmoRecoil(){return singleAmmoRecoil;}
 
@@ -687,7 +690,19 @@ public abstract class Player extends GameObject
             if (shotFired) {
                 getShotgun().spawnShotSmoke();
             }
-            shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
+            //shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
+            switch (ammoMode) {
+				case "single":
+				shotgunAttackTimer = SINGLE_AMMO_COOLDOWN;
+				break;
+				case "twelve":
+				shotgunAttackTimer = TWELVE_AMMO_COOLDOWN;
+				break;
+				case "cannon":
+				shotgunAttackTimer = CANNON_AMMO_COOLDOWN;
+				break;
+				}
+           
             getShotgun().playShootAnimation();
             }    
         }
@@ -873,7 +888,7 @@ public abstract class Player extends GameObject
                     landingDustPending = false;
                 }
                 momentumY = 0;
-                velocityY = 0;
+               // velocityY = 0;
                 airGroundState = AirGroundState.GROUND;
                 recoilY = 0;
                 jumpForce = 0;
@@ -1264,6 +1279,8 @@ public abstract class Player extends GameObject
 
         this.velocityX += recoilX;
         this.velocityY += recoilY;
+        System.out.println("Force passed: " + recoilForce + "| Recoil X: " + recoilX + " | Recoil Y: " + recoilY);
+
 
         this.momentumY = 0;
 

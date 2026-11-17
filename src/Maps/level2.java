@@ -19,6 +19,7 @@ import Tilesets.CommonTileset;
 import Utils.Direction;
 import Utils.Point;
 import java.util.ArrayList;
+import Engine.AudioManager;
 
 
 
@@ -31,6 +32,8 @@ public class level2 extends Map {
         
         //weird offset issue occurring
         this.playerStartPosition = new Point(playerStartPosition.x - ((Config.TILE_ART_SIZE)/2), playerStartPosition.y);
+        AudioManager.getInstance().playMusic("8BitCave.wav");
+
         //this.playerStartPosition = getMapTile(40, 24).getLocation(); //test spawn
     }
 

@@ -24,6 +24,7 @@ import NPCs.Walrus;
 import Tilesets.CommonTileset;
 import Utils.Direction;
 import java.util.ArrayList;
+import Engine.AudioManager;
 
 
 
@@ -33,6 +34,8 @@ public class level3 extends Map {
     public level3() {
         super("level3.txt", new CommonTileset());
         this.playerStartPosition = getMapTile(2, 6).getLocation();
+        AudioManager.getInstance().playMusic("8BitCave.wav");
+
         //this.playerStartPosition = getMapTile(40, 24).getLocation(); //test spawn
     }
 

@@ -17,7 +17,7 @@ import Utils.Point;
 import java.util.HashMap;
 
 public class GhostWalrus extends Enemy implements IDamagable {
-    private float flySpeed = 3f; //Speed of the Gargoyle when the player is in its aggro range
+    private float flySpeed = 4f; //Speed of the Gargoyle when the player is in its aggro range
     private Direction startFacingDirection;
     private Direction facingDirection;
     private float aggroRadius = 315f; // 35 x 35 pixels is the size of a tile, so 280 pixels is about 8 tiles away from the player

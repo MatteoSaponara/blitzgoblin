@@ -30,7 +30,7 @@ public class Lever extends Enemy implements IDamagable{
     public Lever(Point startLocation) {
         // sprite is a single row of 2 frames, each 31x33 with 1px of padding between them
         // the art faces left by default, so the right-facing animations flip it
-        super(startLocation.x, startLocation.y, new SpriteSheet(ImageLoader.load("MagicButton.png"), 31, 33), "DEFAULT");
+        super(startLocation.x, startLocation.y, new SpriteSheet(ImageLoader.load("LeverWC6.png"), 35, 20), "DEFAULT");
         this.startLocation = startLocation;
         this.setIsUpdateOffScreen(true);
         this.initialize();
@@ -88,14 +88,14 @@ public class Lever extends Enemy implements IDamagable{
         return new HashMap<String, Frame[]>() {{
             put("DEFAULT", new Frame[]{
                     new FrameBuilder(spriteSheet.getSprite(0, 0))
-                            .withScale(1)
-                            .withBounds(1, 1, 27, 27)
+                            .withScale(1.5f)
+                            .withBounds(5, 0, 20, 20)
                             .build()
             });
             
             put("OPEN", new Frame[]{
                     new FrameBuilder(spriteSheet.getSprite(0, 1))
-                            .withScale(1)
+                            .withScale(1.5f)
                             .withBounds(1, 1, 27, 27)
                             .build()
             });

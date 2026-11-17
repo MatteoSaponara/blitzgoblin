@@ -7,6 +7,7 @@ import Level.Map;
 import Maps.TitleScreenMapNewVersion;
 import SpriteFont.SpriteFont;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 // This class is for the credits screen
 public class CreditsScreen extends Screen {
@@ -16,6 +17,7 @@ public class CreditsScreen extends Screen {
     protected SpriteFont creditsLabel;
     protected SpriteFont createdByLabel;
     protected SpriteFont returnInstructionsLabel;
+    protected BufferedImage OkayScale;
 
     public CreditsScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -30,6 +32,7 @@ public class CreditsScreen extends Screen {
         createdByLabel = new SpriteFont("Created by Alex Thimineur", 130, 400, Config.DEFAULT_FONT, 20, Color.white);
         returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 558, Config.DEFAULT_FONT, 30, Color.white);
         keyLocker.lockKey(Key.SPACE);
+        OkayScale = ImageLoader.load("BlitzGoblin_okay_scale.png");
     }
 
     public void update() {
@@ -50,5 +53,6 @@ public class CreditsScreen extends Screen {
         creditsLabel.draw(graphicsHandler);
         createdByLabel.draw(graphicsHandler);
         returnInstructionsLabel.draw(graphicsHandler);
+        graphicsHandler.drawImage(OkayScale, 450, 350, 300, 200);
     }
 }

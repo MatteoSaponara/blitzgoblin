@@ -68,6 +68,7 @@ public class SlotMachine extends EnhancedMapTile {
             player.setCoins(player.getCoins() - 1);
             coinChargeCooldown = COIN_CHARGE_COOLDOWN_FRAMES;
             if (ThreadLocalRandom.current().nextInt(HEART_REWARD_CHANCE_DENOMINATOR) == 0) {
+				
                 player.setMaxHealth(player.getMaxHealth() + 1);
                 player.setPlayerHealth(player.getHealth() + 1);
             }

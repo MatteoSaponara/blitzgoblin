@@ -51,7 +51,7 @@ public class HowToPlayScreen extends Screen {
         XControlsLabel = new SpriteFont("Injure/Reset: X", 350, 374, Config.DEFAULT_FONT, 25, Color.white);
         TyControlsLabel = new SpriteFont("Gun types: ", 350, 402, Config.DEFAULT_FONT, 25, Color.white);
         OneControlsLabel = new SpriteFont("One Shot: 1", 350, 430, Config.DEFAULT_FONT, 25, Color.white);
-        TwoControlsLabel = new SpriteFont("Twelve shot: 2", 350, 458, Config.DEFAULT_FONT, 25, Color.white);
+        TwoControlsLabel = new SpriteFont("Twelve Shot: 2", 350, 458, Config.DEFAULT_FONT, 25, Color.white);
         ThreeControlsLabel = new SpriteFont("Cannon Shot: 3", 350, 486, Config.DEFAULT_FONT, 25, Color.white);
         fullscreenControlsLabel = new SpriteFont("Fullscreen: F11", 350, 514, Config.DEFAULT_FONT, 25, Color.white);
         

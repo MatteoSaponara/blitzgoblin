@@ -17,12 +17,12 @@ import Utils.Point;
 import java.util.HashMap;
 
 public class GargoyleEnemy extends Enemy implements IDamagable {
-    private float flySpeed = 3f; //Speed of the Gargoyle when the player is in its aggro range
+    private float flySpeed = 1f; //Speed of the Gargoyle when the player is in its aggro range
     private Direction startFacingDirection;
     private Direction facingDirection;
     private float aggroRadius = 315f; // 35 x 35 pixels is the size of a tile, so 280 pixels is about 8 tiles away from the player
     private boolean chasing = false;
-    private int health = 3;
+    private int health = 10;
 
     public GargoyleEnemy(Point location, Direction facingDirection) {
         super(location.x, location.y, new SpriteSheet(ImageLoader.load("Walrus.png"), 24, 24), "FLY_LEFT");
@@ -71,8 +71,8 @@ public class GargoyleEnemy extends Enemy implements IDamagable {
             }
         }
 
-        //moveYHandleCollision(moveAmountY);
-        //moveXHandleCollision(moveAmountX);
+        moveYHandleCollision(moveAmountY);
+        moveXHandleCollision(moveAmountX);
         moveX(moveAmountX);
         moveY(moveAmountY);
 

@@ -15,7 +15,7 @@ public class DoorBlock extends EnhancedMapTile {
     private static final int PASSABLE_DARKNESS_ALPHA = 52;
     
     public DoorBlock(Point location) {
-        super(location.x, location.y, new SpriteSheet(ImageLoader.load("MagicDoor2.png"), 35, 35), TileType.NOT_PASSABLE);
+        super(location.x, location.y, new SpriteSheet(ImageLoader.load("DoorWC2.png"), 35, 35), TileType.NOT_PASSABLE);
     }
 
     @Override

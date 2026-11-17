@@ -10,6 +10,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
+import Engine.AudioManager;
+
 
 // This is the class for the main menu screen
 public class MenuScreen extends Screen {
@@ -68,6 +70,7 @@ public class MenuScreen extends Screen {
 
     @Override
     public void initialize() {
+		AudioManager.getInstance().stopMusic();
         loadCustomFont();
 		playGame = new SpriteFont("Play Game", 200, 375, Config.DEFAULT_FONT, 30, new Color(255, 255, 255)); //new Color(49, 207, 240));
         playGame.setOutlineColor(Color.black);
