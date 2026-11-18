@@ -81,7 +81,6 @@ public class GoblinEnemy extends Enemy implements IDamagable{
             }
         }
 
-        // move bug
         moveYHandleCollision(moveAmountY);
         moveXHandleCollision(moveAmountX);
 
