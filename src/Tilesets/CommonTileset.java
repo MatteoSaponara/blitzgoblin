@@ -306,6 +306,35 @@ public class CommonTileset extends Tileset {
                 .withTileType(TileType.HEALTH_PICKUP);
 
         mapTiles.add(healthPickUpTile);
+
+        // dungeon tiles
+        Frame dungeonTilesFrame = new FrameBuilder(getSubImage(5, 4))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder dungeonTiles = new MapTileBuilder(dungeonTilesFrame)
+                .withTileType(TileType.NOT_PASSABLE);
+
+        mapTiles.add(dungeonTiles);
+
+        // dungeon tiles 2
+        Frame dungeonTilesFrame2 = new FrameBuilder(getSubImage(4, 5))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder dungeonTiles2 = new MapTileBuilder(dungeonTilesFrame2)
+                .withTileType(TileType.NOT_PASSABLE);
+
+        mapTiles.add(dungeonTiles2);
+
+        // dungeon sky
+        Frame dungeonskyFrame = new FrameBuilder(getSubImage(5, 5))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder dungeonskyTile = new MapTileBuilder(dungeonskyFrame);
+
+        mapTiles.add(dungeonskyTile);
         
         return mapTiles;
     }
