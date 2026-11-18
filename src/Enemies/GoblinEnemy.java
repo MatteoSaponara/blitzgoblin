@@ -95,7 +95,7 @@ public class GoblinEnemy extends Enemy implements IDamagable{
     public void onEndCollisionCheckX(boolean hasCollided, Direction direction,  MapEntity entityCollidedWith) {
         // if bug has collided into something while walking forward,
         // it turns around (changes facing direction)
-        if (hasCollided) {
+        if (hasCollided && !chasing) {
             facingDirection = direction == Direction.RIGHT ? Direction.LEFT : Direction.RIGHT;
         }
     }
