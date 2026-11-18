@@ -27,6 +27,18 @@ public class FinalBossHand extends Enemy{
         super.initialize();
     }
 
+    public void update(Player player) {
+        super.update(player);
+    }
+
+    public void move(float moveAmountX) {
+        moveXHandleCollision(moveAmountX);
+    }
+
+    public void die() {
+        this.mapEntityStatus = MapEntityStatus.REMOVED; // Mark the hand as removed from the game
+    }
+
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
         return new HashMap<String, Frame[]>() {{
