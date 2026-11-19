@@ -82,7 +82,7 @@ public class CommonTileset extends Tileset {
         // left end branch
         Frame leftEndBranchFrame = new FrameBuilder(getSubImage(1, 5))
                 .withScale(tileScale)
-                .withBounds(0, 6, 16, 4)
+                .withBounds(0, 6, 35, 4)
                 .build();
 
         MapTileBuilder leftEndBranchTile = new MapTileBuilder(leftEndBranchFrame)
@@ -93,7 +93,7 @@ public class CommonTileset extends Tileset {
         // right end branch
         Frame rightEndBranchFrame = new FrameBuilder(getSubImage(1, 5))
                 .withScale(tileScale)
-                .withBounds(0, 6, 16, 4)
+                .withBounds(0, 6, 35, 4)
                 .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                 .build();
 
@@ -165,7 +165,7 @@ public class CommonTileset extends Tileset {
         // middle branch
         Frame middleBranchFrame = new FrameBuilder(getSubImage(2, 3))
                 .withScale(tileScale)
-                .withBounds(0, 6, 16, 4)
+                .withBounds(0, 6, 35, 4)
                 .build();
 
         MapTileBuilder middleBranchTile = new MapTileBuilder(middleBranchFrame)
@@ -306,6 +306,35 @@ public class CommonTileset extends Tileset {
                 .withTileType(TileType.HEALTH_PICKUP);
 
         mapTiles.add(healthPickUpTile);
+
+        // dungeon tiles
+        Frame dungeonTilesFrame = new FrameBuilder(getSubImage(5, 4))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder dungeonTiles = new MapTileBuilder(dungeonTilesFrame)
+                .withTileType(TileType.NOT_PASSABLE);
+
+        mapTiles.add(dungeonTiles);
+
+        // dungeon tiles 2
+        Frame dungeonTilesFrame2 = new FrameBuilder(getSubImage(4, 5))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder dungeonTiles2 = new MapTileBuilder(dungeonTilesFrame2)
+                .withTileType(TileType.NOT_PASSABLE);
+
+        mapTiles.add(dungeonTiles2);
+
+        // dungeon sky
+        Frame dungeonskyFrame = new FrameBuilder(getSubImage(5, 5))
+                .withScale(tileScale)
+                .build();
+
+        MapTileBuilder dungeonskyTile = new MapTileBuilder(dungeonskyFrame);
+
+        mapTiles.add(dungeonskyTile);
         
         return mapTiles;
     }
