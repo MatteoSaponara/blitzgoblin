@@ -283,6 +283,10 @@ public class level3 extends Map {
         enhancedMapTiles.add(twelveAmmo);
         CannonAmmo cannonAmmo = new CannonAmmo(getMapTile(63, 9).getLocation());
         enhancedMapTiles.add(cannonAmmo);
+        
+        //>>>>DELETE THIS<<<<
+        CannonAmmo cannonAmmo2 = new CannonAmmo(getMapTile(3, 7).getLocation());
+        enhancedMapTiles.add(cannonAmmo2);
 
        // Coin coin1 = new Coin(getMapTile(18, 23).getLocation());
       //  enhancedMapTiles.add(coin1);

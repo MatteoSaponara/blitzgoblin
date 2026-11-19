@@ -18,7 +18,7 @@ public class Sign extends NPC {
                 new SpriteSheet(ImageLoader.load(imageName), 62, 62), "Sign");
 
         isInteractable = true;
-        talkedToTime = 200;
+        talkedToTime = 500;
         textbox.setText(message);
         textboxOffsetX = -60;
         textboxOffsetY = -34;

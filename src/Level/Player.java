@@ -117,7 +117,11 @@ public abstract class Player extends GameObject
     protected int shotgunAttackTimer = 0;
 
     private boolean shotgunPumpPending;
-    protected final int SHOTGUN_ATTACK_COOLDOWN = 25;
+    //protected final int SHOTGUN_ATTACK_COOLDOWN = 25;
+    protected final int SINGLE_AMMO_COOLDOWN = 25;
+	protected final int TWELVE_AMMO_COOLDOWN = 60;
+	protected final int CANNON_AMMO_COOLDOWN = 90;
+    
     protected final int ATTACK_DURATION = 15;
     protected final int ATTACK_WIDTH = 15;
     protected final int ATTACK_OVERLAP = 6; // how far the attack box pushes into the player's sprite bounds
@@ -755,7 +759,18 @@ public abstract class Player extends GameObject
                 getShotgun().spawnShotSmoke();
                 shotgunPumpPending = true;
             }
-            shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
+            //shotgunAttackTimer = SHOTGUN_ATTACK_COOLDOWN;
+            switch (ammoMode) {
+				case "single":
+				shotgunAttackTimer = SINGLE_AMMO_COOLDOWN;
+				break;
+				case "twelve":
+				shotgunAttackTimer = TWELVE_AMMO_COOLDOWN;
+				break;
+				case "cannon":
+				shotgunAttackTimer = CANNON_AMMO_COOLDOWN;
+				break;
+				}
            
             getShotgun().playShootAnimation();
             }    
@@ -1418,7 +1433,7 @@ public abstract class Player extends GameObject
                                 new Point(getShotgun().getCurrentGunBarrelEndPixelPosition()[0],
                                         getShotgun().getCurrentGunBarrelEndPixelPosition()[1]),
                                 mouseX,
-                                mouseY
+                                mouseY  
                         );
                         map.addEnemy(gunPCannonBall);
                         applyRecoil(cannonAmmoRecoil, mouseX, mouseY);
